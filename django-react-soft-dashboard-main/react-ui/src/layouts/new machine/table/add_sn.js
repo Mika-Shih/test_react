@@ -1,0 +1,21 @@
+import React, { useState, useEffect } from "react";
+import Inputbox from "examples/tool_universal/inputbox";
+import PropTypes from "prop-types";
+function InputWithAddAndClearButton(props) {
+  const [inputList, setInputList] = useState([""]);
+  useEffect(() => {
+    props.serial_number_get(inputList);
+  }, [inputList]);
+  return (
+    <div style={{ marginLeft: "16px" }}>
+      <div>
+        <p>新增 serial number</p>
+        <Inputbox inputList={inputList} setInputList={setInputList} />
+      </div>
+    </div>
+  );
+}
+InputWithAddAndClearButton.propTypes = {
+  serial_number_get: PropTypes.func.isRequired,
+};
+export default InputWithAddAndClearButton;
