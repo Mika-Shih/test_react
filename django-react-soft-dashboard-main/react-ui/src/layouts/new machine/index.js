@@ -22,7 +22,7 @@ import SuiTypography from "components/SuiTypography";
 
 // Soft UI Dashboard React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+// import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import Addsn from "layouts/new machine/table/add_sn";
 import Addplatform from "layouts/new machine/table/add_platform";
@@ -43,12 +43,11 @@ function Tables() {
   };
   return (
     <DashboardLayout>
-      <DashboardNavbar />
-      <SuiBox py={3}>
+      <SuiBox py={1}>
         <SuiBox mb={3}>
           <Card>
             <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SuiTypography variant="h3">新增機台</SuiTypography>
+              <SuiTypography variant="h3"></SuiTypography>
             </SuiBox>
             <SuiBox customClass={classes.tables_table}>
               {!isStep && <Addsn serial_number_get={(sn) => sn_data_get(sn)} />}
@@ -57,7 +56,7 @@ function Tables() {
               )}
             </SuiBox>
             <Button onClick={togglePage} style={{ marginLeft: "16px", width: "100px" }}>
-              {isStep ? "上一步" : "下一步"}
+              {isStep ? "previous step" : "next step"}
             </Button>
           </Card>
         </SuiBox>

@@ -216,9 +216,6 @@ function MachineRecord() {
       }}
     >
       <div style={{ marginBottom: "20px" }}>
-        <p>SN : {machineRecord}</p>
-      </div>
-      <div style={{ marginBottom: "20px" }}>
         <TableContainer>
           <div style={{ marginLeft: "16px" }}>
             <Tablebody>{title_row("1")}</Tablebody>

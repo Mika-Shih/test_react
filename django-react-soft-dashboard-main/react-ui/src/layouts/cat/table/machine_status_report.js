@@ -10,13 +10,17 @@ import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Tablebody from "@mui/material/TableBody";
+import Table from "examples/Table/table_row";
 import Button from "examples/Icons/Button";
 import DateTimePicker from "examples/tool_universal/calendar_delay";
 import Filter from "examples/tool_universal/filter_function";
 import Loading from "examples/tool_universal/loading";
 import { hasAzureAccess } from "../../../auth-context/auth.context";
+import useStyles from "./styles/cat";
+import CATAPI from "api/cat";
 function DropdownWithButton() {
   const [loading, setLoading] = useState(false);
+  const classes = useStyles();
   const [startDate, setStartDate] = useState(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
   const [endDate, setEndDate] = useState(new Date());
   const [data, setData] = useState([]);
@@ -25,6 +29,7 @@ function DropdownWithButton() {
     1: false,
     2: false,
     3: false,
+    4: false,
   });
   const [formData, setFormData] = useState({
     module: [],
@@ -32,6 +37,13 @@ function DropdownWithButton() {
     shortName: "",
     longName: "",
     hardwareId: "",
+  });
+  const [task, set_task] = useState({
+    tool: "PowerStressTool",
+    mode: "Interface+Restart",
+    task: [],
+    select_index: null,
+    select_machine: [],
   });
   const [popdata, setPopdata] = useState(null);
   const [showToolName, setShowToolName] = useState(data.map(() => false));
@@ -406,6 +418,13 @@ function DropdownWithButton() {
         console.log(response.data);
         if (response.data.finaldata) {
           set_machine_data(response.data.finaldata);
+          set_task({
+            tool: "PowerStressTool",
+            mode: "Interface+Restart",
+            task: [],
+            select_index: null,
+            select_machine: [],
+          });
         } else if (response.data.error) {
           alert("無匹配資料");
         }
@@ -577,6 +596,234 @@ function DropdownWithButton() {
   //     </>
   //   );
   // }
+  function assgin_tasks_content() {
+    const data_get = () => {
+      console.log(task);
+    };
+    const handle_select_machine = (sn) => {
+      if (task.select_machine.includes(sn)) {
+        set_task({
+          ...task,
+          select_machine: task.select_machine.filter((value) => value !== sn),
+        });
+      } else {
+        set_task({
+          ...task,
+          select_machine: [...task.select_machine, sn],
+        });
+      }
+    };
+    const handleCheckboxChange = (index) => {
+      set_task((prevData) => {
+        const updatedTask = [...prevData.task];
+        updatedTask[index] = {
+          ...updatedTask[index],
+          check: !updatedTask[index].check,
+        };
+        return {
+          ...prevData,
+          task: updatedTask,
+        };
+      });
+    };
+    const tool_options = ["PowerStressTool"];
+    const options = [
+      "Interface+Restart",
+      "Interface+S4",
+      "Interface+Standby",
+      "Interface+StandbyToS4",
+      "Interface+Web+6G+Restart",
+      "Interface+Web+6G+S4",
+      "Interface+Web+6G+S4",
+      "Interface+Web+6G+Standby",
+      "Interface+Web+6G+StandbyToS4",
+      "Interface+Web+Random",
+      "Interface+Web+Restart",
+      "Interface+Web+S4",
+      "Interface+Web+Standby",
+      "Interface+Web+StandbyToS4",
+      "Random+Random",
+      "Random+Web+6G+Random",
+      "Random+Web+Random",
+      "update",
+      "update-Patches",
+    ];
+    const title_data = [
+      { style: classes.checkbox_style, children: "" },
+      { style: classes.platform_style, children: "platform" },
+      { style: classes.phase_style, children: "phase" },
+      { style: classes.sn_style, children: "serial_number" },
+      { style: classes.remark_style, children: "remark" },
+      { style: classes.update_time_style, children: "finish_time" },
+    ];
+    function assign_task_data_row(index, data) {
+      const machine_data = [
+        {
+          style: classes.checkbox_style,
+          children: (
+            <input
+              type="checkbox"
+              checked={task.select_machine.includes(data.serial_number)}
+              onChange={() => {
+                handle_select_machine(data.serial_number);
+              }}
+            />
+          ),
+        },
+        { style: classes.platform_style, children: data.platform },
+        { style: classes.phase_style, children: data.phase },
+        { style: classes.sn_style, children: data.serial_number },
+        { style: classes.remark_style, children: data.remark },
+        { style: classes.update_time_style, children: formatTimeForFrontend(data.finish_time) },
+      ];
+      if (!data || data.status != "idle") {
+        return null;
+      }
+      return (
+        <>
+          <Table row_style={classes.table_row_style} data={machine_data}></Table>
+        </>
+      );
+    }
+    return (
+      <>
+        {/* <TableContainer>
+          <Table row_style={classes.table_row_style} data={title_data}></Table>
+          {machine_data.map((data) => data_row(data))}
+        </TableContainer> */}
+        <div className={classes.upperBlockStyle}>
+          <TableContainer>
+            <Table row_style={classes.table_row_style} data={title_data}></Table>
+            {machine_data.map((data, index) => assign_task_data_row(index, data))}
+          </TableContainer>
+        </div>
+        <div className={classes.lowerBlockStyle}>
+          <div className={classes.leftBlockStyle}>
+            <div calssName={classes.leftBlockStyle_assign}>
+              <div style={line_form_style}>
+                <h4 className={classes.textStyle}>Select Assgin Tasks</h4>
+                <Button onClick={data_get}>Get</Button>
+              </div>
+              <div style={line_form_style}>
+                <select
+                  value={task.tool}
+                  onChange={(e) => {
+                    set_task((prevData) => ({
+                      ...prevData,
+                      tool: e.target.value,
+                    }));
+                  }}
+                  style={{ padding: "5px 1px", marginRight: "10px" }}
+                >
+                  {tool_options.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={task.mode}
+                  onChange={(e) => {
+                    set_task((prevData) => ({
+                      ...prevData,
+                      mode: e.target.value,
+                      task: [
+                        ...prevData.task,
+                        {
+                          tool: prevData.tool,
+                          mode: e.target.value,
+                          count: 0,
+                          check: false,
+                        },
+                      ],
+                    }));
+                  }}
+                  style={{ padding: "5px 1px", marginRight: "10px" }}
+                >
+                  {options.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className={classes.leftBlockStyle_assign_value}>
+              <div>
+                {task.task.map((option, index) => (
+                  <div key={index}>
+                    <span
+                      onClick={() =>
+                        set_task((prevData) => ({
+                          ...prevData,
+                          select_index: index,
+                        }))
+                      }
+                    >
+                      {option.tool}/{option.mode}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className={classes.rightBlockStyle}>
+            <div style={line_form_style}>
+              {task.select_index != null && (
+                <div>
+                  count:{" "}
+                  {task.task[task.select_index].check ? (
+                    <span
+                      style={{
+                        height: "30px",
+                        width: "60px",
+                        marginRight: "10px",
+                        textAlign: "center",
+                      }}
+                    ></span>
+                  ) : (
+                    <input
+                      type="number"
+                      min="0"
+                      value={task.task[task.select_index].count}
+                      onChange={(e) => {
+                        set_task((prevTask) => {
+                          const updatedTask = [...prevTask.task];
+                          updatedTask[prevTask.select_index] = {
+                            ...updatedTask[prevTask.select_index],
+                            count: parseInt(e.target.value, 10), //parseInt(string, radix) radix->10進位
+                          };
+                          return {
+                            ...prevTask,
+                            task: updatedTask,
+                          };
+                        });
+                      }}
+                      style={{
+                        height: "30px",
+                        width: "60px",
+                        marginRight: "10px",
+                        textAlign: "center",
+                      }}
+                    />
+                  )}
+                  rounds
+                  <span style={{ margin: "10px", fontSize: "24px" }}>&#8734;</span>
+                  <input
+                    type="checkbox"
+                    checked={task.task[task.select_index].check}
+                    onChange={() => {
+                      handleCheckboxChange(task.select_index);
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
   const download_cth_version = (data) => {
     setLoading(true);
     const request_data = {
@@ -601,6 +848,37 @@ function DropdownWithButton() {
         setLoading(false);
       });
   };
+  const create_machine_task = async () => {
+    setLoading(true);
+    let response = await CATAPI.create_task({
+      task: task.task.map((item) => {
+        if (item.check) {
+          return { tool: item.tool, mode: item.mode, count: 0 };
+        } else {
+          if (item.count) {
+            return { tool: item.tool, mode: item.mode, count: item.count };
+          }
+          return { tool: item.tool, mode: item.mode, count: 0 };
+        }
+      }),
+      machine: task.select_machine,
+    });
+    if (response.data.finaldata) {
+      alert(response.data.finaldata);
+      set_task({
+        tool: "PowerStressTool",
+        mode: "Interface+Restart",
+        task: [],
+        select_index: null,
+        select_machine: [],
+      });
+      closeModal(4);
+    } else if (response.data.error) {
+      alert(response.data.error);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     console.log(popdata);
   }, [popdata]);
@@ -623,6 +901,25 @@ function DropdownWithButton() {
       marginRight: "-500px",
       transform: "translate(-50%, -50%)",
       overflowY: "auto",
+    },
+    overlay: {
+      zIndex: 1000,
+    },
+  };
+  const assign_task_style = {
+    content: {
+      maxWidth: "1000px",
+      minWidth: "1000px",
+      maxHeight: "800px",
+      minHeight: "800px",
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-500px",
+      transform: "translate(-50%, -50%)",
+      overflowY: "auto",
+      flexDirection: "column",
     },
     overlay: {
       zIndex: 1000,
@@ -769,6 +1066,25 @@ function DropdownWithButton() {
           <Button onClick={() => closeModal(3)}>關閉</Button>
         </Modal>
       </div>
+      <div style={{ display: "flex", overflowY: "auto" }}>
+        <Modal
+          isOpen={popFilters[4]}
+          onRequestClose={() => closeModal(4)}
+          style={assign_task_style}
+          contentLabel="assign task"
+        >
+          <h1 className={classes.textStyle}>Assgin Tasks</h1>
+          {assgin_tasks_content()}
+          <Button
+            onClick={() => {
+              create_machine_task();
+            }}
+          >
+            確定
+          </Button>
+          <Button onClick={() => closeModal(4)}>關閉</Button>
+        </Modal>
+      </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ display: "flex", flexDirection: "row", marginBottom: "20px" }}>
           <Button onClick={() => openModal(1)} style={{ display: "flex", width: "50px" }}>
@@ -779,6 +1095,7 @@ function DropdownWithButton() {
               Download CTH
             </Button>
           )}
+          <Button onClick={() => openModal(4)}>Assign Tasks</Button>
         </div>
         <p>machine status</p>
         <TableContainer>

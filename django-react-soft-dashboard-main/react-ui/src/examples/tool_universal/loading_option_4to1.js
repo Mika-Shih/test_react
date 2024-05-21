@@ -2,9 +2,8 @@ import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
-import axios from "axios";
 import PropTypes from "prop-types";
-const backendServer = process.env.REACT_APP_BACKEND_SERVER;
+import TOOLAPI from "api/tool";
 function sleep(duration) {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -30,7 +29,7 @@ export default function Asynchronous({
         if (open) {
           await sleep(1e3);
           if (request == null) {
-            const response = await axios.get(`${backendServer}${api}/`);
+            const response = await TOOLAPI.filter_get(api);
             const formattedOptions = response.data[name]
               .filter((item) => item !== "")
               .map((item) => ({
@@ -41,7 +40,7 @@ export default function Asynchronous({
               setOptions(formattedOptions);
             }
           } else {
-            const response = await axios.post(`${backendServer}${api}/`, request);
+            const response = await TOOLAPI.filter_post(api, request);
             const formattedOptions = response.data[name]
               .filter((item) => item !== "")
               .map((item) => ({

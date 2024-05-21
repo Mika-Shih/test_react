@@ -49,16 +49,9 @@ function Tables() {
   };
   return (
     <DashboardLayout>
-      <SuiBox py={3}>
+      <SuiBox py={1}>
         {result == 0 && (
           <>
-            <SuiBox mb={3}>
-              <Card>
-                {/* <Grid item xs={12} sm={6} xl={3}>
-                  <Button_bar option={(option) => option_get(option)} />
-                </Grid> */}
-              </Card>
-            </SuiBox>
             <SuiBox mb={3}>
               <Card>
                 <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>

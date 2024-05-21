@@ -18,11 +18,11 @@ import { makeStyles } from "@mui/styles";
 
 export default makeStyles(({ functions, breakpoints, transitions }) => {
   const { pxToRem } = functions;
-  console.log(functions, breakpoints, transitions, pxToRem);
+  // console.log(functions, breakpoints, transitions, pxToRem);
   return {
     layoutContainer: {
       position: "relative",
-      padding: pxToRem(0), //pxToRem(24)
+      padding: pxToRem(2), //pxToRem(24)
 
       [breakpoints.up("xl")]: {
         marginLeft: ({ direction, miniSidenav }) => {

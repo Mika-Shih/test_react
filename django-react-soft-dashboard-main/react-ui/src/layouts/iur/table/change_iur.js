@@ -1,25 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
 import Modal from "react-modal";
-import axios from "axios";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
-import Tablehead from "@mui/material/TableHead";
 import TableCell from "@mui/material/TableCell";
-import Tablebody from "@mui/material/TableBody";
 import Button from "examples/Icons/Button";
 import Loading_option from "examples/tool_universal/loading_option";
 import Loading_option_4to1 from "examples/tool_universal/loading_option_4to1";
 import Loading from "examples/tool_universal/loading";
+import Table from "examples/Table/table_row";
+import useStyles from "layouts/iur/table/styles/iur";
+import IURAPI from "api/iur";
 function DropdownWithButton(iur_data) {
   const [machine_data, set_machine_data] = useState([]);
   const [platform_combine, set_platform_combine] = useState([]);
   const [options, setOptions] = useState([]);
+  const classes = useStyles();
   useEffect(() => {
     console.log(iur_data["iur_data"]);
     set_machine_data(iur_data["iur_data"]);
     const fetchData = async () => {
       try {
-        const response = await axios.get("/polls/api/phase/");
+        const response = await IURAPI.phase();
         const formattedOptions = response.data["phase"].filter((item) => item !== "");
         setOptions(formattedOptions);
       } catch (error) {
@@ -46,75 +47,20 @@ function DropdownWithButton(iur_data) {
     cycle: [],
   });
   useEffect(() => {}, [formData, options]);
-  function getCellStyle(width) {
-    return {
-      width: `${width}px`,
-      textAlign: "center",
-      fontSize: "12px",
-    };
-  }
-  const platform_style = getCellStyle(150);
-  const phase_style = getCellStyle(150);
-  const target_style = getCellStyle(80);
-  const group_style = getCellStyle(120);
-  const cycle_style = getCellStyle(80);
-  const sku_style = getCellStyle(60);
-  const sn_style = getCellStyle(150);
-  const borrower_style = getCellStyle(100);
-  const status_style = getCellStyle(90);
-  const position_style = getCellStyle(100);
-  const remark_style = getCellStyle(90);
-  const update_time_style = getCellStyle(200);
-  const table_row_style = {
-    display: "flex",
-    justifyContent: "space-between",
-    width: "100%",
-    textAlign: "center",
-  };
-  function title_row(index) {
-    return (
-      <>
-        <TableRow style={table_row_style}>
-          <TableCell key={index} style={platform_style}>
-            {"platform"}
-          </TableCell>
-          <TableCell key={index} style={phase_style}>
-            {"phase"}
-          </TableCell>
-          <TableCell key={index} style={target_style}>
-            {"target"}
-          </TableCell>
-          <TableCell key={index} style={group_style}>
-            {"group"}
-          </TableCell>
-          <TableCell key={index} style={cycle_style}>
-            {"cycle"}
-          </TableCell>
-          <TableCell key={index} style={sku_style}>
-            {"sku"}
-          </TableCell>
-          <TableCell key={index} style={sn_style}>
-            {"serial_number"}
-          </TableCell>
-          <TableCell key={index} style={borrower_style}>
-            {"borrower"}
-          </TableCell>
-          <TableCell key={index} style={status_style}>
-            {"status"}
-          </TableCell>
-          <TableCell key={index} style={position_style}>
-            {"position"}
-          </TableCell>
-          <TableCell key={index} style={remark_style}>
-            {"remark"}
-          </TableCell>
-          <TableCell key={index} style={update_time_style}>
-            {"update_time"}
-          </TableCell>
-        </TableRow>
-      </>
-    );
-  }
+  const title_data = [
+    { style: classes.platform_style, children: "platform" },
+    { style: classes.phase_style, children: "phase" },
+    { style: classes.target_style, children: "target" },
+    { style: classes.group_style, children: "group" },
+    { style: classes.cycle_style, children: "cycle" },
+    { style: classes.sku_style, children: "sku" },
+    { style: classes.sn_style, children: "serial_number" },
+    { style: classes.borrower_style, children: "borrower" },
+    { style: classes.status_style, children: "status" },
+    { style: classes.position_style, children: "position" },
+    { style: classes.remark_style, children: "remark" },
+    { style: classes.update_time_style, children: "update_time" },
+  ];
   useEffect(() => {
     console.log(platform_combine);
     console.log(formData);
@@ -125,10 +71,10 @@ function DropdownWithButton(iur_data) {
     }
     return (
       <>
-        <TableRow style={table_row_style}>
+        <TableRow className={classes.table_row_style}>
           <TableCell
             key={index}
-            style={platform_style}
+            className={classes.platform_style}
             onClick={() => handleDoubleClick(index, "platform")}
             ref={inputRef}
             onBlur={() => handleBlur(index, "platform")}
@@ -159,7 +105,7 @@ function DropdownWithButton(iur_data) {
               machine_data[index].platform
             )}
           </TableCell>
-          <TableCell key={index} style={phase_style}>
+          <TableCell key={index} className={classes.phase_style}>
             <select
               value={machine_data[index].phase}
               onChange={(e) => {
@@ -169,7 +115,7 @@ function DropdownWithButton(iur_data) {
                   return newData;
                 });
               }}
-              style={{ padding: "5px 5px", marginLeft: "20px", marginRight: "10px" }}
+              style={{ padding: "5px 1px", marginRight: "10px" }}
             >
               {options.map((option) => (
                 <option key={option} value={option}>
@@ -178,16 +124,20 @@ function DropdownWithButton(iur_data) {
               ))}
             </select>
           </TableCell>
-          <TableCell key={index} style={target_style}>
+          <TableCell key={index} className={classes.target_style}>
             {data.target}
           </TableCell>
-          <TableCell key={index} style={group_style}>
+          <TableCell key={index} className={classes.group_style}>
             {data.group}
           </TableCell>
-          <TableCell key={index} style={cycle_style}>
+          <TableCell key={index} className={classes.cycle_style}>
             {data.cycle}
           </TableCell>
-          <TableCell key={index} style={sku_style} onClick={() => handleDoubleClick(index, "sku")}>
+          <TableCell
+            key={index}
+            className={classes.sku_style}
+            onClick={() => handleDoubleClick(index, "sku")}
+          >
             {isEditing[`${index}_sku`] ? (
               <input
                 ref={inputRef}
@@ -208,18 +158,18 @@ function DropdownWithButton(iur_data) {
               machine_data[index].sku
             )}
           </TableCell>
-          <TableCell key={index} style={sn_style}>
+          <TableCell key={index} className={classes.sn_style}>
             {data.sn}
           </TableCell>
-          <TableCell key={index} style={borrower_style}>
+          <TableCell key={index} className={classes.borrower_style}>
             {data.borrower}
           </TableCell>
-          <TableCell key={index} style={status_style}>
+          <TableCell key={index} className={classes.status_style}>
             {data.status}
           </TableCell>
           <TableCell
             key={index}
-            style={position_style}
+            className={classes.position_style}
             onClick={() => handleDoubleClick(index, "position")}
           >
             {isEditing[`${index}_position`] ? (
@@ -242,10 +192,10 @@ function DropdownWithButton(iur_data) {
               machine_data[index].position
             )}
           </TableCell>
-          <TableCell key={index} style={remark_style}>
+          <TableCell key={index} className={classes.remark_style}>
             {data.remark}
           </TableCell>
-          <TableCell key={index} style={update_time_style}>
+          <TableCell key={index} className={classes.update_time_style}>
             {formatTimeForFrontend(data.update_time)}
           </TableCell>
         </TableRow>
@@ -329,60 +279,33 @@ function DropdownWithButton(iur_data) {
     return (
       <>
         <TableContainer>
-          <div style={{ overflowX: "auto", position: "relative" }}>
-            <Tablehead>{title_row("1")}</Tablehead>
-          </div>
-          <div style={{ overflowY: "auto", maxHeight: "600px", marginLeft: "16px" }}>
-            <Tablebody>{machine_data.map((data, index) => check_data_row(index, data))}</Tablebody>
-          </div>
+          <Table row_style={classes.table_row_style} data={title_data}></Table>
+          {machine_data.map((data) => check_data_row(data))}
         </TableContainer>
       </>
     );
   }
-  function check_data_row(index, data) {
+  function check_data_row(data) {
     if (!data) {
       return null;
     }
+    const tablebody_data = [
+      { style: classes.platform_style, children: data.platform },
+      { style: classes.phase_style, children: data.phase },
+      { style: classes.target_style, children: data.target },
+      { style: classes.group_style, children: data.group },
+      { style: classes.cycle_style, children: data.cycle },
+      { style: classes.sku_style, children: data.sku },
+      { style: classes.sn_style, children: data.sn },
+      { style: classes.borrower_style, children: data.borrower },
+      { style: classes.status_style, children: data.status },
+      { style: classes.position_style, children: data.position },
+      { style: classes.remark_style, children: data.remark },
+      { style: classes.update_time_style, children: formatTimeForFrontend(data.update_time) },
+    ];
     return (
       <>
-        <TableRow style={table_row_style}>
-          <TableCell key={index} style={platform_style}>
-            {data.platform}
-          </TableCell>
-          <TableCell key={index} style={phase_style}>
-            {data.phase}
-          </TableCell>
-          <TableCell key={index} style={target_style}>
-            {data.target}
-          </TableCell>
-          <TableCell key={index} style={group_style}>
-            {data.group}
-          </TableCell>
-          <TableCell key={index} style={cycle_style}>
-            {data.cycle}
-          </TableCell>
-          <TableCell key={index} style={sku_style}>
-            {data.sku}
-          </TableCell>
-          <TableCell key={index} style={sn_style}>
-            {data.sn}
-          </TableCell>
-          <TableCell key={index} style={borrower_style}>
-            {data.borrower}
-          </TableCell>
-          <TableCell key={index} style={status_style}>
-            {data.status}
-          </TableCell>
-          <TableCell key={index} style={position_style}>
-            {data.position}
-          </TableCell>
-          <TableCell key={index} style={remark_style}>
-            {data.remark}
-          </TableCell>
-          <TableCell key={index} style={update_time_style}>
-            {formatTimeForFrontend(data.update_time)}
-          </TableCell>
-        </TableRow>
+        <Table row_style={classes.table_row_style} data={tablebody_data}></Table>
       </>
     );
   }
@@ -470,16 +393,12 @@ function DropdownWithButton(iur_data) {
 
   const addplatformmodel = async () => {
     setLoading(true);
-    const request_data = {
-      platform: formData.platform,
-      target: formData.target == null ? "" : formData.target.value,
-      group: formData.group == null ? "" : formData.group.value,
-      cycle: formData.cycle,
-    };
-    console.log(request_data);
     try {
-      const response = await axios.post("/polls/api/addplatformonly/", request_data, {
-        timeout: 10000,
+      const response = await IURAPI.addplatformonly({
+        platform: formData.platform,
+        target: formData.target == null ? "" : formData.target.value,
+        group: formData.group == null ? "" : formData.group.value,
+        cycle: formData.cycle,
       });
       if (response.data.successful) {
         alert(response.data.successful);
@@ -496,12 +415,9 @@ function DropdownWithButton(iur_data) {
   };
   const clearmodel = async () => {
     setLoading(true);
-    const request_data = {
-      finaldata: machine_data,
-    };
     try {
-      const response = await axios.post("/polls/changeplatform/", request_data, {
-        timeout: 10000,
+      const response = await IURAPI.change({
+        finaldata: machine_data,
       });
       if (response.data.finaldata) {
         alert(response.data.finaldata);
@@ -517,65 +433,63 @@ function DropdownWithButton(iur_data) {
     }
   };
   return (
-    <div style={{ display: "flex", alignItems: "center", marginLeft: "20px" }}>
-      <Loading loading={loading} />
-      <div style={{ display: "flex", overflowY: "auto" }}>
-        <Modal
-          isOpen={popFilters[1]}
-          onRequestClose={() => closeModal(1)}
-          style={check_Styles}
-          contentLabel="filter"
-        >
-          <p>Confirm modifying the following machines?</p>
-          {check_platform_change()}
-          <Button style={{ margin: "10px", padding: "10px" }} onClick={clearmodel}>
-            Modify
+    <>
+      <div style={{ display: "flex", alignItems: "center", marginLeft: "20px" }}>
+        <Loading loading={loading} />
+        <div style={{ display: "flex", overflowY: "auto" }}>
+          <Modal
+            isOpen={popFilters[1]}
+            onRequestClose={() => closeModal(1)}
+            style={check_Styles}
+            contentLabel="filter"
+          >
+            <p>Confirm modifying the following machines?</p>
+            {check_platform_change()}
+            <Button style={{ margin: "10px", padding: "10px" }} onClick={clearmodel}>
+              Modify
+            </Button>
+            <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
+              Close
+            </Button>
+          </Modal>
+        </div>
+        <div style={{ display: "flex", overflowY: "auto" }}>
+          <Modal
+            isOpen={popFilters[2]}
+            onRequestClose={() => closeModal(2)}
+            style={customStyles}
+            contentLabel="filter"
+          >
+            <h2>Add new platform</h2>
+            {pop_filter_content()}
+            <Button style={{ margin: "10px", padding: "10px" }} onClick={addplatformmodel}>
+              Add machine
+            </Button>
+            <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(2)}>
+              Close
+            </Button>
+          </Modal>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <Button
+            onClick={() => openModal(2)}
+            style={{ display: "flex", width: "180px", ...button_style }}
+          >
+            Add new platform
           </Button>
-          <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
-            Close
+          <Button
+            onClick={() => openModal(1)}
+            style={{ marginTop: "20px", display: "flex", width: "100px", ...button_style }}
+          >
+            Change
           </Button>
-        </Modal>
+        </div>
       </div>
-      <div style={{ display: "flex", overflowY: "auto" }}>
-        <Modal
-          isOpen={popFilters[2]}
-          onRequestClose={() => closeModal(2)}
-          style={customStyles}
-          contentLabel="filter"
-        >
-          <h2>Add new platform</h2>
-          {pop_filter_content()}
-          <Button style={{ margin: "10px", padding: "10px" }} onClick={addplatformmodel}>
-            Add machine
-          </Button>
-          <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(2)}>
-            Close
-          </Button>
-        </Modal>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <Button
-          onClick={() => openModal(2)}
-          style={{ display: "flex", width: "180px", ...button_style }}
-        >
-          Add new platform
-        </Button>
-        <TableContainer>
-          <div style={{}}>
-            <Tablehead>{title_row("1")}</Tablehead>
-          </div>
-          <div style={{ marginLeft: "16px" }}>
-            <Tablebody>{machine_data.map((data, index) => data_row(index, data))}</Tablebody>
-          </div>
-        </TableContainer>
-        <Button
-          onClick={() => openModal(1)}
-          style={{ marginTop: "20px", display: "flex", width: "100px", ...button_style }}
-        >
-          Change
-        </Button>
-      </div>
-    </div>
+      <TableContainer>
+        <Table row_style={classes.table_row_style} data={title_data}></Table>
+        {machine_data.map((data, index) => data_row(index, data))}
+      </TableContainer>
+    </>
   );
 }
 export default DropdownWithButton;

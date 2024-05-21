@@ -1,7 +1,17 @@
-version: "3.7"
+version: "3.8"
 
 services:
-  sample:
+  django:
+    container_name: django
+    build:
+      context: ../../mysite
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - app_network
+
+  react:
     container_name: react-soft-ui
     build:
       context: .
@@ -13,3 +23,11 @@ services:
       - 3000:3000
     environment:
       - CHOKIDAR_USEPOLLING=true
+    networks:
+      - app_network
+    depends_on:
+      - django
+
+networks:
+  app_network:
+    driver: bridge

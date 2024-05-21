@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Modal from "react-modal";
 import axios from "axios";
 import TableContainer from "@mui/material/TableContainer";
@@ -11,6 +11,7 @@ import Filter from "examples/tool_universal/filter_function";
 import Inputbox from "examples/tool_universal/inputbox";
 import { FixedSizeList } from "react-window";
 import Button from "examples/Icons/Button";
+import Table from "examples/Table/table_row";
 import Filterbutton from "examples/Icons/Filter_button";
 import Loading_option from "examples/tool_universal/loading_option";
 import Loading_option_add_remove from "examples/tool_universal/loading_option_add_remove";
@@ -18,7 +19,10 @@ import Loading from "examples/tool_universal/loading";
 import PropTypes from "prop-types";
 import { useHistory } from "react-router-dom";
 import { useAuth, hasAzureAccess } from "../../../auth-context/auth.context";
+import useStyles from "layouts/iur/table/styles/iur";
+import IURAPI from "api/iur";
 function DropdownWithButton(props) {
+  const classes = useStyles();
   const { user } = useAuth();
   const history = useHistory();
   const [option, setOption] = useState(1);
@@ -28,8 +32,8 @@ function DropdownWithButton(props) {
     props.iur(select_iur_machine);
   }, [select_iur_machine]);
   useEffect(() => {
-    get_machine_status_report();
     console.log(user);
+    get_machine_status_report();
   }, []);
   const [startDate, setStartDate] = useState(new Date(Date.now() - 365 * 24 * 60 * 60 * 1000));
   const [endDate, setEndDate] = useState(new Date());
@@ -55,6 +59,11 @@ function DropdownWithButton(props) {
     message: "",
     cc_mail: [],
   });
+  const [memberData, setmemberData] = useState({
+    username: "",
+    site: "TW",
+    email: "",
+  });
   const [inputList, setInputList] = useState([""]);
   const [widthsearch, setWidthsearch] = useState([""]);
   function getCellStyle(width) {
@@ -78,64 +87,51 @@ function DropdownWithButton(props) {
   const position_style = getCellStyle(100);
   const remark_style = getCellStyle(90);
   const update_time_style = getCellStyle(200);
-  const table_row_style = {
-    display: "flex",
-    justifyContent: "space-between",
-    width: "100%",
-    textAlign: "center",
-    // border: "1px solid black",
+  function MyTableCell({ index, style, className, children }) {
+    return (
+      <TableCell key={index} style={style} className={className}>
+        {children}
+      </TableCell>
+    );
+  }
+  MyTableCell.propTypes = {
+    index: PropTypes.number.isRequired,
+    style: PropTypes.object,
+    className: PropTypes.string,
+    children: PropTypes.node.isRequired,
   };
+  const data = [
+    ...(hasAzureAccess() ? [{ index: "1", style: checkbox_style, children: "/" }] : []),
+    { index: "1", style: platform_style, children: "platform" },
+    { index: "1", style: phase_style, children: "phase" },
+    { index: "1", style: target_style, children: "target" },
+    { index: "1", style: group_style, children: "group" },
+    { index: "1", style: cycle_style, children: "cycle" },
+    { index: "1", style: sku_style, children: "sku" },
+    { index: "1", style: sn_style, children: "serial_number" },
+    { index: "1", style: borrower_style, children: "borrower" },
+    { index: "1", style: status_style, children: "status" },
+    { index: "1", style: position_style, children: "position" },
+    { index: "1", style: remark_style, children: "remark" },
+    { index: "1", style: update_time_style, children: "update_time" },
+  ];
   function title_row(index, request = true) {
     if (request) {
       return (
         <>
-          <TableRow style={table_row_style}>
-            <TableCell key={index} style={checkbox_style}>
-              {"/"}
-            </TableCell>
-            <TableCell key={index} style={platform_style}>
-              {"platform"}
-            </TableCell>
-            <TableCell key={index} style={phase_style}>
-              {"phase"}
-            </TableCell>
-            <TableCell key={index} style={target_style}>
-              {"target"}
-            </TableCell>
-            <TableCell key={index} style={group_style}>
-              {"group"}
-            </TableCell>
-            <TableCell key={index} style={cycle_style}>
-              {"cycle"}
-            </TableCell>
-            <TableCell key={index} style={sku_style}>
-              {"sku"}
-            </TableCell>
-            <TableCell key={index} style={sn_style}>
-              {"serial_number"}
-            </TableCell>
-            <TableCell key={index} style={borrower_style}>
-              {"borrower"}
-            </TableCell>
-            <TableCell key={index} style={status_style}>
-              {"status"}
-            </TableCell>
-            <TableCell key={index} style={position_style}>
-              {"position"}
-            </TableCell>
-            <TableCell key={index} style={remark_style}>
-              {"remark"}
-            </TableCell>
-            <TableCell key={index} style={update_time_style}>
-              {"update_time"}
-            </TableCell>
+          <TableRow className={classes.table_row_style}>
+            {data.map((item, index) => (
+              <MyTableCell key={index} style={item.style}>
+                {item.children}
+              </MyTableCell>
+            ))}
           </TableRow>
         </>
       );
     } else {
       return (
         <>
-          <TableRow style={table_row_style}>
+          <TableRow className={classes.table_row_style}>
             <TableCell key={index} style={platform_style}>
               {"platform"}
             </TableCell>
@@ -191,9 +187,9 @@ function DropdownWithButton(props) {
       return null;
     }
     if (request) {
-      return (
+      return hasAzureAccess() ? (
         <>
-          <TableRow style={table_row_style}>
+          <TableRow className={classes.table_row_style}>
             <TableCell key={index} style={checkbox_style}>
               <input
                 type="checkbox"
@@ -201,7 +197,55 @@ function DropdownWithButton(props) {
                 onChange={() => handleCheckboxChange(data)}
               />
             </TableCell>
-            <TableCell key={index} style={platform_style}>
+            <TableCell key={index} className={classes.platform_style}>
+              {data.platform}
+            </TableCell>
+            <TableCell key={index} style={phase_style}>
+              {data.phase}
+            </TableCell>
+            <TableCell key={index} style={target_style}>
+              {data.target}
+            </TableCell>
+            <TableCell key={index} style={group_style}>
+              {data.group}
+            </TableCell>
+            <TableCell key={index} style={cycle_style}>
+              {data.cycle}
+            </TableCell>
+            <TableCell key={index} style={sku_style}>
+              {data.sku}
+            </TableCell>
+            <TableCell key={index} style={sn_style}>
+              <span
+                onClick={() => {
+                  window.open(`/machine_record/?sn=${data.sn}`);
+                }}
+                style={{ cursor: "pointer", color: "darkblue", fontWeight: "bold", opacity: 0.8 }}
+              >
+                {data.sn}
+              </span>
+            </TableCell>
+            <TableCell key={index} style={borrower_style}>
+              {data.borrower}
+            </TableCell>
+            <TableCell key={index} style={status_style}>
+              {data.status}
+            </TableCell>
+            <TableCell key={index} style={position_style}>
+              {data.position}
+            </TableCell>
+            <TableCell key={index} style={remark_style}>
+              {data.remark}
+            </TableCell>
+            <TableCell key={index} style={update_time_style}>
+              {formatTimeForFrontend(data.update_time)}
+            </TableCell>
+          </TableRow>
+        </>
+      ) : (
+        <>
+          <TableRow className={classes.table_row_style}>
+            <TableCell key={index} className={classes.platform_style}>
               {data.platform}
             </TableCell>
             <TableCell key={index} style={phase_style}>
@@ -250,7 +294,7 @@ function DropdownWithButton(props) {
     } else {
       return (
         <>
-          <TableRow style={table_row_style}>
+          <TableRow className={classes.table_row_style}>
             <TableCell key={index} style={platform_style}>
               {data.platform}
             </TableCell>
@@ -320,41 +364,14 @@ function DropdownWithButton(props) {
     });
     return `${month} ${day}, ${year}, ${formattedTime}`;
   }
-  const borderedOptionStyle = {
-    border: "1px solid #000",
-    padding: "3px",
-    margin: "4px",
-    maxWidth: "500px",
-  };
   const containerStyle = {
     display: "flex",
   };
-  const leftBlockStyle = {
-    maxWidth: "400px",
-    minWidth: "400px",
-    flex: "0 0 400px", //flex-grow(區域優先級)、flex-shrink(區域空間不夠縮放優先級)、flex-basis
-    marginRight: "10px",
-    padding: "10px",
-    background: "#efefef",
-  };
-  const rightBlockStyle = {
-    flex: "1",
-    padding: "10px",
-    background: "#f5f5f5",
-  };
-  const line_form_style = {
-    display: "flex",
-    alignItems: "center",
-    marginBottom: "14px",
-    color: "#000000",
-    fontSize: "18px",
-  };
-
   useEffect(() => {}, [machine_data]);
-  const get_machine_status_report = () => {
-    setLoading(true);
+  const get_machine_status_report = async () => {
+    // setLoading(true);
     set_select_iur_machine([]);
-    const request_data = {
+    let response = await IURAPI.filtersearch({
       start_time: new Date(Date.now() - 3650 * 24 * 60 * 60 * 1000),
       end_time: new Date(),
       target: "",
@@ -365,24 +382,14 @@ function DropdownWithButton(props) {
       phase: "",
       status: "",
       machine_arrive_mail: "",
-    };
-    axios
-      .post("/polls/api/filtersearch/", request_data, { timeout: 60000 })
-      .then((response) => {
-        if (response.data) {
-          console.log(response.data);
-          set_machine_data(response.data.finaldata);
-        } else if (response.data.error) {
-          alert(response.data.error);
-        }
-      })
-      .catch((error) => {
-        console.error("error", error);
-        alert("Please contact the administrator.");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    });
+    if (response.data) {
+      console.log(response.data);
+      set_machine_data(response.data.finaldata);
+    } else if (response.data.error) {
+      alert(response.data.error);
+    }
+    // setLoading(false);
   };
   /*
   const handle_option_change = (event, selectedOption, fieldName) => {
@@ -458,8 +465,8 @@ function DropdownWithButton(props) {
     return (
       <>
         <div style={containerStyle}>
-          <div style={leftBlockStyle}>
-            <div style={line_form_style}>
+          <div className={classes.leftBlockStyle}>
+            <div className={classes.line_form_style}>
               <Button onClick={one_day_setting} style={{ marginLeft: "16px" }}>
                 one day
               </Button>
@@ -467,7 +474,7 @@ function DropdownWithButton(props) {
                 one week
               </Button>
             </div>
-            <div style={line_form_style}>
+            <div className={classes.line_form_style}>
               <Button onClick={one_month_setting} style={{ marginLeft: "16px" }}>
                 one month
               </Button>
@@ -478,7 +485,7 @@ function DropdownWithButton(props) {
                 ten year
               </Button>
             </div>
-            <div style={line_form_style}>
+            <div className={classes.line_form_style}>
               <DateTimePicker
                 startDatetime={startDate}
                 endDatetime={endDate}
@@ -486,7 +493,7 @@ function DropdownWithButton(props) {
                 setEndDatetime={setEndDate}
               />
             </div>
-            <div style={line_form_style}>
+            <div className={classes.line_form_style}>
               <Filter
                 api="polls/api/target"
                 item_name="target"
@@ -497,7 +504,7 @@ function DropdownWithButton(props) {
                 buttonLabel="Target"
               />
             </div>
-            <div style={line_form_style}>
+            <div className={classes.line_form_style}>
               <Filter
                 api="polls/api/group"
                 item_name="group"
@@ -506,7 +513,7 @@ function DropdownWithButton(props) {
                 buttonLabel="Group"
               />
             </div>
-            <div style={line_form_style}>
+            <div className={classes.line_form_style}>
               <Filter
                 api="polls/api/cycle"
                 item_name="cycle"
@@ -519,7 +526,7 @@ function DropdownWithButton(props) {
                 buttonLabel="Cycle"
               />
             </div>
-            <div style={line_form_style}>
+            <div className={classes.line_form_style}>
               <Filter
                 api="polls/api/platform"
                 item_name="platform"
@@ -535,7 +542,7 @@ function DropdownWithButton(props) {
                 buttonLabel="Platform"
               />
             </div>
-            <div style={line_form_style}>
+            <div className={classes.line_form_style}>
               <Filter
                 api="polls/api/phase"
                 item_name="phase"
@@ -544,7 +551,7 @@ function DropdownWithButton(props) {
                 buttonLabel="Phase"
               />
             </div>
-            <div style={line_form_style}>
+            <div className={classes.line_form_style}>
               <Filter
                 api="polls/api/status"
                 item_name="status"
@@ -557,46 +564,48 @@ function DropdownWithButton(props) {
             </div>
             <Inputbox inputList={inputList} setInputList={setInputList} />
           </div>
-          <div style={rightBlockStyle}>
-            <div style={line_form_style}>
+          <div className={classes.rightBlockStyle}>
+            <div className={classes.line_form_style}>
               <p>target</p>
-              <Filterbutton options={formData.target} onClick={one_day_setting} />
+              <Filterbutton
+                options={formData.target}
+                onClick={(newOptions) => setFormData({ ...formData, target: newOptions })}
+              />
             </div>
-            <div style={line_form_style}>
+            <div className={classes.line_form_style}>
               <p>group</p>
-              {formData.group.map((option, index) => (
-                <div key={index} style={borderedOptionStyle}>
-                  {option}
-                </div>
-              ))}
+              <Filterbutton
+                options={formData.group}
+                onClick={(newOptions) => setFormData({ ...formData, group: newOptions })}
+              />
             </div>
-            <div style={line_form_style}>
+            <div className={classes.line_form_style}>
               <p>cycle</p>
-              {formData.cycle.map((option, index) => (
-                <div key={index} style={borderedOptionStyle}>
-                  {option}
-                </div>
-              ))}
+              <Filterbutton
+                options={formData.cycle}
+                onClick={(newOptions) => setFormData({ ...formData, cycle: newOptions })}
+              />
             </div>
-            <div style={line_form_style}>
+            <div className={classes.line_form_style}>
               <p>platform</p>
-              <Filterbutton options={formData.platform} onClick={one_day_setting} />
+              <Filterbutton
+                options={formData.platform}
+                onClick={(newOptions) => setFormData({ ...formData, platform: newOptions })}
+              />
             </div>
-            <div style={line_form_style}>
+            <div className={classes.line_form_style}>
               <p>phase</p>
-              {formData.phase.map((option, index) => (
-                <div key={index} style={borderedOptionStyle}>
-                  {option}
-                </div>
-              ))}
+              <Filterbutton
+                options={formData.phase}
+                onClick={(newOptions) => setFormData({ ...formData, phase: newOptions })}
+              />
             </div>
-            <div style={line_form_style}>
+            <div className={classes.line_form_style}>
               <p>status</p>
-              {formData.status.map((option, index) => (
-                <div key={index} style={borderedOptionStyle}>
-                  {option}
-                </div>
-              ))}
+              <Filterbutton
+                options={formData.status}
+                onClick={(newOptions) => setFormData({ ...formData, status: newOptions })}
+              />
             </div>
           </div>
         </div>
@@ -638,25 +647,29 @@ function DropdownWithButton(props) {
     if (options == 2) {
       machine_length("Rent");
     }
-    if (options == 3 || options == 4 || options == 5 || options == 6) {
+    if (options == 3 || options == 5 || options == 6) {
       machine_length("Keep On");
+    }
+    if (options == 4) {
+      props.iur_option(options);
+      setOptions(0);
     }
   }, [options]);
   function lend_content() {
     return (
       <>
         <div style={{ flexDirection: "column", ...containerStyle }}>
-          <div style={line_form_style}>
+          <div className={classes.line_form_style}>
             <Loading_option
               api="polls/lendpersonnel"
-              name="user_name"
+              name="user_mail"
               selectedOptions={lendData.lendperson}
               setSelectedOptions={(newOptions) =>
                 setlendData({ ...lendData, lendperson: newOptions })
               }
             />
           </div>
-          <div style={line_form_style}>
+          <div className={classes.line_form_style}>
             <TableContainer>
               <div style={{}}>
                 <Tablehead>{title_row("1", false)}</Tablehead>
@@ -668,10 +681,10 @@ function DropdownWithButton(props) {
               </div>
             </TableContainer>
           </div>
-          <div style={line_form_style}>
+          <div className={classes.line_form_style}>
             <label htmlFor="Purpose">Purpose:</label>
           </div>
-          <div style={line_form_style}>
+          <div className={classes.line_form_style}>
             <textarea
               id="Purpose"
               name="Purpose"
@@ -686,10 +699,10 @@ function DropdownWithButton(props) {
               }}
             />
           </div>
-          <div style={line_form_style}>
+          <div className={classes.line_form_style}>
             <label htmlFor="cc_mail">cc mail:</label>
           </div>
-          <div style={line_form_style}>
+          <div className={classes.line_form_style}>
             {/* <input
               id="cc_mail"
               name="cc_mail"
@@ -709,10 +722,10 @@ function DropdownWithButton(props) {
               setSelectedOptions={(newOptions) => setlendData({ ...lendData, cc_mail: newOptions })}
             />
           </div>
-          <div style={line_form_style}>
+          <div className={classes.line_form_style}>
             <label htmlFor="message">mail message:</label>
           </div>
-          <div style={line_form_style}>
+          <div className={classes.line_form_style}>
             <input
               id="message"
               name="message"
@@ -730,6 +743,119 @@ function DropdownWithButton(props) {
       </>
     );
   }
+
+  function add_member_content() {
+    const member_data = [
+      { style: classes.username_style, children: "user name" },
+      { style: classes.site_style, children: "site" },
+      { style: classes.email_style, children: "mail" },
+    ];
+    const options = ["TW", "CN"];
+    return (
+      <>
+        <div style={{ flexDirection: "column", ...containerStyle }}>
+          <TableContainer>
+            <Table row_style={classes.table_row_style} data={member_data}></Table>
+            <TableRow className={classes.table_row_style}>
+              <TableCell
+                className={classes.username_style}
+                onClick={() => handleDoubleClick(1, "username")}
+              >
+                {isEditing[`${1}_username`] ? (
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={memberData.username}
+                    style={{ width: "120px", height: "30px" }}
+                    onChange={(e) => {
+                      setmemberData((prevData) => ({
+                        ...prevData,
+                        username: e.target.value,
+                      }));
+                    }}
+                    onBlur={() => handleBlur(1, "username")}
+                    onKeyDown={(e) => handleKeyDown(e, 1, "username")}
+                  />
+                ) : (
+                  memberData.username
+                )}
+              </TableCell>
+              <TableCell className={classes.username_style}>
+                <select
+                  value={memberData.site}
+                  onChange={(e) => {
+                    setmemberData((prevData) => ({
+                      ...prevData,
+                      site: e.target.value,
+                    }));
+                  }}
+                  style={{ padding: "5px 1px", marginRight: "10px" }}
+                >
+                  {options.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </TableCell>
+
+              <TableCell
+                className={classes.email_style}
+                onClick={() => handleDoubleClick(1, "email")}
+              >
+                {isEditing[`${1}_email`] ? (
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={memberData.email}
+                    style={{ width: "220px", height: "30px" }}
+                    onChange={(e) => {
+                      setmemberData((prevData) => ({
+                        ...prevData,
+                        email: e.target.value,
+                      }));
+                    }}
+                    onBlur={() => handleBlur(1, "email")}
+                    onKeyDown={(e) => handleKeyDown(e, 1, "email")}
+                  />
+                ) : (
+                  memberData.email
+                )}
+              </TableCell>
+            </TableRow>
+          </TableContainer>
+        </div>
+      </>
+    );
+  }
+  const inputRef = useRef(null);
+  const [isEditing, setIsEditing] = useState({});
+  const indexRef = useRef(null);
+  useEffect(() => {
+    if (isEditing[indexRef.current] && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isEditing]);
+  const handleDoubleClick = (index, data) => {
+    indexRef.current = `${index}_${data}`;
+    setIsEditing((prevIsEditing) => ({
+      ...prevIsEditing,
+      [`${index}_${data}`]: true,
+    }));
+  };
+  const handleBlur = (index, data) => {
+    setIsEditing((prevIsEditing) => ({
+      ...prevIsEditing,
+      [`${index}_${data}`]: false,
+    }));
+    console.log(isEditing);
+  };
+  const handleKeyDown = (e, index, data) => {
+    if (e.key === "Enter") {
+      handleBlur(index, data);
+    }
+  };
+
   const clearmodel = () => {
     setFormData({
       target: [],
@@ -741,23 +867,20 @@ function DropdownWithButton(props) {
     });
     setInputList([""]);
   };
-  const widthsearth_function = () => {
-    const request_data = {
+  const widthsearth_function = async () => {
+    let response = await IURAPI.widthsearch({
       keyword: [widthsearch],
-    };
-    console.log(request_data);
-    axios.post("/polls/api/widthsearch/", request_data, { timeout: 10000 }).then((response) => {
-      if (response.data.finaldata) {
-        console.log(response.data);
-        set_machine_data(response.data.finaldata);
-      } else if (response.data.error) {
-        alert(response.data.error);
-      }
     });
+    if (response.data.finaldata) {
+      console.log(response.data);
+      set_machine_data(response.data.finaldata);
+    } else if (response.data.error) {
+      alert(response.data.error);
+    }
     set_select_iur_machine([]);
   };
-  const filtersearch = () => {
-    const request_data = {
+  const filtersearch = async () => {
+    let response = await IURAPI.filtersearch({
       start_time: startDate,
       end_time: endDate,
       target: formData.target,
@@ -767,37 +890,93 @@ function DropdownWithButton(props) {
       SN: inputList,
       phase: formData.phase,
       status: formData.status,
-    };
-    axios.post("/polls/api/filtersearch/", request_data, { timeout: 10000 }).then((response) => {
+    });
+    if (response.data.finaldata) {
+      console.log(response.data);
+      set_machine_data(response.data.finaldata);
+      set_select_iur_machine([]);
+      closeModal(1);
+    } else if (response.data.error) {
+      alert(response.data.error);
+    }
+  };
+  const lend = async () => {
+    setLoading(true);
+    try {
+      const cc_mail_list = lendData.cc_mail.filter(Boolean).map((item) => item.value);
+      const response = await IURAPI.lend({
+        finaldata: select_iur_machine,
+        lendperson: lendData.lendperson == null ? "" : lendData.lendperson.value,
+        purpose: lendData.purpose,
+        cc_mail: cc_mail_list,
+        message: lendData.message,
+      });
       if (response.data.finaldata) {
-        console.log(response.data);
-        set_machine_data(response.data.finaldata);
+        console.log(response.data.finaldata);
+        alert("Successfully borrowed.");
+        closeModal(2);
+        window.location.reload();
       } else if (response.data.error) {
         alert(response.data.error);
       }
-    });
-    set_select_iur_machine([]);
-    closeModal(1);
+    } catch (error) {
+      console.log(error);
+      alert("Please contact the administrator.");
+    } finally {
+      setLoading(false);
+    }
   };
-  const lend = () => {
+  const add_member = async () => {
     setLoading(true);
-    const cc_mail_list = lendData.cc_mail.filter(Boolean).map((item) => item.value);
-    const request_data = {
-      finaldata: select_iur_machine,
-      lendperson: lendData.lendperson == null ? "" : lendData.lendperson.value,
-      purpose: lendData.purpose,
-      cc_mail: cc_mail_list,
-      message: lendData.message,
-    };
+    try {
+      const response = await IURAPI.add_member({
+        finaldata: [memberData],
+      });
+      if (response.data.finaldata) {
+        alert(response.data.finaldata);
+        closeModal(3);
+        window.location.reload();
+      } else if (response.data.error) {
+        alert(response.data.error);
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Please contact the administrator.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const downloadFile = (fileData, fileName) => {
+    const blob = new Blob([fileData], { type: "application/octet-stream" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+  const excel_export_function = async () => {
+    setLoading(true);
+    let request_data = new FormData();
+    request_data.append("data", JSON.stringify(machine_data));
     console.log(request_data);
+    let response = await IURAPI.excel_export(request_data);
+    downloadFile(response.data, "iur.xlsx");
+    alert("successful download");
+    setLoading(false);
+  };
+  const test_function = async () => {
+    setLoading(true);
+    const request_data = {
+      folder_choose: ["test_folder_Bill", "test.1"],
+    };
     axios
-      .post("/polls/lendplatform/", request_data, { timeout: 10000 })
+      .post("/polls/sharepoint_name_user/", request_data)
       .then((response) => {
-        if (response.data.finaldata) {
-          console.log(response.data.finaldata);
-          alert("Successfully borrowed.");
-          closeModal(2);
-          window.location.reload();
+        if (response.data.folder_name) {
+          console.log(response.data.folder_name);
+          alert(response.data.folder_name);
         } else if (response.data.error) {
           alert(response.data.error);
         }
@@ -810,6 +989,7 @@ function DropdownWithButton(props) {
         setLoading(false);
       });
   };
+
   const Row = ({ index, style }) => (
     <TableRow style={style}>{data_row(index, machine_data[index])}</TableRow>
   );
@@ -818,116 +998,130 @@ function DropdownWithButton(props) {
     style: PropTypes.object.isRequired,
   };
   return (
-    <div style={{ display: "flex", alignItems: "center", marginLeft: "20px" }}>
-      <Loading loading={loading} />
-      <div style={{ display: "flex", overflowY: "auto" }}>
-        <Modal
-          isOpen={popFilters[1]}
-          onRequestClose={() => closeModal(1)}
-          style={customStyles}
-          contentLabel="filter"
-        >
-          <h2>filter</h2>
-          {pop_filter_content()}
-          <Button style={{ margin: "10px", padding: "10px" }} onClick={filtersearch}>
-            Apply Filters
-          </Button>
-          <Button style={{ margin: "10px", padding: "10px" }} onClick={clearmodel}>
-            Clear
-          </Button>
-          <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
-            Close
-          </Button>
-        </Modal>
-      </div>
-      <div style={{ display: "flex", overflowY: "auto" }}>
-        <Modal
-          isOpen={popFilters[2]}
-          onRequestClose={() => closeModal(2)}
-          style={customStyles}
-          contentLabel="lend"
-        >
-          <h2>Borrow</h2>
-          {lend_content()}
-          <Button onClick={lend}>Borrow</Button>
-          <Button onClick={() => closeModal(2)}>Close</Button>
-        </Modal>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <div style={{ display: "flex", flexDirection: "row", marginBottom: "20px" }}>
-          <Button onClick={() => openModal(1)}>Filter</Button>
-          <input
-            type="text"
-            value={widthsearch}
-            onChange={(event) => setWidthsearch(event.target.value)}
-            placeholder=" SN / platform / borrower "
-            style={{ marginLeft: "30px" }}
-          />
-          <Button onClick={widthsearth_function}>search</Button>
-          {hasAzureAccess() && (
-            <div style={{ marginLeft: "auto", marginRight: "70px" }}>
-              <select
-                value={option}
-                onChange={(event) => {
-                  setOption(event.target.value);
-                }}
-                style={{ padding: "5px 25px", marginLeft: "20px", marginRight: "10px" }}
-              >
-                <option value="1">Borrow</option>
-                <option value="2">Return</option>
-                <option value="3">New Machine In</option>
-                <option value="4">Batch Modify</option>
-                <option value="5">Batch Delete</option>
-                <option value="6">Batch Scrap</option>
-              </select>
-              <Button
-                onClick={() => {
-                  setOptions(option);
-                }}
-              >
-                Submit
-              </Button>
-              <Button
-                style={{ marginLeft: "40px" }}
-                onClick={() => {
-                  history.push("/new_machine/");
-                }}
-              >
-                Add new machine
-              </Button>
-            </div>
-          )}
+    <>
+      <div style={{ display: "flex", alignItems: "center", marginLeft: "20px" }}>
+        <Loading loading={loading} />
+        <div style={{ display: "flex", overflowY: "auto" }}>
+          <Modal
+            isOpen={popFilters[1]}
+            onRequestClose={() => closeModal(1)}
+            style={customStyles}
+            // style={classes.customStyles}
+            contentLabel="filter"
+          >
+            <h2>filter</h2>
+            {pop_filter_content()}
+            <Button style={{ margin: "10px", padding: "10px" }} onClick={filtersearch}>
+              Apply Filters
+            </Button>
+            <Button style={{ margin: "10px", padding: "10px" }} onClick={clearmodel}>
+              Clear
+            </Button>
+            <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
+              Close
+            </Button>
+          </Modal>
+        </div>
+        <div style={{ display: "flex", overflowY: "auto" }}>
+          <Modal
+            isOpen={popFilters[2]}
+            onRequestClose={() => closeModal(2)}
+            style={customStyles}
+            contentLabel="lend"
+          >
+            <h2>Borrow</h2>
+            {lend_content()}
+            <Button onClick={lend}>Borrow</Button>
+            <Button onClick={() => closeModal(2)}>Close</Button>
+          </Modal>
+        </div>
+        <div style={{ display: "flex", overflowY: "auto" }}>
+          <Modal
+            isOpen={popFilters[3]}
+            onRequestClose={() => closeModal(3)}
+            style={customStyles}
+            contentLabel="add member"
+          >
+            <h2>Add member</h2>
+            {add_member_content()}
+            <Button onClick={add_member}>Add</Button>
+            <Button onClick={() => closeModal(3)}>Close</Button>
+          </Modal>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <p
-            style={{
-              marginLeft: "16px",
-              fontFamily: "Calibri, sans-serif",
-            }}
-          >
-            Current machine amount: {machine_data.length}
-          </p>
-          <p
-            style={{
-              marginLeft: "16px",
-              fontFamily: "Calibri, sans-serif",
-            }}
-          >
-            Check machine amount: {select_iur_machine.length}
-          </p>
-        </div>
-        <TableContainer>
-          <div style={{}}>
-            <Tablehead>{title_row("1")}</Tablehead>
+          <div style={{ display: "flex", flexDirection: "row", marginBottom: "20px" }}>
+            <Button onClick={() => openModal(1)}>Filter</Button>
+            <input
+              type="text"
+              value={widthsearch}
+              onChange={(event) => setWidthsearch(event.target.value)}
+              placeholder=" SN / platform / borrower "
+              style={{ marginLeft: "30px" }}
+            />
+            <Button onClick={widthsearth_function}>search</Button>
+            {hasAzureAccess() && (
+              <div style={{ marginLeft: "auto", marginRight: "70px" }}>
+                <select
+                  value={option}
+                  onChange={(event) => {
+                    setOption(event.target.value);
+                  }}
+                  style={{ padding: "5px 25px", marginLeft: "20px", marginRight: "10px" }}
+                >
+                  <option value="1">Borrow</option>
+                  <option value="2">Return</option>
+                  <option value="3">New Machine In</option>
+                  <option value="4">Batch Modify</option>
+                  <option value="5">Batch Delete</option>
+                  <option value="6">Batch Scrap</option>
+                </select>
+                <Button
+                  onClick={() => {
+                    setOptions(option);
+                  }}
+                >
+                  Submit
+                </Button>
+                <Button
+                  style={{ marginLeft: "40px" }}
+                  onClick={() => {
+                    history.push("/new_machine/");
+                  }}
+                >
+                  Add new machine
+                </Button>
+                <Button style={{ marginLeft: "40px" }} onClick={test_function}>
+                  test sharepoint
+                </Button>
+              </div>
+            )}
+            <Button onClick={excel_export_function}>Excel export</Button>
+            <Button onClick={() => openModal(3)}>Add member</Button>
           </div>
-        </TableContainer>
-        <div style={{ display: "flex", overflowY: "auto", width: "100%", marginLeft: "16px" }}>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <p
+              style={{
+                marginLeft: "12px",
+                fontFamily: "Calibri, sans-serif",
+              }}
+            >
+              Machine amount: {machine_data.length} &nbsp;&nbsp;&nbsp;
+              {hasAzureAccess() && <>Select amount: {select_iur_machine.length}</>}
+            </p>
+          </div>
+        </div>
+      </div>
+      <TableContainer>
+        <div style={{}}>
+          <Tablehead>{title_row("1")}</Tablehead>
+        </div>
+        <div style={{ display: "flex", overflowY: "auto", width: "100%", marginLeft: "15px" }}>
           <FixedSizeList height={600} itemCount={machine_data.length} itemSize={70} width={"100%"}>
             {Row}
           </FixedSizeList>
         </div>
-      </div>
-    </div>
+      </TableContainer>
+    </>
   );
 }
 DropdownWithButton.propTypes = {

@@ -2,12 +2,10 @@ import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import axios from "axios";
 import TableContainer from "@mui/material/TableContainer";
-import TableRow from "@mui/material/TableRow";
-import Tablehead from "@mui/material/TableHead";
-import TableCell from "@mui/material/TableCell";
-import Tablebody from "@mui/material/TableBody";
 import Button from "examples/Icons/Button";
 import Loading from "examples/tool_universal/loading";
+import Table from "examples/Table/table_row";
+import useStyles from "layouts/iur/table/styles/iur";
 function DropdownWithButton(iur_data) {
   useEffect(() => {
     console.log(iur_data["iur_data"]);
@@ -16,119 +14,44 @@ function DropdownWithButton(iur_data) {
   const [machine_data, set_machine_data] = useState([]);
   const [pop_filter, set_pop_filter] = useState(false);
   const [loading, setLoading] = useState(false);
-  function getCellStyle(width) {
-    return {
-      width: `${width}px`,
-      textAlign: "center",
-      fontSize: "12px",
-    };
-  }
-  const platform_style = getCellStyle(150);
-  const phase_style = getCellStyle(80);
-  const target_style = getCellStyle(80);
-  const group_style = getCellStyle(120);
-  const cycle_style = getCellStyle(80);
-  const sku_style = getCellStyle(60);
-  const sn_style = getCellStyle(150);
-  const borrower_style = getCellStyle(100);
-  const status_style = getCellStyle(80);
-  const position_style = getCellStyle(100);
-  const remark_style = getCellStyle(90);
-  const update_time_style = getCellStyle(200);
-  const table_row_style = {
-    display: "flex",
-    justifyContent: "space-between",
-    width: "100%",
-    textAlign: "center",
-  };
-  function title_row(index) {
-    return (
-      <>
-        <TableRow style={table_row_style}>
-          <TableCell key={index} style={platform_style}>
-            {"platform"}
-          </TableCell>
-          <TableCell key={index} style={phase_style}>
-            {"phase"}
-          </TableCell>
-          <TableCell key={index} style={target_style}>
-            {"target"}
-          </TableCell>
-          <TableCell key={index} style={group_style}>
-            {"group"}
-          </TableCell>
-          <TableCell key={index} style={cycle_style}>
-            {"cycle"}
-          </TableCell>
-          <TableCell key={index} style={sku_style}>
-            {"sku"}
-          </TableCell>
-          <TableCell key={index} style={sn_style}>
-            {"serial_number"}
-          </TableCell>
-          <TableCell key={index} style={borrower_style}>
-            {"borrower"}
-          </TableCell>
-          <TableCell key={index} style={status_style}>
-            {"status"}
-          </TableCell>
-          <TableCell key={index} style={position_style}>
-            {"position"}
-          </TableCell>
-          <TableCell key={index} style={remark_style}>
-            {"remark"}
-          </TableCell>
-          <TableCell key={index} style={update_time_style}>
-            {"update_time"}
-          </TableCell>
-        </TableRow>
-      </>
-    );
-  }
-  function data_row(index, data) {
+  const [user_experience, set_user_experience] = useState(0);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const classes = useStyles();
+  const title_data = [
+    { style: classes.platform_style, children: "platform" },
+    { style: classes.phase_style, children: "phase" },
+    { style: classes.target_style, children: "target" },
+    { style: classes.group_style, children: "group" },
+    { style: classes.cycle_style, children: "cycle" },
+    { style: classes.sku_style, children: "sku" },
+    { style: classes.sn_style, children: "serial_number" },
+    { style: classes.borrower_style, children: "borrower" },
+    { style: classes.status_style, children: "status" },
+    { style: classes.position_style, children: "position" },
+    { style: classes.remark_style, children: "remark" },
+    { style: classes.update_time_style, children: "update_time" },
+  ];
+  function data_row(data) {
     if (!data) {
       return null;
     }
+    const tablebody_data = [
+      { style: classes.platform_style, children: data.platform },
+      { style: classes.phase_style, children: data.phase },
+      { style: classes.target_style, children: data.target },
+      { style: classes.group_style, children: data.group },
+      { style: classes.cycle_style, children: data.cycle },
+      { style: classes.sku_style, children: data.sku },
+      { style: classes.sn_style, children: data.sn },
+      { style: classes.borrower_style, children: data.borrower },
+      { style: classes.status_style, children: data.status },
+      { style: classes.position_style, children: data.position },
+      { style: classes.remark_style, children: data.remark },
+      { style: classes.update_time_style, children: formatTimeForFrontend(data.update_time) },
+    ];
     return (
       <>
-        <TableRow style={table_row_style}>
-          <TableCell key={index} style={platform_style}>
-            {data.platform}
-          </TableCell>
-          <TableCell key={index} style={phase_style}>
-            {data.phase}
-          </TableCell>
-          <TableCell key={index} style={target_style}>
-            {data.target}
-          </TableCell>
-          <TableCell key={index} style={group_style}>
-            {data.group}
-          </TableCell>
-          <TableCell key={index} style={cycle_style}>
-            {data.cycle}
-          </TableCell>
-          <TableCell key={index} style={sku_style}>
-            {data.sku}
-          </TableCell>
-          <TableCell key={index} style={sn_style}>
-            {data.sn}
-          </TableCell>
-          <TableCell key={index} style={borrower_style}>
-            {data.borrower}
-          </TableCell>
-          <TableCell key={index} style={status_style}>
-            {data.status}
-          </TableCell>
-          <TableCell key={index} style={position_style}>
-            {data.position}
-          </TableCell>
-          <TableCell key={index} style={remark_style}>
-            {data.remark}
-          </TableCell>
-          <TableCell key={index} style={update_time_style}>
-            {formatTimeForFrontend(data.update_time)}
-          </TableCell>
-        </TableRow>
+        <Table row_style={classes.table_row_style} data={tablebody_data}></Table>
       </>
     );
   }
@@ -159,19 +82,6 @@ function DropdownWithButton(iur_data) {
     });
     return `${month} ${day}, ${year}, ${formattedTime}`;
   }
-  const button_style = {
-    padding: "5px 10px",
-    transform: "rotate(0deg)",
-    whiteSpace: "nowrap",
-    backgroundColor: "#007bff",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "14px",
-    fontWeight: "bold",
-    outline: "none",
-  };
   useEffect(() => {}, [machine_data]);
   const openModal = () => {
     set_pop_filter(true);
@@ -199,61 +109,85 @@ function DropdownWithButton(iur_data) {
 
   const new_machine_mail_model = async () => {
     setLoading(true);
-    const request_data = {
-      finaldata: machine_data,
-    };
-    try {
-      const response = await axios.post("/polls/send_mail_newplatform/", request_data, {
+    let request_data = new FormData();
+    request_data.append("finaldata", JSON.stringify(machine_data));
+    request_data.append("file", selectedFile);
+    axios
+      .post("/polls/send_mail_newplatform/", request_data, {
         timeout: 10000,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        if (response.data.finaldata) {
+          console.log(response.data.finaldata);
+          alert("successful");
+          window.location.reload();
+        } else if (response.data.error) {
+          alert(response.data.error);
+        }
+      })
+      .catch((error) => {
+        console.error("Error in Axios request:", error);
+        alert("Please contact the administrator.");
+      })
+      .finally(() => {
+        setLoading(false);
+        set_pop_filter(false);
       });
-      if (response.data.finaldata) {
-        console.log(response.data.finaldata);
-        alert("successful");
-        window.location.reload();
-      } else if (response.data.error) {
-        alert(response.data.error);
-      }
-    } catch (error) {
-      console.error("Error in Axios request:", error);
-      alert("錯誤 請聯絡管理員");
-    } finally {
-      setLoading(false);
-      set_pop_filter(false);
-    }
   };
   return (
-    <div style={{ display: "flex", alignItems: "center", marginLeft: "20px" }}>
-      <Loading loading={loading} />
-      <div style={{ display: "flex", overflowY: "auto" }}>
-        <Modal
-          isOpen={pop_filter}
-          onRequestClose={closeModal}
-          style={customStyles}
-          contentLabel="filter"
-        >
-          <p>確定新機台內容並發送郵件?</p>
-          <Button style={{ margin: "10px", padding: "10px" }} onClick={new_machine_mail_model}>
-            確定
+    <>
+      <div style={{ display: "flex", alignItems: "center", marginLeft: "20px" }}>
+        <Loading loading={loading} />
+        <div style={{ display: "flex", overflowY: "auto" }}>
+          <Modal
+            isOpen={pop_filter}
+            onRequestClose={closeModal}
+            style={customStyles}
+            contentLabel="filter"
+          >
+            <p>Confirm the content of the new machine and send an email?</p>
+            <Button style={{ margin: "10px", padding: "10px" }} onClick={new_machine_mail_model}>
+              Confirm
+            </Button>
+            <Button style={{ margin: "10px", padding: "10px" }} onClick={closeModal}>
+              Close
+            </Button>
+          </Modal>
+        </div>
+        <div>
+          <label htmlFor="file">Select file : </label>
+          <input
+            key={user_experience}
+            type="file"
+            onChange={(event) => {
+              const file = event.target.files[0];
+              setSelectedFile(file);
+            }}
+          />
+          <Button
+            className={classes.deleteButtonStyle}
+            onClick={() => {
+              setSelectedFile(null);
+              set_user_experience((prevKey) => prevKey + 1);
+            }}
+          >
+            X
           </Button>
-          <Button style={{ margin: "10px", padding: "10px" }} onClick={closeModal}>
-            取消
-          </Button>
-        </Modal>
+        </div>
       </div>
+      <TableContainer>
+        <Table row_style={classes.table_row_style} data={title_data}></Table>
+        {machine_data.map((data) => data_row(data))}
+      </TableContainer>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <Button onClick={openModal} style={{ display: "flex", width: "100px", ...button_style }}>
-          發送郵件
+        <Button onClick={openModal} className={classes.button_style}>
+          Send email
         </Button>
-        <TableContainer>
-          <div style={{}}>
-            <Tablehead>{title_row("1")}</Tablehead>
-          </div>
-          <div style={{ marginLeft: "16px" }}>
-            <Tablebody>{machine_data.map((data, index) => data_row(index, data))}</Tablebody>
-          </div>
-        </TableContainer>
       </div>
-    </div>
+    </>
   );
 }
 

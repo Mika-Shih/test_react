@@ -57,9 +57,9 @@ function CoverLayout({ color, header, title, description, image, top, button, on
             <SuiBox pt={3} px={3}>
               {!header ? (
                 <>
-                  <SuiBox mb={1}>
+                  <SuiBox mb={1} display="flex" alignItems="center">
                     <SuiTypography
-                      variant="h3"
+                      variant="h4"
                       fontWeight="bold"
                       textColor={color}
                       textGradient

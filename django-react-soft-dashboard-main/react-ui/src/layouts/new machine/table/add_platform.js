@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import TableContainer from "@mui/material/TableContainer";
-import Tablebody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Loading_option_4to1 from "examples/tool_universal/loading_option_4to1";
@@ -10,6 +9,9 @@ import Button from "examples/Icons/Button";
 import PropTypes from "prop-types";
 import Loading from "examples/tool_universal/loading";
 import Loading_option from "examples/tool_universal/loading_option";
+import Table from "examples/Table/table_row";
+// import useStyles from "layouts/new machine/table/styles/new_machine_style";
+import useStyles from "layouts/iur/table/styles/iur";
 const backendServer = process.env.REACT_APP_BACKEND_SERVER;
 const frontendServer = process.env.REACT_APP_FRONTEND_SERVER;
 function InputWithAddAndClearButton(props) {
@@ -28,6 +30,7 @@ function InputWithAddAndClearButton(props) {
     cycle: [],
   });
   const [machine_data, set_machine_data] = useState([]);
+  const classes = useStyles();
   useEffect(() => {
     const newMachineData = props.serial_number
       .filter((value) => value !== "")
@@ -64,103 +67,24 @@ function InputWithAddAndClearButton(props) {
   }, []);
   const [user_experience, set_user_experience] = useState(0);
   const [selectedFile, setSelectedFile] = useState(null);
-  function getCellStyle(width) {
-    return {
-      maxWidth: `${width}px`,
-      minWidth: `${width}px`,
-      textAlign: "center",
-      fontSize: "12px",
-    };
-  }
-  const checkbox_style = getCellStyle(10);
-  const platform_style = getCellStyle(150);
-  const phase_style = getCellStyle(160);
-  const target_style = getCellStyle(80);
-  const group_style = getCellStyle(120);
-  const cycle_style = getCellStyle(80);
-  const sku_style = getCellStyle(60);
-  const sn_style = getCellStyle(150);
-  const position_style = getCellStyle(100);
-  const remark_style = getCellStyle(90);
-  const table_row_style = {
-    display: "flex",
-    justifyContent: "space-between",
-    width: "100%",
-    textAlign: "center",
-  };
-  function title_row(index, request = false) {
-    if (request) {
-      return (
-        <>
-          <TableRow style={table_row_style}>
-            <TableCell key={index} style={platform_style}>
-              {"platform"}
-            </TableCell>
-            <TableCell key={index} style={phase_style}>
-              {"phase"}
-            </TableCell>
-            <TableCell key={index} style={target_style}>
-              {"target"}
-            </TableCell>
-            <TableCell key={index} style={group_style}>
-              {"group"}
-            </TableCell>
-            <TableCell key={index} style={cycle_style}>
-              {"cycle"}
-            </TableCell>
-            <TableCell key={index} style={sku_style}>
-              {"sku"}
-            </TableCell>
-            <TableCell key={index} style={sn_style}>
-              {"serial_number"}
-            </TableCell>
-            <TableCell key={index} style={position_style}>
-              {"position"}
-            </TableCell>
-            <TableCell key={index} style={remark_style}>
-              {"remark"}
-            </TableCell>
-          </TableRow>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <TableRow style={table_row_style}>
-            <TableCell key={index} style={checkbox_style}>
-              {"/"}
-            </TableCell>
-            <TableCell key={index} style={platform_style}>
-              {"platform"}
-            </TableCell>
-            <TableCell key={index} style={phase_style}>
-              {"phase"}
-            </TableCell>
-            <TableCell key={index} style={target_style}>
-              {"target"}
-            </TableCell>
-            <TableCell key={index} style={group_style}>
-              {"group"}
-            </TableCell>
-            <TableCell key={index} style={cycle_style}>
-              {"cycle"}
-            </TableCell>
-            <TableCell key={index} style={sku_style}>
-              {"sku"}
-            </TableCell>
-            <TableCell key={index} style={sn_style}>
-              {"serial_number"}
-            </TableCell>
-            <TableCell key={index} style={position_style}>
-              {"position"}
-            </TableCell>
-            <TableCell key={index} style={remark_style}>
-              {"remark"}
-            </TableCell>
-          </TableRow>
-        </>
-      );
-    }
+  function title_row(request = false) {
+    const title_data = [
+      ...(!request ? [{ style: classes.checkbox_style, children: "/" }] : []),
+      { style: classes.platform_style, children: "platform" },
+      { style: classes.phase_style, children: "phase" },
+      { style: classes.target_style, children: "target" },
+      { style: classes.group_style, children: "group" },
+      { style: classes.cycle_style, children: "cycle" },
+      { style: classes.sku_style, children: "sku" },
+      { style: classes.sn_style, children: "serial_number" },
+      { style: classes.position_style, children: "position" },
+      { style: classes.remark_style, children: "remark" },
+    ];
+    return (
+      <>
+        <Table row_style={classes.table_row_style} data={title_data}></Table>
+      </>
+    );
   }
   function data_row(index, data) {
     if (!data) {
@@ -168,8 +92,8 @@ function InputWithAddAndClearButton(props) {
     }
     return (
       <>
-        <TableRow style={table_row_style}>
-          <TableCell key={index} style={checkbox_style}>
+        <TableRow className={classes.table_row_style}>
+          <TableCell key={index} className={classes.checkbox_style}>
             <input
               type="checkbox"
               checked={ischeckbox[`${index}`] || false}
@@ -187,7 +111,7 @@ function InputWithAddAndClearButton(props) {
           </TableCell>
           <TableCell
             key={index}
-            style={platform_style}
+            className={classes.platform_style}
             onClick={() => handleDoubleClick(index, "platform")}
             ref={inputRef}
             onBlur={() => handleBlur(index, "platform")}
@@ -216,7 +140,7 @@ function InputWithAddAndClearButton(props) {
               machine_data[index].platform
             )}
           </TableCell>
-          <TableCell key={index} style={phase_style}>
+          <TableCell key={index} className={classes.phase_style}>
             <select
               value={machine_data[index].phase}
               onChange={(e) => {
@@ -226,7 +150,7 @@ function InputWithAddAndClearButton(props) {
                   return newData;
                 });
               }}
-              style={{ padding: "5px 5px", marginLeft: "20px", marginRight: "10px" }}
+              style={{ padding: "5px 1px", marginRight: "10px" }}
             >
               {options.map((option) => (
                 <option key={option} value={option}>
@@ -235,16 +159,20 @@ function InputWithAddAndClearButton(props) {
               ))}
             </select>
           </TableCell>
-          <TableCell key={index} style={target_style}>
+          <TableCell key={index} className={classes.target_style}>
             {data.target}
           </TableCell>
-          <TableCell key={index} style={group_style}>
+          <TableCell key={index} className={classes.group_style}>
             {data.group}
           </TableCell>
-          <TableCell key={index} style={cycle_style}>
+          <TableCell key={index} className={classes.cycle_style}>
             {data.cycle}
           </TableCell>
-          <TableCell key={index} style={sku_style} onClick={() => handleDoubleClick(index, "sku")}>
+          <TableCell
+            key={index}
+            className={classes.sku_style}
+            onClick={() => handleDoubleClick(index, "sku")}
+          >
             {isEditing[`${index}_sku`] ? (
               <input
                 ref={inputRef}
@@ -265,12 +193,12 @@ function InputWithAddAndClearButton(props) {
               machine_data[index].sku
             )}
           </TableCell>
-          <TableCell key={index} style={sn_style}>
+          <TableCell key={index} className={classes.sn_style}>
             {machine_data[index].sn}
           </TableCell>
           <TableCell
             key={index}
-            style={position_style}
+            className={classes.position_style}
             onClick={() => handleDoubleClick(index, "position")}
           >
             {isEditing[`${index}_position`] ? (
@@ -295,7 +223,7 @@ function InputWithAddAndClearButton(props) {
           </TableCell>
           <TableCell
             key={index}
-            style={remark_style}
+            className={classes.remark_style}
             onClick={() => handleDoubleClick(index, "remark")}
           >
             {isEditing[`${index}_remark`] ? (
@@ -515,10 +443,8 @@ function InputWithAddAndClearButton(props) {
     return (
       <>
         <TableContainer>
-          <div style={{ overflowY: "auto", maxHeight: "600px", marginLeft: "16px" }}>
-            <Tablebody>{title_row("1", true)}</Tablebody>
-            <Tablebody>{machine_data.map((data, index) => check_data_row(index, data))}</Tablebody>
-          </div>
+          {title_row(true)}
+          {machine_data.map((data, index) => check_data_row(index, data))}
         </TableContainer>
       </>
     );
@@ -527,37 +453,20 @@ function InputWithAddAndClearButton(props) {
     if (!data) {
       return null;
     }
+    const tablebody_data = [
+      { style: classes.platform_style, children: data.platform },
+      { style: classes.phase_style, children: data.phase },
+      { style: classes.target_style, children: data.target },
+      { style: classes.group_style, children: data.group },
+      { style: classes.cycle_style, children: data.cycle },
+      { style: classes.sku_style, children: data.sku },
+      { style: classes.sn_style, children: data.sn },
+      { style: classes.position_style, children: data.position },
+      { style: classes.remark_style, children: data.remark },
+    ];
     return (
       <>
-        <TableRow style={table_row_style}>
-          <TableCell key={index} style={platform_style}>
-            {data.platform}
-          </TableCell>
-          <TableCell key={index} style={phase_style}>
-            {data.phase}
-          </TableCell>
-          <TableCell key={index} style={target_style}>
-            {data.target}
-          </TableCell>
-          <TableCell key={index} style={group_style}>
-            {data.group}
-          </TableCell>
-          <TableCell key={index} style={cycle_style}>
-            {data.cycle}
-          </TableCell>
-          <TableCell key={index} style={sku_style}>
-            {data.sku}
-          </TableCell>
-          <TableCell key={index} style={sn_style}>
-            {data.sn}
-          </TableCell>
-          <TableCell key={index} style={position_style}>
-            {data.position}
-          </TableCell>
-          <TableCell key={index} style={remark_style}>
-            {data.remark}
-          </TableCell>
-        </TableRow>
+        <Table row_style={classes.table_row_style} data={tablebody_data}></Table>
       </>
     );
   }
@@ -567,87 +476,86 @@ function InputWithAddAndClearButton(props) {
   const closeModal = (modalNumber) => {
     setPopFilters((prev) => ({ ...prev, [modalNumber]: false }));
   };
-  const test = () => {
-    // console.log(machine_data);
-  };
   return (
-    <div style={{ marginLeft: "16px" }}>
-      <Loading loading={loading} />
-      <div style={{ display: "flex", overflowY: "auto" }}>
-        <Modal
-          isOpen={popFilters[1]}
-          onRequestClose={() => closeModal(1)}
-          style={customStyles}
-          contentLabel="filter"
-        >
-          <h2>新增platform機台</h2>
-          {pop_filter_content()}
-          <Button style={{ margin: "10px", padding: "10px" }} onClick={addplatformmodel}>
-            新增機台
+    <>
+      <div style={{ marginLeft: "16px" }}>
+        <Loading loading={loading} />
+        <div style={{ display: "flex", overflowY: "auto" }}>
+          <Modal
+            isOpen={popFilters[1]}
+            onRequestClose={() => closeModal(1)}
+            style={customStyles}
+            contentLabel="filter"
+          >
+            <h2>Add new platform</h2>
+            {pop_filter_content()}
+            <Button style={{ margin: "10px", padding: "10px" }} onClick={addplatformmodel}>
+              Add machine
+            </Button>
+            <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
+              Close
+            </Button>
+          </Modal>
+        </div>
+        <div style={{ display: "flex", overflowY: "auto" }}>
+          <Modal
+            isOpen={popFilters[2]}
+            onRequestClose={() => closeModal(2)}
+            style={check_Styles}
+            contentLabel="filter"
+          >
+            <p>Confirm adding the following machines?</p>
+            {check_platform_change()}
+            <Button style={{ margin: "10px", padding: "10px" }} onClick={add_new_platform}>
+              Add machine
+            </Button>
+            <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(2)}>
+              Close
+            </Button>
+          </Modal>
+        </div>
+        <div key={user_experience}>
+          <Button onClick={checkbox_function} style={{ marginLeft: "16px" }}>
+            Apply downwards from the checkbox
           </Button>
-          <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
-            關閉
+          <Button onClick={() => openModal(1)} style={{ marginLeft: "16px" }}>
+            Add new platform
           </Button>
-        </Modal>
-      </div>
-      <div style={{ display: "flex", overflowY: "auto" }}>
-        <Modal
-          isOpen={popFilters[2]}
-          onRequestClose={() => closeModal(2)}
-          style={check_Styles}
-          contentLabel="filter"
-        >
-          <p>確定新增以下機台?</p>
-          {check_platform_change()}
-          <Button style={{ margin: "10px", padding: "10px" }} onClick={add_new_platform}>
-            新增機台
+          <Button onClick={() => openModal(2)} style={{ marginLeft: "16px" }}>
+            Add new machine
           </Button>
-          <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(2)}>
-            關閉
+        </div>
+        <div style={{ marginLeft: "16px" }}>
+          <label htmlFor="file">Select file：</label>
+          <input
+            key={user_experience}
+            type="file"
+            onChange={(event) => {
+              const file = event.target.files[0];
+              setSelectedFile(file);
+            }}
+          />
+          <button
+            style={deleteButtonStyle}
+            onClick={() => {
+              setSelectedFile(null);
+              set_user_experience((prevKey) => prevKey + 1);
+            }}
+          >
+            X
+          </button>
+        </div>
+        <div>
+          <Button onClick={() => openModal(2)} style={{ marginLeft: "16px" }}>
+            Add new machine
           </Button>
-        </Modal>
+        </div>
       </div>
-      <div key={user_experience}>
-        <Button onClick={checkbox_function} style={{ marginLeft: "16px" }}>
-          以勾選處向下套用
-        </Button>
-        <Button onClick={() => openModal(1)} style={{ marginLeft: "16px" }}>
-          新增platform機台
-        </Button>
-        <TableContainer>
-          <div style={{ marginLeft: "16px" }}>
-            <Tablebody>{title_row("1")}</Tablebody>
-            <Tablebody>{machine_data.map((data, index) => data_row(index, data))}</Tablebody>
-          </div>
-        </TableContainer>
-      </div>
-      <div>
-        <label htmlFor="file">選擇文件：</label>
-        <input
-          key={user_experience}
-          type="file"
-          onChange={(event) => {
-            const file = event.target.files[0];
-            setSelectedFile(file);
-          }}
-        />
-        <button
-          style={deleteButtonStyle}
-          onClick={() => {
-            setSelectedFile(null);
-            set_user_experience((prevKey) => prevKey + 1);
-          }}
-        >
-          X
-        </button>
-      </div>
-      <div>
-        <Button onClick={test()}>test</Button>
-        <Button onClick={() => openModal(2)} style={{ marginLeft: "16px" }}>
-          新增機台
-        </Button>
-      </div>
-    </div>
+      <TableContainer>
+        {title_row()}
+        {machine_data.map((data, index) => data_row(index, data))}
+      </TableContainer>
+    </>
   );
 }
 const deleteButtonStyle = {

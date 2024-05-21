@@ -5,7 +5,7 @@ import { css } from "@emotion/react";
 const height = "2.2em";
 const ovalButtonStyle = css`
   position: relative;
-  background-color: #d6e1d7;
+  background-color: #bbdefb;
   border: none;
   color: black;
   text-align: center;
@@ -32,7 +32,7 @@ const ovalButtonStyle = css`
     width: ${height};
     height: 100%;
     border-radius: 100%;
-    background-color: #d6e1d7;
+    background-color: #bbdefb;
   }
 
   &::before {

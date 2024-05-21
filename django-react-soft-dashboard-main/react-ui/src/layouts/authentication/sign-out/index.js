@@ -27,7 +27,8 @@ function SignOut() {
     Cookies.remove("token");
     await setUser(null);
     localStorage.removeItem("user");
-    return history.push("/authentication/sign-in");
+    history.push("/authentication/sign-in");
+    window.location.reload();
   };
 
   useEffect(() => {

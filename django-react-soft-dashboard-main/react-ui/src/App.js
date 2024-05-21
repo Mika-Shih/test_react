@@ -162,8 +162,8 @@ export default function App() {
           <>
             {/* <Sidenav routes={routes} /> */}
             <DashboardNavbar routes={routes} />
-            <Configurator />
-            {configsButton}
+            {/* <Configurator /> */}
+            {/* {configsButton} */}
           </>
         )}
         {layout === "vr" && <Configurator />}

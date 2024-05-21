@@ -9,7 +9,7 @@ function InputWithAddAndClearButton(props) {
   return (
     <div style={{ marginLeft: "16px" }}>
       <div>
-        <p>新增 serial number</p>
+        <p>Add serial number</p>
         <Inputbox inputList={inputList} setInputList={setInputList} />
       </div>
     </div>

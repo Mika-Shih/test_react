@@ -34,13 +34,16 @@ import { useSoftUIController } from "context";
 import Menu from "@mui/material/Menu";
 import * as React from "react";
 import SuiPagination from "components/SuiPagination";
-
+import { NavLink } from "react-router-dom";
+import { useEffect } from "react";
 function SidenavCollapse({ icon, name, children, active, noCollapse, open, ...rest }) {
   const [controller] = useSoftUIController();
   const { miniSidenav, transparentSidenav, sidenavColor } = controller;
   // console.log(miniSidenav, transparentSidenav, sidenavColor);  // false, true, "info"
   //console.log(children, open, typeof icon); // false, false, object
-  console.log(name, children, typeof icon);
+  // console.log(name, children, typeof icon);
+  useEffect(() => {}, [icon]);
+  //
   const classes = styles({
     active,
     noCollapse,
@@ -59,7 +62,7 @@ function SidenavCollapse({ icon, name, children, active, noCollapse, open, ...re
   const handlePopoverClose = () => {
     setAnchorEl(null);
   };
-  console.log(anchorEl);
+  // console.log(anchorEl);
   const openpop = Boolean(anchorEl);
 
   return (
@@ -99,8 +102,17 @@ function SidenavCollapse({ icon, name, children, active, noCollapse, open, ...re
           onClose={handlePopoverClose}
           // disableRestoreFocus
         >
-          {children.map((child, index) => (
-            <p key={index}>{child.name}</p>
+          {children.map((child) => (
+            // <p key={index}>{child.name}</p>
+            <NavLink to={child.route} key={child.key} className={classes.navbar_row}>
+              {/* <SidenavCollapse
+              name={name}
+              icon={icon}
+              active={key === route}
+              noCollapse={noCollapse}
+            /> */}
+              <p>{child.name}</p>
+            </NavLink>
           ))}
         </Menu>
       )}

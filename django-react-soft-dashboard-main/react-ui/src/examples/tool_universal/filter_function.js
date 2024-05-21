@@ -5,8 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
 import MenuList from "@mui/material/MenuList";
-import axios from "axios";
-const backendServer = process.env.REACT_APP_BACKEND_SERVER;
+import TOOLAPI from "api/tool";
 function filter({
   api,
   item_name = [],
@@ -24,7 +23,7 @@ function filter({
     try {
       let optionsDictionary = {};
       if (request == null) {
-        const response = await axios.get(`${backendServer}${api}/`);
+        const response = await TOOLAPI.filter_get(api);
         for (const name of itemNames) {
           if (response.data[name] != null) {
             const response_item = response.data[name].filter(
@@ -35,7 +34,7 @@ function filter({
         }
         setOptions(optionsDictionary);
       } else {
-        const response = await axios.post(`${backendServer}${api}/`, request);
+        const response = await TOOLAPI.filter_post(api, request);
         for (const name of itemNames) {
           if (response.data[name] != null) {
             const response_item = response.data[name].filter(

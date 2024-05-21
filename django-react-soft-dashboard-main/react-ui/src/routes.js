@@ -36,7 +36,7 @@ Coded by www.creative-tim.com
 */
 
 // Soft UI Dashboard React layouts
-// import Dashboard from "layouts/dashboard";
+import Dashboard from "layouts/dashboard";
 import Cat from "layouts/cat";
 import Tables from "layouts/tables";
 import test_table from "layouts/test_table";
@@ -45,12 +45,12 @@ import token from "layouts/token";
 import Iur from "layouts/iur";
 import Iur_new_machine from "layouts/new machine";
 import Iur_machine_record from "layouts/machine record";
-// import Billing from "layouts/billing";
-// import VirtualReality from "layouts/virtual-reality";
-// import RTL from "layouts/rtl";
+import Billing from "layouts/billing";
+import VirtualReality from "layouts/virtual-reality";
+import RTL from "layouts/rtl";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
-import SignUp from "layouts/authentication/sign-up";
+// import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
 
 //pulsar
@@ -61,12 +61,12 @@ import add_version from "layouts/pulsar/add_version";
 // Soft UI Dashboard React icons
 import Shop from "examples/Icons/Shop";
 import Office from "examples/Icons/Office";
-// import Settings from "examples/Icons/Settings";
+import Settings from "examples/Icons/Settings";
 import Document from "examples/Icons/Document";
 import SpaceShip from "examples/Icons/SpaceShip";
 import CustomerSupport from "examples/Icons/CustomerSupport";
-// import CreditCard from "examples/Icons/CreditCard";
-// import Cube from "examples/Icons/Cube";
+import CreditCard from "examples/Icons/CreditCard";
+import Cube from "examples/Icons/Cube";
 
 const routes = [
   {
@@ -103,16 +103,16 @@ const routes = [
     noCollapse: true,
     protected: true,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Dashboard",
-  //   key: "dashboard",
-  //   route: "/dashboard",
-  //   icon: <Shop size="12px" />,
-  //   component: Dashboard,
-  //   noCollapse: true,
-  //   protected: true,
-  // },
+  {
+    type: "collapse",
+    name: "Dashboard",
+    key: "dashboard",
+    route: "/dashboard",
+    icon: <Shop size="12px" />,
+    component: Dashboard,
+    noCollapse: true,
+    protected: true,
+  },
   {
     type: "collapse",
     name: "Pulsar",
@@ -189,56 +189,56 @@ const routes = [
     children: [
       {
         type: "item",
-        name: "Child Item 1",
-        key: "child_item_1",
-        route: "/test_table",
+        name: "fake_iur",
+        key: "fake_iur",
+        route: "/iur",
         icon: <Office size="12px" />,
-        component: test_table,
+        component: Iur,
         noCollapse: true,
         protected: true,
       },
       {
         type: "item",
-        name: "Child Item 2",
-        key: "child_item_2",
-        route: "/test_table",
+        name: "fake_cat",
+        key: "fake_cat",
+        route: "/cat",
         icon: <Office size="12px" />,
-        component: test_table,
+        component: Cat,
         noCollapse: true,
         protected: true,
       },
     ],
   },
-  // {
-  //   type: "collapse",
-  //   name: "Billing",
-  //   key: "billing",
-  //   route: "/billing",
-  //   icon: <CreditCard size="12px" />,
-  //   component: Billing,
-  //   noCollapse: true,
-  //   protected: true,
-  // },
-  // {
-  //   type: "collapse",
-  //   name: "Virtual Reality",
-  //   key: "virtual-reality",
-  //   route: "/virtual-reality",
-  //   icon: <Cube size="12px" />,
-  //   component: VirtualReality,
-  //   noCollapse: true,
-  //   protected: true,
-  // },
-  // {
-  //   type: "collapse",
-  //   name: "RTL",
-  //   key: "rtl",
-  //   route: "/rtl",
-  //   icon: <Settings size="12px" />,
-  //   component: RTL,
-  //   noCollapse: true,
-  //   protected: true,
-  // },
+  {
+    type: "collapse",
+    name: "Billing",
+    key: "billing",
+    route: "/billing",
+    icon: <CreditCard size="12px" />,
+    component: Billing,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Virtual Reality",
+    key: "virtual-reality",
+    route: "/virtual-reality",
+    icon: <Cube size="12px" />,
+    component: VirtualReality,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "RTL",
+    key: "rtl",
+    route: "/rtl",
+    icon: <Settings size="12px" />,
+    component: RTL,
+    noCollapse: true,
+    protected: true,
+  },
   { type: "title", title: "Account Pages", key: "account-pages" },
   {
     type: "collapse",
@@ -259,15 +259,15 @@ const routes = [
     component: SignIn,
     noCollapse: true,
   },
-  {
-    type: "none",
-    name: "Sign Up",
-    key: "sign-up",
-    route: "/authentication/sign-up",
-    icon: <SpaceShip size="12px" />,
-    component: SignUp,
-    noCollapse: true,
-  },
+  // {
+  //   type: "none",
+  //   name: "Sign Up",
+  //   key: "sign-up",
+  //   route: "/authentication/sign-up",
+  //   icon: <SpaceShip size="12px" />,
+  //   component: SignUp,
+  //   noCollapse: true,
+  // },
   {
     type: "collapse",
     name: "Logout",

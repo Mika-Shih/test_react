@@ -105,7 +105,7 @@ function SignIn() {
     }
     setButtonText("Signing in");
     try {
-      let email = "guest";
+      let email = "guest@none.com";
       let password = "123456789";
       let response = await AuthApi.Login({
         email,
@@ -131,7 +131,7 @@ function SignIn() {
     user = JSON.stringify(user);
     setUser(user);
     localStorage.setItem("user", user);
-    Cookies.set("token", response.data.token, { expires: new Date(Date.now() + 600000) });
+    Cookies.set("token", response.data.token, { expires: new Date(Date.now() + 12 * 60 * 60000) });
     return history.push("/iur");
   };
 

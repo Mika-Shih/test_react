@@ -14,7 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import { useState, useEffect } from "react";
-// import axios from "axios";
+import IURAPI from "api/iur";
 // react-router components
 import { useLocation } from "react-router-dom";
 
@@ -43,8 +43,8 @@ import { hasAzureAccess } from "../../../auth-context/auth.context";
 import { useSoftUIController } from "context";
 
 // Images
-import team2 from "assets/images/team-2.jpg";
-import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
+// import team2 from "assets/images/team-2.jpg";
+// import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 
 //
 import Link from "@mui/material/Link";
@@ -54,7 +54,6 @@ import SidenavCollapse from "examples/Navbars/DashboardNavbar/route/SidenavColla
 import SuiTypography from "components/SuiTypography";
 import { NavLink } from "react-router-dom";
 
-// const backendServer = process.env.REACT_APP_BACKEND_SERVER;
 function DashboardNavbar({ routes, absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useSoftUIController();
@@ -62,22 +61,10 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
   const [openMenu, setOpenMenu] = useState(false);
   const classes = styles({ transparentNavbar, absolute, light, isMini });
   const route = useLocation().pathname.split("/").slice(1);
-  // const [machine_arrive_mail_hint, set_machine_arrive_mail_hint] = useState([]);
-  //
-  console.log(routes, route);
-  //
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get(`${backendServer}polls/hint_machine_arrive_mail/`);
-  //       const formattedOptions = response.data["record_count"];
-  //       set_machine_arrive_mail_hint(formattedOptions);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
+  const [machine_arrive_mail_hint, set_machine_arrive_mail_hint] = useState([]);
+
+  // console.log(routes, route);
+  useEffect(() => {}, [route]);
   useEffect(() => {
     // Setting the navbar type
     if (fixedNavbar) {
@@ -126,7 +113,7 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
       onClose={handleCloseMenu}
       style={{ marginTop: "1rem" }}
     >
-      <NotificationItem
+      {/* <NotificationItem
         image={<img src={team2} alt="person" />}
         title={["New message", "from Laur"]}
         date="13 minutes ago"
@@ -148,7 +135,7 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
         title={["", "Payment successfully completed"]}
         date="2 days"
         onClick={handleCloseMenu}
-      />
+      /> */}
       <NotificationItem
         color="secondary"
         image={
@@ -156,7 +143,7 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
             payment
           </Icon>
         }
-        // title={["尚有 " + machine_arrive_mail_hint + " 未寄出通知信"]}
+        title={["Still have " + machine_arrive_mail_hint + " notification email not sent."]}
         date="2 days"
         onClick={handleCloseMenu}
       />
@@ -167,7 +154,7 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
     routes &&
     routes.map(({ type, name, icon, title, children, noCollapse, key, route, href }) => {
       let returnValue;
-      console.log(type, title);
+      // console.log(type, title);
       if (type === "collapse") {
         returnValue = href ? (
           <Link
@@ -214,7 +201,7 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
       } else if (type === "divider") {
         returnValue = <Divider key={key} />;
       }
-      console.log(href, key);
+      // console.log(href, key);
       return returnValue;
     });
 
@@ -224,58 +211,71 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
       color="inherit"
       className={classes.navbar}
     >
-      <List style={{ display: "flex", flexDirection: "row" }}>{renderRoutes}</List>
+      {/* <List style={{ display: "flex", flexDirection: "row" }}>{renderRoutes}</List> */}
       <Toolbar className={classes.navbar_container}>
         <SuiBox customClass={classes.navbar_row} color="inherit" mb={{ xs: 1, md: 0 }}>
           {/* <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} /> */}
-          {/* <List style={{ display: "flex", flexDirection: "row" }}>{renderRoutes}</List> */}
-        </SuiBox>
-        {isMini ? null : (
-          <SuiBox customClass={classes.navbar_row}>
-            {/* <SuiBox pr={1}>
+          <List style={{ display: "flex", flexDirection: "row" }}>{renderRoutes}</List>
+          {isMini ? null : (
+            <SuiBox customClass={classes.navbar_row}>
+              {/* <SuiBox pr={1}>
               <SuiInput
                 placeholder="Type here..."
                 withIcon={{ icon: "search", direction: "left" }}
                 customClass={classes.navbar_input}
               />
             </SuiBox> */}
-            <SuiBox
-              color={light ? "white" : "inherit"}
-              customClass={classes.navbar_section_desktop}
-            >
-              <IconButton
-                size="small"
-                color="inherit"
-                className={classes.navbar_mobile_menu}
-                onClick={handleMiniSidenav}
+              <SuiBox
+                color={light ? "white" : "inherit"}
+                customClass={classes.navbar_section_desktop}
               >
-                <Icon>{miniSidenav ? "menu_open" : "menu"}</Icon>
-              </IconButton>
-              {/* <IconButton
+                <IconButton
+                  size="small"
+                  color="inherit"
+                  className={classes.navbar_mobile_menu}
+                  onClick={handleMiniSidenav}
+                >
+                  <Icon>{miniSidenav ? "menu_open" : "menu"}</Icon>
+                </IconButton>
+                {/* <IconButton
                 color="inherit"
                 className={classes.navbar_icon_button}
                 onClick={handleConfiguratorOpen}
               >
                 <Icon>settings</Icon>
               </IconButton> */}
-              {hasAzureAccess() && (
-                <>
-                  <IconButton
-                    color="inherit"
-                    className={classes.navbar_icon_button}
-                    aria-controls="notification-menu"
-                    aria-haspopup="true"
-                    variant="contained"
-                    onClick={handleOpenMenu}
-                  >
-                    <Icon>notifications</Icon>
-                  </IconButton>
-                  {renderMenu()}
-                </>
-              )}
+                {hasAzureAccess() &&
+                  (useEffect(() => {
+                    const fetchData = async () => {
+                      try {
+                        const response = await IURAPI.hint_machine_mail();
+                        const formattedOptions = response.data["record_count"];
+                        set_machine_arrive_mail_hint(formattedOptions);
+                      } catch (error) {
+                        console.log(error);
+                      }
+                    };
+                    fetchData();
+                  }, []),
+                  (
+                    <>
+                      <IconButton
+                        color="inherit"
+                        className={classes.navbar_icon_button}
+                        aria-controls="notification-menu"
+                        aria-haspopup="true"
+                        variant="contained"
+                        onClick={handleOpenMenu}
+                      >
+                        <Icon>notifications</Icon>
+                      </IconButton>
+                      {renderMenu()}
+                    </>
+                  ))}
+              </SuiBox>
             </SuiBox>
-          </SuiBox>
-        )}
+          )}
+        </SuiBox>
       </Toolbar>
     </AppBar>
   );
