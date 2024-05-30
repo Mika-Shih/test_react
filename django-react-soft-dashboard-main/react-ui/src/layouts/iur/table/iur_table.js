@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import Modal from "react-modal";
-import axios from "axios";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import Tablehead from "@mui/material/TableHead";
@@ -21,6 +20,7 @@ import { useHistory } from "react-router-dom";
 import { useAuth, hasAzureAccess } from "../../../auth-context/auth.context";
 import useStyles from "layouts/iur/table/styles/iur";
 import IURAPI from "api/iur";
+import FolderChoose from "examples/tool_universal/folder_choose";
 function DropdownWithButton(props) {
   const classes = useStyles();
   const { user } = useAuth();
@@ -966,30 +966,6 @@ function DropdownWithButton(props) {
     alert("successful download");
     setLoading(false);
   };
-  const test_function = async () => {
-    setLoading(true);
-    const request_data = {
-      folder_choose: ["test_folder_Bill", "test.1"],
-    };
-    axios
-      .post("/polls/sharepoint_name_user/", request_data)
-      .then((response) => {
-        if (response.data.folder_name) {
-          console.log(response.data.folder_name);
-          alert(response.data.folder_name);
-        } else if (response.data.error) {
-          alert(response.data.error);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("Please contact the administrator.");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
   const Row = ({ index, style }) => (
     <TableRow style={style}>{data_row(index, machine_data[index])}</TableRow>
   );
@@ -1090,9 +1066,7 @@ function DropdownWithButton(props) {
                 >
                   Add new machine
                 </Button>
-                <Button style={{ marginLeft: "40px" }} onClick={test_function}>
-                  test sharepoint
-                </Button>
+                <FolderChoose />
               </div>
             )}
             <Button onClick={excel_export_function}>Excel export</Button>

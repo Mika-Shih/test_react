@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
-import axios from "axios";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
@@ -12,7 +11,7 @@ import Loading_option from "examples/tool_universal/loading_option";
 import Loading from "examples/tool_universal/loading";
 import PropTypes from "prop-types";
 import { hasAzureAccess } from "auth-context/auth.context";
-// const frontendServer = process.env.REACT_APP_FRONTEND_SERVER;
+import DLAAPI from "api/deliverable";
 function DropdownWithButton() {
   const [select_device_tool, set_select_device_tool] = useState([]);
   useEffect(() => {
@@ -20,7 +19,6 @@ function DropdownWithButton() {
     get_version_report();
     setLoading(false);
   }, []);
-  const backendServer = process.env.REACT_APP_BACKEND_SERVER;
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [device_tool_data, set_device_tool_data] = useState([]);
@@ -158,22 +156,18 @@ function DropdownWithButton() {
       );
     }
   }
-  const get_version_report = () => {
+  const get_version_report = async () => {
     set_select_device_tool([]);
-    const request_data = {
+    let response = await DLAAPI.select_version({
       shortname: "",
       longname: "",
       subdevice: "",
-    };
-    axios
-      .post(`${backendServer}pulsar/select_version/`, request_data, { timeout: 10000 })
-      .then((response) => {
-        if (response.data) {
-          set_device_tool_data(response.data.finaldata);
-        } else if (response.data.error) {
-          alert(response.data.error);
-        }
-      });
+    });
+    if (response.data) {
+      set_device_tool_data(response.data.finaldata);
+    } else if (response.data.error) {
+      alert(response.data.error);
+    }
   };
   const handleCheckboxChange = (data) => {
     const updatedSelect_device_tool = [...select_device_tool];
@@ -675,23 +669,27 @@ function DropdownWithButton() {
       subDevice: [],
     });
   };
-  const filtersearch = () => {
-    const request_data = {
-      shortname: filterData.shortName,
-      longname: filterData.longName,
-      subdevice: filterData.subDevice,
-    };
-    axios
-      .post(`${backendServer}pulsar/select_version/`, request_data, { timeout: 10000 })
-      .then((response) => {
-        if (response.data.finaldata) {
-          set_device_tool_data(response.data.finaldata);
-        } else if (response.data.error) {
-          alert(response.data.error);
-        }
+  const filtersearch = async () => {
+    setLoading(true);
+    try {
+      let response = await DLAAPI.select_version({
+        shortname: filterData.shortName,
+        longname: filterData.longName,
+        subdevice: filterData.subDevice,
       });
-    set_select_device_tool([]);
-    closeModal(1);
+      if (response.data.finaldata) {
+        set_device_tool_data(response.data.finaldata);
+        set_select_device_tool([]);
+      } else if (response.data.error) {
+        alert(response.data.error);
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Please contact the administrator.");
+    } finally {
+      closeModal(1);
+      setLoading(false);
+    }
   };
   const addversion = async () => {
     setLoading(true);
@@ -712,12 +710,8 @@ function DropdownWithButton() {
     request_data.append("detail_version", JSON.stringify(versionData.detail_version));
     request_data.append("file", selectedFile);
     try {
-      const response = await axios.post(`${backendServer}pulsar/create_version/`, request_data, {
-        timeout: 10000,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      console.log(request_data);
+      let response = await DLAAPI.create_version(request_data);
       if (response.data.finaldata) {
         alert(response.data.finaldata);
         window.location.reload(true);
@@ -725,34 +719,30 @@ function DropdownWithButton() {
         alert(response.data.error);
       }
     } catch (error) {
-      console.error("Error in Axios request:", error);
-      alert("無法執行 請聯絡管理員");
+      console.log(error);
+      alert("Please contact the administrator.");
     } finally {
       setLoading(false);
     }
   };
-  const download_version = (data) => {
+  const download_version = async (data) => {
     setLoading(true);
-    const request_data = {
-      version: data,
-    };
-    axios
-      .post("/pulsar/download_version/", request_data)
-      .then((response) => {
-        if (response.data.url) {
-          window.open(`${response.data.url}`);
-          alert("success download");
-        } else if (response.data.error) {
-          alert(response.data.error);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("請聯絡管理員");
-      })
-      .finally(() => {
-        setLoading(false);
+    try {
+      let response = await DLAAPI.download_version({
+        version: data,
       });
+      if (response.data.url) {
+        window.open(`${response.data.url}`);
+        alert("success download");
+      } else if (response.data.error) {
+        alert(response.data.error);
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Please contact the administrator.");
+    } finally {
+      setLoading(false);
+    }
   };
   const adddevice = () => {};
   const Row = ({ index, style }) => (

@@ -15,47 +15,22 @@ Coded by www.creative-tim.com
 
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import App from "App";
 
 // Soft UI Dashboard React Context Provider
 import { SoftUIControllerProvider } from "context";
-import axios from "axios";
-import Cookies from "js-cookie";
 import { AuthProvider } from "auth-context/auth.context";
 
 let user = localStorage.getItem("user");
 user = JSON.parse(user);
 ReactDOM.render(
-  <Router>
+  <BrowserRouter>
     <SoftUIControllerProvider>
       <AuthProvider userData={user}>
-        {(() => {
-          axios.interceptors.request.use(
-            (config) => {
-              const token = Cookies.get("token");
-              if (token) {
-                config.headers.Authorization = `Bearer ${token}`;
-                return config;
-              } else {
-                handleLogout();
-                return null;
-              }
-            },
-            (error) => {
-              return Promise.reject(error);
-            }
-          );
-          return <App />;
-        })()}
+        <App />
       </AuthProvider>
     </SoftUIControllerProvider>
-  </Router>,
+  </BrowserRouter>,
   document.getElementById("root")
 );
-
-const handleLogout = () => {
-  Cookies.remove("token");
-  localStorage.removeItem("user");
-  window.location.reload();
-};

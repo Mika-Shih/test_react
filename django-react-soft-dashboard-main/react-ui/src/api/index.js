@@ -1,5 +1,6 @@
 import Axios from "axios";
 import { API_SERVER } from "../config/constant";
+import Cookies from "js-cookie";
 
 const axios = Axios.create({
   baseURL: `${API_SERVER}`,
@@ -8,7 +9,17 @@ const axios = Axios.create({
 
 axios.interceptors.request.use(
   (config) => {
-    return Promise.resolve(config);
+    console.log(config);
+    if (!config.url.includes("/user")) {
+      const token = Cookies.get("token");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      } else {
+        handleLogout();
+      }
+    }
+
+    return config;
   },
   (error) => Promise.reject(error)
 );
@@ -19,5 +30,11 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+const handleLogout = () => {
+  Cookies.remove("token");
+  localStorage.removeItem("user");
+  window.location.reload();
+};
 
 export default axios;

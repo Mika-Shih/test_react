@@ -3,7 +3,6 @@ import Modal from "react-modal";
 // import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";
 import "react-datetime/css/react-datetime.css";
-import axios from "axios";
 import Collapse from "@mui/material/Collapse";
 import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
@@ -369,72 +368,64 @@ function DropdownWithButton() {
     fontSize: "16px",
   };
   useEffect(() => {}, [data]);
-  const handleButtonClick = () => {
-    axios.get("/cat/machine_report/", { timeout: 10000 }).then((response) => {
-      if (response.data) {
-        console.log(response.data);
-        setData(response.data);
-      } else if (response.data.error) {
-        alert(response.data.error);
-      }
-    });
+  const handleButtonClick = async () => {
+    let response = await CATAPI.machine_report();
+    if (response.data) {
+      console.log(response.data);
+      setData(response.data);
+    } else if (response.data.error) {
+      alert(response.data.error);
+    }
   };
   useEffect(() => {
     console.log(machine_data);
   }, [machine_data]);
-  const get_machine_status_report = () => {
-    const request = {
-      start_time: new Date(Date.now() - 36500 * 24 * 60 * 60 * 1000),
-      end_time: new Date(),
-      platform: formData.platform,
-      module: formData.module,
-    };
-    console.log(request);
-    axios
-      .post("/cat/machine_status_report/", request, { timeout: 10000 })
-      .then((response) => {
-        if (response.data) {
-          console.log(response.data);
-          set_machine_data(response.data);
-        } else if (response.data.error) {
-          alert(response.data.error);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
+  const get_machine_status_report = async () => {
+    try {
+      let response = await CATAPI.machine_status_report({
+        start_time: new Date(Date.now() - 36500 * 24 * 60 * 60 * 1000),
+        end_time: new Date(),
+        platform: formData.platform,
+        module: formData.module,
       });
-  };
-  const filter_machine_status_report = () => {
-    const request = {
-      start_time: startDate,
-      end_time: endDate,
-      platform: formData.platform,
-      module: formData.module,
-    };
-    // console.log(request);
-    axios
-      .post("/cat/filter_machine_status_report/", request, { timeout: 10000 })
-      .then((response) => {
+      if (response.data) {
         console.log(response.data);
-        if (response.data.finaldata) {
-          set_machine_data(response.data.finaldata);
-          set_task({
-            tool: "PowerStressTool",
-            mode: "Interface+Restart",
-            task: [],
-            select_index: null,
-            select_machine: [],
-          });
-        } else if (response.data.error) {
-          alert("無匹配資料");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        closeModal(1);
+        set_machine_data(response.data);
+      } else if (response.data.error) {
+        alert(response.data.error);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Please contact the administrator.");
+    }
+  };
+  const filter_machine_status_report = async () => {
+    try {
+      let response = await CATAPI.filter_machine_status_report({
+        start_time: startDate,
+        end_time: endDate,
+        platform: formData.platform,
+        module: formData.module,
       });
+      console.log(response.data);
+      if (response.data.finaldata) {
+        set_machine_data(response.data.finaldata);
+        set_task({
+          tool: "PowerStressTool",
+          mode: "Interface+Restart",
+          task: [],
+          select_index: null,
+          select_machine: [],
+        });
+      } else if (response.data.error) {
+        alert("No matching data");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Please contact the administrator.");
+    } finally {
+      closeModal(1);
+    }
   };
   function rendercollapsedata(index, label, data, showToolName, toggleItem) {
     if (!label) {
@@ -824,29 +815,25 @@ function DropdownWithButton() {
       </>
     );
   }
-  const download_cth_version = (data) => {
+  const download_cth_version = async (data) => {
     setLoading(true);
-    const request_data = {
-      version: data,
-    };
-    axios
-      .post("/cat/download_cth/", request_data)
-      .then((response) => {
-        if (response.data) {
-          window.open(`${response.data.url}`);
-          alert("success download");
-          closeModal(3);
-        } else if (response.data.error) {
-          alert(response.data.error);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("請聯絡管理員");
-      })
-      .finally(() => {
-        setLoading(false);
+    try {
+      let response = await CATAPI.download_cth({
+        version: data,
       });
+      if (response.data.url) {
+        window.open(`${response.data.url}`);
+        alert("success download");
+        closeModal(3);
+      } else if (response.data.error) {
+        alert(response.data.error);
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Please contact the administrator.");
+    } finally {
+      setLoading(false);
+    }
   };
   const create_machine_task = async () => {
     setLoading(true);

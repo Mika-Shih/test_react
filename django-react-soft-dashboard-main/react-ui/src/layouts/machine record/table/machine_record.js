@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Tablebody from "@mui/material/TableBody";
-const backendServer = process.env.REACT_APP_BACKEND_SERVER;
+import IURAPI from "api/iur";
 function MachineRecord() {
   const [machineRecord, setMachineRecord] = useState(null);
   const [machine_data, set_machine_data] = useState([]);
@@ -20,9 +19,7 @@ function MachineRecord() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.post(`${backendServer}polls/machine_record/`, {
-          sn: machineRecord,
-        });
+        let response = await IURAPI.machine_record({ sn: machineRecord });
         const formattedOptions = response.data["iur_data"];
         set_machine_data(formattedOptions);
       } catch (error) {

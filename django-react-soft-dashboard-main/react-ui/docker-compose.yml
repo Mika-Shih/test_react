@@ -28,6 +28,19 @@ services:
     depends_on:
       - django
 
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - 5000:80
+    depends_on:
+      - django
+      - react
+    networks:
+      - app_network
+
 networks:
   app_network:
     driver: bridge

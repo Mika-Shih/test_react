@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
-import axios from "axios";
 import TableContainer from "@mui/material/TableContainer";
 import Button from "examples/Icons/Button";
 import Loading from "examples/tool_universal/loading";
 import Table from "examples/Table/table_row";
+import FolderChoose from "examples/tool_universal/folder_choose";
 import useStyles from "layouts/iur/table/styles/iur";
+import IURAPI from "api/iur";
 function DropdownWithButton(iur_data) {
   useEffect(() => {
     console.log(iur_data["iur_data"]);
@@ -109,33 +110,24 @@ function DropdownWithButton(iur_data) {
 
   const new_machine_mail_model = async () => {
     setLoading(true);
-    let request_data = new FormData();
-    request_data.append("finaldata", JSON.stringify(machine_data));
-    request_data.append("file", selectedFile);
-    axios
-      .post("/polls/send_mail_newplatform/", request_data, {
-        timeout: 10000,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        if (response.data.finaldata) {
-          console.log(response.data.finaldata);
-          alert("successful");
-          window.location.reload();
-        } else if (response.data.error) {
-          alert(response.data.error);
-        }
-      })
-      .catch((error) => {
-        console.error("Error in Axios request:", error);
-        alert("Please contact the administrator.");
-      })
-      .finally(() => {
-        setLoading(false);
-        set_pop_filter(false);
-      });
+    try {
+      let request_data = new FormData();
+      request_data.append("finaldata", JSON.stringify(machine_data));
+      request_data.append("file", selectedFile);
+      let response = await IURAPI.new_machine_mail(request_data);
+      if (response.data.finaldata) {
+        alert(response.data.finaldata);
+        window.location.reload();
+      } else if (response.data.error) {
+        alert(response.data.error);
+      }
+    } catch (error) {
+      console.error("Error in Axios request:", error);
+      alert("Please contact the administrator.");
+    } finally {
+      setLoading(false);
+      set_pop_filter(false);
+    }
   };
   return (
     <>
@@ -177,6 +169,7 @@ function DropdownWithButton(iur_data) {
             X
           </Button>
         </div>
+        <FolderChoose></FolderChoose>
       </div>
       <TableContainer>
         <Table row_style={classes.table_row_style} data={title_data}></Table>
