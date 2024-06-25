@@ -5,9 +5,9 @@ import ListItemText from "@mui/material/ListItemText";
 import Button from "@mui/material/Button";
 import Popover from "@mui/material/Popover";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import PropTypes from "prop-types";
-import { FixedSizeList as List } from "react-window";
 
 const theme = createTheme();
 
@@ -92,21 +92,15 @@ const App = ({
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-
-  const Row = ({ index, style }) => {
-    const option = visibleOptions[index];
-    return (
-      <ListItem button onClick={handleToggle(option)} style={style} key={option.value}>
-        <Checkbox checked={option.checked} />
-        <ListItemText primary={option.title} />
-      </ListItem>
+  const allFilteredSelected =
+    visibleOptions.length > 0 &&
+    visibleOptions.every((option) =>
+      selectedOptions.some((selected) => selected.title === option.title)
     );
-  };
-
-  Row.propTypes = {
-    index: PropTypes.number.isRequired,
-    style: PropTypes.object.isRequired,
-  };
+  const someFilteredSelected =
+    visibleOptions.some((option) =>
+      selectedOptions.some((selected) => selected.title === option.title)
+    ) && !allFilteredSelected;
 
   return (
     <ThemeProvider theme={theme}>
@@ -135,15 +129,17 @@ const App = ({
             onChange={handleSearchChange}
             value={searchText}
           />
-          <Button variant="contained" color="primary" onClick={handleSelectAll}>
-            Select All
-          </Button>
-          <List
-            height={Math.min(visibleOptions.length * 46, 250)}
-            itemCount={visibleOptions.length}
-            itemSize={46}
-          >
-            {Row}
+          <List style={{ maxHeight: "400px", overflow: "auto" }}>
+            <ListItem button onClick={handleSelectAll}>
+              <Checkbox checked={allFilteredSelected} indeterminate={someFilteredSelected} />
+              <ListItemText primary="Select All" />
+            </ListItem>
+            {visibleOptions.map((option) => (
+              <ListItem key={option.value} button onClick={handleToggle(option)}>
+                <Checkbox checked={option.checked} />
+                <ListItemText primary={option.title} />
+              </ListItem>
+            ))}
           </List>
         </div>
       </Popover>

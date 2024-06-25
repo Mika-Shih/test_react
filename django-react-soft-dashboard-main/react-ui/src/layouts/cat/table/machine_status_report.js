@@ -157,7 +157,7 @@ function DropdownWithButton() {
             {data.devicename}/{data.IOT_CATM_status}
           </TableCell>
           <TableCell key={index} style={active_style}>
-            {"active//"}
+            {remote_button_contorl(data.serial_number, data.status, data.task_unit_array)}
           </TableCell>
           <TableCell key={index} style={time_style}>
             {formatTimeForFrontend(data.start_time)}
@@ -172,6 +172,73 @@ function DropdownWithButton() {
       </>
     );
   }
+  function remote_button_contorl(sn, status, task) {
+    const isAnyTaskStopped =
+      task && task.length > 0 ? task.some((task) => task.status === "stop") : false;
+    const isAnyTaskPaused =
+      task && task.length > 0 ? task.some((task) => task.status === "pause") : false;
+    const isAnyTaskContinued =
+      task && task.length > 0
+        ? task.some((task) => task.status === "running" && task.testcontent === null)
+        : false;
+    if (status === "running") {
+      return (
+        <>
+          <button
+            disabled={isAnyTaskStopped || isAnyTaskPaused}
+            style={isAnyTaskStopped || isAnyTaskPaused ? { backgroundColor: "gray" } : {}}
+            onClick={() => pause_mode(sn)}
+          >
+            Pause
+          </button>
+          <button
+            disabled={isAnyTaskStopped}
+            style={isAnyTaskStopped ? { backgroundColor: "gray" } : {}}
+            onClick={() => stop_mode(sn)}
+          >
+            Stop
+          </button>
+        </>
+      );
+    } else if (status === "pause") {
+      return (
+        <>
+          <button
+            disabled={isAnyTaskStopped || isAnyTaskContinued}
+            style={isAnyTaskStopped || isAnyTaskContinued ? { backgroundColor: "gray" } : {}}
+            onClick={() => continue_mode(sn)}
+          >
+            Continue
+          </button>
+          <button
+            disabled={isAnyTaskStopped}
+            style={isAnyTaskStopped ? { backgroundColor: "gray" } : {}}
+            onClick={() => stop_mode(sn)}
+          >
+            Stop
+          </button>
+        </>
+      );
+    }
+  }
+  const continue_mode = async (sn) => {
+    let response = await CATAPI.continue_task({ serial_number: sn });
+    if (response.data) {
+      get_machine_status_report();
+    }
+  };
+  const pause_mode = async (sn) => {
+    let response = await CATAPI.pause_task({ serial_number: sn });
+    if (response.data) {
+      get_machine_status_report();
+    }
+  };
+  const stop_mode = async (sn) => {
+    let response = await CATAPI.stop_task({ serial_number: sn });
+    if (response.data) {
+      get_machine_status_report();
+    }
+  };
   function report_data(index, data) {
     if (!data.start_time) {
       return null;

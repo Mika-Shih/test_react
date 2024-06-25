@@ -63,7 +63,29 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
   const route = useLocation().pathname.split("/").slice(1);
   const [machine_arrive_mail_hint, set_machine_arrive_mail_hint] = useState([]);
 
-  // console.log(routes, route);
+  // view level
+  const level_view = ["Pulsar", "Token"];
+  if (!hasAzureAccess()) {
+    routes = routes.filter((route) => !level_view.includes(route.name));
+  }
+  // fillter routes
+  const namesToFilter = [
+    "Dashboard",
+    "Billing",
+    "RTL",
+    "Profile",
+    "Virtual Reality",
+    "Test table",
+    "Tables",
+    "Control table",
+  ];
+  const titlesToFilter = ["Test", "Account Pages"];
+  const rightFilter = ["Token", "Logout"];
+  routes = routes.filter((route) => !namesToFilter.includes(route.name));
+  routes = routes.filter((route) => !titlesToFilter.includes(route.title));
+  const right_routes = routes.filter((route) => rightFilter.includes(route.name));
+  routes = routes.filter((route) => !rightFilter.includes(route.name));
+
   useEffect(() => {}, [route]);
   useEffect(() => {
     // Setting the navbar type
@@ -150,60 +172,65 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
     </Menu>
   );
 
-  const renderRoutes =
-    routes &&
-    routes.map(({ type, name, icon, title, children, noCollapse, key, route, href }) => {
-      let returnValue;
-      // console.log(type, title);
-      if (type === "collapse") {
-        returnValue = href ? (
-          <Link
-            href={href}
-            key={key}
-            target="_blank"
-            rel="noreferrer"
-            // className={classes.sidenav_navlink}
-            className={classes.navbar_row}
-          >
+  const renderRoutes = (routes) => {
+    return (
+      routes &&
+      routes.map(({ type, name, icon, title, children, noCollapse, key, route, href }) => {
+        let returnValue;
+        if (type === "collapse") {
+          returnValue = href ? (
+            <Link
+              href={href}
+              key={key}
+              target="_blank"
+              rel="noreferrer"
+              className={classes.navbar_row}
+            >
+              <SidenavCollapse
+                name={name}
+                icon={icon}
+                active={key === route}
+                noCollapse={noCollapse}
+              />
+            </Link>
+          ) : (
+            <NavLink to={route} key={key} className={classes.navbar_row}>
+              <SidenavCollapse
+                name={name}
+                icon={icon}
+                active={key === route}
+                noCollapse={noCollapse}
+              />
+            </NavLink>
+          );
+        } else if (type === "title") {
+          returnValue = href ? (
+            <SuiTypography
+              key={key}
+              variant="caption"
+              fontWeight="bold"
+              textTransform="uppercase"
+              customClass={classes.sidenav_title}
+            >
+              {title}
+            </SuiTypography>
+          ) : (
             <SidenavCollapse
-              name={name}
+              name={title}
               icon={icon}
               active={key === route}
               noCollapse={noCollapse}
-            />
-          </Link>
-        ) : (
-          <NavLink to={route} key={key} className={classes.navbar_row}>
-            <SidenavCollapse
-              name={name}
-              icon={icon}
-              active={key === route}
-              noCollapse={noCollapse}
-            />
-          </NavLink>
-        );
-      } else if (type === "title") {
-        returnValue = href ? (
-          <SuiTypography
-            key={key}
-            variant="caption"
-            fontWeight="bold"
-            textTransform="uppercase"
-            customClass={classes.sidenav_title}
-          >
-            {title}
-          </SuiTypography>
-        ) : (
-          <SidenavCollapse name={title} icon={icon} active={key === route} noCollapse={noCollapse}>
-            {children}
-          </SidenavCollapse>
-        );
-      } else if (type === "divider") {
-        returnValue = <Divider key={key} />;
-      }
-      // console.log(href, key);
-      return returnValue;
-    });
+            >
+              {children}
+            </SidenavCollapse>
+          );
+        } else if (type === "divider") {
+          returnValue = <Divider key={key} />;
+        }
+        return returnValue;
+      })
+    );
+  };
 
   return (
     <AppBar
@@ -215,9 +242,14 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
       <Toolbar className={classes.navbar_container}>
         <SuiBox customClass={classes.navbar_row} color="inherit" mb={{ xs: 1, md: 0 }}>
           {/* <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} /> */}
-          <List style={{ display: "flex", flexDirection: "row" }}>{renderRoutes}</List>
+          <List style={{ display: "flex", flexDirection: "row" }}>{renderRoutes(routes)}</List>
+          <List
+            style={{ display: "flex", flexDirection: "row", position: "absolute", right: "40px" }}
+          >
+            {renderRoutes(right_routes)}
+          </List>
           {isMini ? null : (
-            <SuiBox customClass={classes.navbar_row}>
+            <SuiBox customClass={classes.navbar_row} style={{ position: "absolute", right: "5px" }}>
               {/* <SuiBox pr={1}>
               <SuiInput
                 placeholder="Type here..."

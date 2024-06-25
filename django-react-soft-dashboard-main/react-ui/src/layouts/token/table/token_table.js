@@ -11,6 +11,7 @@ import Inputbox from "examples/tool_universal/inputbox";
 import Button from "examples/Icons/Button";
 import Loading from "examples/tool_universal/loading";
 import PropTypes from "prop-types";
+import USERAPI from "api/user";
 const frontendServer = process.env.REACT_APP_FRONTEND_SERVER;
 function DropdownWithButton() {
   const [option, setOption] = useState(1);
@@ -122,25 +123,30 @@ function DropdownWithButton() {
       );
     }
   }
-  const get_machine_status_report = () => {
+  const get_machine_status_report = async () => {
     setLoading(true);
     select_setToken([]);
-    axios
-      .get(`${backendServer}user/view_token/`, { timeout: 10000 })
-      .then((response) => {
-        if (response.data.finaldata) {
-          setToken(response.data.finaldata);
-        } else if (response.data.error) {
-          alert(response.data.error);
-        }
-      })
-      .catch((error) => {
-        console.error("error", error);
-        alert("請聯絡管理員");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      let response = await USERAPI.view_token();
+      if (response.data) {
+        console.log(response.data);
+        set_machine_data(response.data.finaldata);
+      } else if (response.data.error) {
+        alert(response.data.error);
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Please contact the administrator.");
+    } finally {
+      setLoading(false);
+    }
+    let response = await USERAPI.view_token();
+    if (response.data) {
+      console.log(response.data);
+      setToken(response.data.finaldata);
+    } else if (response.data.error) {
+      alert(response.data.error);
+    }
   };
   const handleCheckboxChange = (data) => {
     const updatedselect_token = [...select_token];

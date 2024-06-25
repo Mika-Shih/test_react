@@ -81,17 +81,21 @@ function Footer({ company, links }) {
 // Setting default values for the props of Footer
 Footer.defaultProps = {
   company: {
-    href: "http://env-lab.eba-jpevj6xq.ap-southeast-1.elasticbeanstalk.com",
+    href: "http://lab-management-env.eba-8nvxpmcv.ap-southeast-1.elasticbeanstalk.com/iur",
     name: "Uut Lab ",
   },
   links: [
     {
-      href: "http://env-lab.eba-jpevj6xq.ap-southeast-1.elasticbeanstalk.com/iur/uut",
+      href: "http://lab-management-env.eba-8nvxpmcv.ap-southeast-1.elasticbeanstalk.com/iur/uut",
       name: "Old IUR System",
     },
     {
-      href: "http://env-lab.eba-jpevj6xq.ap-southeast-1.elasticbeanstalk.com/labreport/index.html",
+      href: "http://lab-management-env.eba-8nvxpmcv.ap-southeast-1.elasticbeanstalk.com/labreport/index.html",
       name: "COMM auto test",
+    },
+    {
+      href: "http://lab-management-env.eba-8nvxpmcv.ap-southeast-1.elasticbeanstalk.com/wwanmapper/",
+      name: "Wwan mapper",
     },
   ],
 };

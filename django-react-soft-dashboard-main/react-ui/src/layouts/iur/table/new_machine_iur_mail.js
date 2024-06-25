@@ -5,6 +5,7 @@ import Button from "examples/Icons/Button";
 import Loading from "examples/tool_universal/loading";
 import Table from "examples/Table/table_row";
 import FolderChoose from "examples/tool_universal/folder_choose";
+import FilterButton from "examples/Icons/Filter_button";
 import useStyles from "layouts/iur/table/styles/iur";
 import IURAPI from "api/iur";
 function DropdownWithButton(iur_data) {
@@ -13,6 +14,7 @@ function DropdownWithButton(iur_data) {
     set_machine_data(iur_data["iur_data"]);
   }, []);
   const [machine_data, set_machine_data] = useState([]);
+  const [folder_choose, set_folder_choose] = useState([]);
   const [pop_filter, set_pop_filter] = useState(false);
   const [loading, setLoading] = useState(false);
   const [user_experience, set_user_experience] = useState(0);
@@ -114,6 +116,10 @@ function DropdownWithButton(iur_data) {
       let request_data = new FormData();
       request_data.append("finaldata", JSON.stringify(machine_data));
       request_data.append("file", selectedFile);
+      request_data.append(
+        "folder_choose",
+        JSON.stringify(Object.values(folder_choose).map((option) => option.title))
+      );
       let response = await IURAPI.new_machine_mail(request_data);
       if (response.data.finaldata) {
         alert(response.data.finaldata);
@@ -149,27 +155,41 @@ function DropdownWithButton(iur_data) {
             </Button>
           </Modal>
         </div>
-        <div>
-          <label htmlFor="file">Select file : </label>
-          <input
-            key={user_experience}
-            type="file"
-            onChange={(event) => {
-              const file = event.target.files[0];
-              setSelectedFile(file);
+        <div className={classes.line_form_style}>
+          <div style={{ marginRight: "16px", position: "absolute", right: "0" }}>
+            <input
+              key={user_experience}
+              type="file"
+              onChange={(event) => {
+                const file = event.target.files[0];
+                setSelectedFile(file);
+              }}
+            />
+            <button
+              className={classes.deleteButtonStyle}
+              onClick={() => {
+                setSelectedFile(null);
+                set_user_experience((prevKey) => prevKey + 1);
+              }}
+            >
+              X
+            </button>
+          </div>
+        </div>
+        <div className={classes.line_form_style}>
+          <FolderChoose data={folder_choose} setData={set_folder_choose}></FolderChoose>
+          <p style={{ marginLeft: "16px" }}>config address&nbsp;:&nbsp;</p>
+          <FilterButton
+            options={Object.values(folder_choose).map((option) => option.title)}
+            onClick={(newOptions) => {
+              const index = folder_choose.findIndex((option) => !newOptions.includes(option.title));
+              console.log(index, newOptions);
+              if (index !== -1) {
+                set_folder_choose(folder_choose.slice(0, index));
+              }
             }}
           />
-          <Button
-            className={classes.deleteButtonStyle}
-            onClick={() => {
-              setSelectedFile(null);
-              set_user_experience((prevKey) => prevKey + 1);
-            }}
-          >
-            X
-          </Button>
         </div>
-        <FolderChoose></FolderChoose>
       </div>
       <TableContainer>
         <Table row_style={classes.table_row_style} data={title_data}></Table>

@@ -21,7 +21,6 @@ import SuiTypography from "components/SuiTypography";
 
 // Soft UI Dashboard React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 // import Grid from "@mui/material/Grid";
 
@@ -33,12 +32,11 @@ function Tables() {
   const classes = styles();
   return (
     <DashboardLayout>
-      <DashboardNavbar />
-      <SuiBox py={3}>
+      <SuiBox py={1}>
         <SuiBox mb={3}>
           <Card>
             <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SuiTypography variant="h4">Token修改</SuiTypography>
+              <SuiTypography variant="h4">Token modify</SuiTypography>
             </SuiBox>
             <SuiBox customClass={classes.tables_table}>
               <Token_manage />

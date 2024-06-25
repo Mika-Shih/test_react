@@ -35,7 +35,9 @@ export const useAuth = () => React.useContext(AuthContext);
 
 export const hasAzureAccess = () => {
   const { user } = useAuth();
-  return user && user.username === "bill.chang@hp.com";
+  return (
+    user && (user.username === "bill.chang@hp.com" || user.username === "catherine.jia@hp.com")
+  );
 };
 
 export const hasEditorAccess = (user) => {

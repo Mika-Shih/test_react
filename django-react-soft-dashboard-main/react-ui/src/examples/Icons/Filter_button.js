@@ -7,7 +7,6 @@ const ButtonComponent = forwardRef(({ options, onClick }) => {
     const newOptions = options.filter((option) => option !== clickedOption);
     onClick(newOptions);
   };
-
   return (
     <>
       {options &&

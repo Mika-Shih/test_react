@@ -3,7 +3,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Loading_option_4to1 from "examples/tool_universal/loading_option_4to1";
-import axios from "axios";
 import Modal from "react-modal";
 import Button from "examples/Icons/Button";
 import PropTypes from "prop-types";
@@ -12,9 +11,10 @@ import Loading_option from "examples/tool_universal/loading_option";
 import Table from "examples/Table/table_row";
 // import useStyles from "layouts/new machine/table/styles/new_machine_style";
 import useStyles from "layouts/iur/table/styles/iur";
-const backendServer = process.env.REACT_APP_BACKEND_SERVER;
-const frontendServer = process.env.REACT_APP_FRONTEND_SERVER;
+import IURAPI from "api/iur";
+import { useHistory } from "react-router-dom";
 function InputWithAddAndClearButton(props) {
+  const history = useHistory();
   const [options, setOptions] = useState([]);
   const [ischeckbox, setcheckbox] = useState({});
   const [platform_combine, set_platform_combine] = useState([]);
@@ -50,11 +50,12 @@ function InputWithAddAndClearButton(props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${backendServer}polls/api/phase/`);
+        let response = await IURAPI.phase();
         const formattedOptions = response.data["phase"].filter((item) => item !== "");
         setOptions(formattedOptions);
       } catch (error) {
-        console.log(error);
+        console.error("Error in Axios request:", error);
+        alert("Please contact the administrator.");
       }
     };
     fetchData();
@@ -333,71 +334,48 @@ function InputWithAddAndClearButton(props) {
     };
     console.log(request_data);
     try {
-      const response = await axios.post(
-        `${backendServer}polls/api/addplatformonly/`,
-        request_data,
-        {
-          timeout: 10000,
-        }
-      );
+      setLoading(true);
+      let response = await IURAPI.addplatformonly(request_data);
       if (response.data.successful) {
         alert(response.data.successful);
         closeModal(1);
+        setFormData({
+          platform: [],
+          target: null,
+          group: null,
+          cycle: [],
+        });
       } else if (response.data.error) {
         alert(response.data.error);
       }
     } catch (error) {
       console.error("Error in Axios request:", error);
-      alert("無法執行 請聯絡管理員");
+      alert("Please contact the administrator.");
     } finally {
       setLoading(false);
     }
   };
+
   const add_new_platform = async () => {
-    setLoading(true);
-    let request_data = new FormData();
-    // const request_data = {
-    //   finaldata: JSON.stringify(machine_data),
-    //   message: "add new platform",
-    //   file: selectedFile,
-    // };
-    request_data.append("finaldata", JSON.stringify(machine_data));
-    request_data.append("message", "add new platform");
-    request_data.append("file", selectedFile);
-    console.log(request_data);
-    axios
-      .post(`${backendServer}polls/addnewplatform/`, request_data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        if (response.data.finaldata) {
-          window.location.replace(`${frontendServer}iur/`);
-        } else if (response.data.error) {
-          alert(response.data.error);
-        }
-      })
-      .catch((error) => {
-        console.error("Error in Axios request:", error);
-        alert("無法執行 請聯絡管理員");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-    // try {
-    //   const response = await axios.post(`${backendServer}polls/addnewplatform/`, request_data, {});
-    //   if (response.data.finaldata) {
-    //     window.location.replace(`${frontendServer}iur/`);
-    //   } else if (response.data.error) {
-    //     alert(response.data.error);
-    //   }
-    // } catch (error) {
-    //   console.error("Error in Axios request:", error);
-    //   alert("無法執行 請聯絡管理員");
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      setLoading(true);
+      let request_data = new FormData();
+      request_data.append("finaldata", JSON.stringify(machine_data));
+      request_data.append("message", "add new platform");
+      request_data.append("file", selectedFile);
+      console.log(request_data);
+      const response = await IURAPI.addnewplatform(request_data);
+      if (response.data.finaldata) {
+        history.push("/iur/");
+      } else if (response.data.error) {
+        alert(response.data.error);
+      }
+    } catch (error) {
+      console.error("Error in Axios request:", error);
+      alert("Please contact the administrator.");
+    } finally {
+      setLoading(false);
+    }
   };
   const containerStyle = {
     display: "flex",
@@ -514,19 +492,7 @@ function InputWithAddAndClearButton(props) {
             </Button>
           </Modal>
         </div>
-        <div key={user_experience}>
-          <Button onClick={checkbox_function} style={{ marginLeft: "16px" }}>
-            Apply downwards from the checkbox
-          </Button>
-          <Button onClick={() => openModal(1)} style={{ marginLeft: "16px" }}>
-            Add new platform
-          </Button>
-          <Button onClick={() => openModal(2)} style={{ marginLeft: "16px" }}>
-            Add new machine
-          </Button>
-        </div>
-        <div style={{ marginLeft: "16px" }}>
-          <label htmlFor="file">Select file：</label>
+        <div style={{ marginRight: "16px", position: "absolute", right: "0" }}>
           <input
             key={user_experience}
             type="file"
@@ -545,7 +511,13 @@ function InputWithAddAndClearButton(props) {
             X
           </button>
         </div>
-        <div>
+        <div key={user_experience}>
+          <Button onClick={checkbox_function} style={{ marginLeft: "16px" }}>
+            Apply downwards from the checkbox
+          </Button>
+          <Button onClick={() => openModal(1)} style={{ marginLeft: "16px" }}>
+            Add new platform
+          </Button>
           <Button onClick={() => openModal(2)} style={{ marginLeft: "16px" }}>
             Add new machine
           </Button>

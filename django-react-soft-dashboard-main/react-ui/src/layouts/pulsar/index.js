@@ -21,7 +21,6 @@ import SuiTypography from "components/SuiTypography";
 
 // Soft UI Dashboard React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import Pulsar from "layouts/pulsar/table/machine_tool_data";
 
@@ -32,8 +31,7 @@ function Tables() {
   const classes = styles();
   return (
     <DashboardLayout>
-      <DashboardNavbar />
-      <SuiBox py={3}>
+      <SuiBox py={1}>
         <SuiBox mb={3}>
           <Card>
             <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>

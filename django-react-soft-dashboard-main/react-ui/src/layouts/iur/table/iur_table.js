@@ -6,12 +6,13 @@ import Tablehead from "@mui/material/TableHead";
 import TableCell from "@mui/material/TableCell";
 import Tablebody from "@mui/material/TableBody";
 import DateTimePicker from "examples/tool_universal/calendar_delay";
-import Filter from "examples/tool_universal/filter_function";
+// import Filter from "examples/tool_universal/filter_function";
 import Inputbox from "examples/tool_universal/inputbox";
 import { FixedSizeList } from "react-window";
 import Button from "examples/Icons/Button";
 import Table from "examples/Table/table_row";
 import Filterbutton from "examples/Icons/Filter_button";
+import Filter from "examples/tool_universal/filter";
 import Loading_option from "examples/tool_universal/loading_option";
 import Loading_option_add_remove from "examples/tool_universal/loading_option_add_remove";
 import Loading from "examples/tool_universal/loading";
@@ -20,13 +21,13 @@ import { useHistory } from "react-router-dom";
 import { useAuth, hasAzureAccess } from "../../../auth-context/auth.context";
 import useStyles from "layouts/iur/table/styles/iur";
 import IURAPI from "api/iur";
-import FolderChoose from "examples/tool_universal/folder_choose";
 function DropdownWithButton(props) {
   const classes = useStyles();
   const { user } = useAuth();
   const history = useHistory();
   const [option, setOption] = useState(1);
   const [options, setOptions] = useState(0);
+  const [button_name, set_button_name] = useState("");
   const [select_iur_machine, set_select_iur_machine] = useState([]);
   useEffect(() => {
     props.iur(select_iur_machine);
@@ -35,7 +36,7 @@ function DropdownWithButton(props) {
     console.log(user);
     get_machine_status_report();
   }, []);
-  const [startDate, setStartDate] = useState(new Date(Date.now() - 365 * 24 * 60 * 60 * 1000));
+  const [startDate, setStartDate] = useState(new Date(Date.now() - 10 * 365 * 24 * 60 * 60 * 1000));
   const [endDate, setEndDate] = useState(new Date());
   const [machine_data, set_machine_data] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -45,7 +46,15 @@ function DropdownWithButton(props) {
     3: false,
     4: false,
   });
-  const [formData, setFormData] = useState({
+  const [option_list, setoption_list] = useState({
+    target: [],
+    group: [],
+    cycle: [],
+    platform: [],
+    phase: [],
+    status: [],
+  });
+  const [selectoption, setselectoption] = useState({
     target: [],
     group: [],
     cycle: [],
@@ -66,27 +75,6 @@ function DropdownWithButton(props) {
   });
   const [inputList, setInputList] = useState([""]);
   const [widthsearch, setWidthsearch] = useState([""]);
-  function getCellStyle(width) {
-    return {
-      minWidth: `${width}px`,
-      maxWidth: `${width}px`,
-      textAlign: "center",
-      fontSize: "12px",
-    };
-  }
-  const checkbox_style = getCellStyle(10);
-  const platform_style = getCellStyle(150);
-  const phase_style = getCellStyle(80);
-  const target_style = getCellStyle(80);
-  const group_style = getCellStyle(120);
-  const cycle_style = getCellStyle(80);
-  const sku_style = getCellStyle(60);
-  const sn_style = getCellStyle(150);
-  const borrower_style = getCellStyle(100);
-  const status_style = getCellStyle(90);
-  const position_style = getCellStyle(100);
-  const remark_style = getCellStyle(90);
-  const update_time_style = getCellStyle(200);
   function MyTableCell({ index, style, className, children }) {
     return (
       <TableCell key={index} style={style} className={className}>
@@ -101,19 +89,19 @@ function DropdownWithButton(props) {
     children: PropTypes.node.isRequired,
   };
   const data = [
-    ...(hasAzureAccess() ? [{ index: "1", style: checkbox_style, children: "/" }] : []),
-    { index: "1", style: platform_style, children: "platform" },
-    { index: "1", style: phase_style, children: "phase" },
-    { index: "1", style: target_style, children: "target" },
-    { index: "1", style: group_style, children: "group" },
-    { index: "1", style: cycle_style, children: "cycle" },
-    { index: "1", style: sku_style, children: "sku" },
-    { index: "1", style: sn_style, children: "serial_number" },
-    { index: "1", style: borrower_style, children: "borrower" },
-    { index: "1", style: status_style, children: "status" },
-    { index: "1", style: position_style, children: "position" },
-    { index: "1", style: remark_style, children: "remark" },
-    { index: "1", style: update_time_style, children: "update_time" },
+    ...(hasAzureAccess() ? [{ index: "1", className: classes.checkbox_style, children: "/" }] : []),
+    { index: "1", className: classes.platform_style, children: "platform" },
+    { index: "1", className: classes.phase_style, children: "phase" },
+    { index: "1", className: classes.target_style, children: "target" },
+    { index: "1", className: classes.group_style, children: "group" },
+    { index: "1", className: classes.cycle_style, children: "cycle" },
+    { index: "1", className: classes.sku_style, children: "sku" },
+    { index: "1", className: classes.sn_style, children: "serial_number" },
+    { index: "1", className: classes.borrower_style, children: "borrower" },
+    { index: "1", className: classes.status_style, children: "status" },
+    { index: "1", className: classes.position_style, children: "position" },
+    { index: "1", className: classes.remark_style, children: "remark" },
+    { index: "1", className: classes.update_time_style, children: "update_time" },
   ];
   function title_row(index, request = true) {
     if (request) {
@@ -121,7 +109,7 @@ function DropdownWithButton(props) {
         <>
           <TableRow className={classes.table_row_style}>
             {data.map((item, index) => (
-              <MyTableCell key={index} style={item.style}>
+              <MyTableCell key={index} className={item.className}>
                 {item.children}
               </MyTableCell>
             ))}
@@ -132,40 +120,40 @@ function DropdownWithButton(props) {
       return (
         <>
           <TableRow className={classes.table_row_style}>
-            <TableCell key={index} style={platform_style}>
+            <TableCell key={index} className={classes.platform_style}>
               {"platform"}
             </TableCell>
-            <TableCell key={index} style={phase_style}>
+            <TableCell key={index} className={classes.phase_style}>
               {"phase"}
             </TableCell>
-            <TableCell key={index} style={target_style}>
+            <TableCell key={index} className={classes.target_style}>
               {"target"}
             </TableCell>
-            <TableCell key={index} style={group_style}>
+            <TableCell key={index} className={classes.group_style}>
               {"group"}
             </TableCell>
-            <TableCell key={index} style={cycle_style}>
+            <TableCell key={index} className={classes.cycle_style}>
               {"cycle"}
             </TableCell>
-            <TableCell key={index} style={sku_style}>
+            <TableCell key={index} className={classes.sku_style}>
               {"sku"}
             </TableCell>
-            <TableCell key={index} style={sn_style}>
+            <TableCell key={index} className={classes.sn_style}>
               {"serial_number"}
             </TableCell>
-            <TableCell key={index} style={borrower_style}>
+            <TableCell key={index} className={classes.borrower_style}>
               {"borrower"}
             </TableCell>
-            <TableCell key={index} style={status_style}>
+            <TableCell key={index} className={classes.status_style}>
               {"status"}
             </TableCell>
-            <TableCell key={index} style={position_style}>
+            <TableCell key={index} className={classes.position_style}>
               {"position"}
             </TableCell>
-            <TableCell key={index} style={remark_style}>
+            <TableCell key={index} className={classes.remark_style}>
               {"remark"}
             </TableCell>
-            <TableCell key={index} style={update_time_style}>
+            <TableCell key={index} className={classes.update_time_style}>
               {"update_time"}
             </TableCell>
           </TableRow>
@@ -190,7 +178,7 @@ function DropdownWithButton(props) {
       return hasAzureAccess() ? (
         <>
           <TableRow className={classes.table_row_style}>
-            <TableCell key={index} style={checkbox_style}>
+            <TableCell key={index} className={classes.checkbox_style}>
               <input
                 type="checkbox"
                 checked={select_iur_machine.includes(data)}
@@ -200,22 +188,22 @@ function DropdownWithButton(props) {
             <TableCell key={index} className={classes.platform_style}>
               {data.platform}
             </TableCell>
-            <TableCell key={index} style={phase_style}>
+            <TableCell key={index} className={classes.phase_style}>
               {data.phase}
             </TableCell>
-            <TableCell key={index} style={target_style}>
+            <TableCell key={index} className={classes.target_style}>
               {data.target}
             </TableCell>
-            <TableCell key={index} style={group_style}>
+            <TableCell key={index} className={classes.group_style}>
               {data.group}
             </TableCell>
-            <TableCell key={index} style={cycle_style}>
+            <TableCell key={index} className={classes.cycle_style}>
               {data.cycle}
             </TableCell>
-            <TableCell key={index} style={sku_style}>
+            <TableCell key={index} className={classes.sku_style}>
               {data.sku}
             </TableCell>
-            <TableCell key={index} style={sn_style}>
+            <TableCell key={index} className={classes.sn_style}>
               <span
                 onClick={() => {
                   window.open(`/machine_record/?sn=${data.sn}`);
@@ -225,19 +213,19 @@ function DropdownWithButton(props) {
                 {data.sn}
               </span>
             </TableCell>
-            <TableCell key={index} style={borrower_style}>
+            <TableCell key={index} className={classes.borrower_style}>
               {data.borrower}
             </TableCell>
-            <TableCell key={index} style={status_style}>
+            <TableCell key={index} className={classes.status_style}>
               {data.status}
             </TableCell>
-            <TableCell key={index} style={position_style}>
+            <TableCell key={index} className={classes.position_style}>
               {data.position}
             </TableCell>
-            <TableCell key={index} style={remark_style}>
+            <TableCell key={index} className={classes.remark_style}>
               {data.remark}
             </TableCell>
-            <TableCell key={index} style={update_time_style}>
+            <TableCell key={index} className={classes.update_time_style}>
               {formatTimeForFrontend(data.update_time)}
             </TableCell>
           </TableRow>
@@ -248,22 +236,22 @@ function DropdownWithButton(props) {
             <TableCell key={index} className={classes.platform_style}>
               {data.platform}
             </TableCell>
-            <TableCell key={index} style={phase_style}>
+            <TableCell key={index} className={classes.phase_style}>
               {data.phase}
             </TableCell>
-            <TableCell key={index} style={target_style}>
+            <TableCell key={index} className={classes.target_style}>
               {data.target}
             </TableCell>
-            <TableCell key={index} style={group_style}>
+            <TableCell key={index} className={classes.group_style}>
               {data.group}
             </TableCell>
-            <TableCell key={index} style={cycle_style}>
+            <TableCell key={index} className={classes.cycle_style}>
               {data.cycle}
             </TableCell>
-            <TableCell key={index} style={sku_style}>
+            <TableCell key={index} className={classes.sku_style}>
               {data.sku}
             </TableCell>
-            <TableCell key={index} style={sn_style}>
+            <TableCell key={index} className={classes.sn_style}>
               <span
                 onClick={() => {
                   window.open(`/machine_record/?sn=${data.sn}`);
@@ -273,19 +261,19 @@ function DropdownWithButton(props) {
                 {data.sn}
               </span>
             </TableCell>
-            <TableCell key={index} style={borrower_style}>
+            <TableCell key={index} className={classes.borrower_style}>
               {data.borrower}
             </TableCell>
-            <TableCell key={index} style={status_style}>
+            <TableCell key={index} className={classes.status_style}>
               {data.status}
             </TableCell>
-            <TableCell key={index} style={position_style}>
+            <TableCell key={index} className={classes.position_style}>
               {data.position}
             </TableCell>
-            <TableCell key={index} style={remark_style}>
+            <TableCell key={index} className={classes.remark_style}>
               {data.remark}
             </TableCell>
-            <TableCell key={index} style={update_time_style}>
+            <TableCell key={index} className={classes.update_time_style}>
               {formatTimeForFrontend(data.update_time)}
             </TableCell>
           </TableRow>
@@ -295,40 +283,40 @@ function DropdownWithButton(props) {
       return (
         <>
           <TableRow className={classes.table_row_style}>
-            <TableCell key={index} style={platform_style}>
+            <TableCell key={index} className={classes.platform_style}>
               {data.platform}
             </TableCell>
-            <TableCell key={index} style={phase_style}>
+            <TableCell key={index} className={classes.phase_style}>
               {data.phase}
             </TableCell>
-            <TableCell key={index} style={target_style}>
+            <TableCell key={index} className={classes.target_style}>
               {data.target}
             </TableCell>
-            <TableCell key={index} style={group_style}>
+            <TableCell key={index} className={classes.group_style}>
               {data.group}
             </TableCell>
-            <TableCell key={index} style={cycle_style}>
+            <TableCell key={index} className={classes.cycle_style}>
               {data.cycle}
             </TableCell>
-            <TableCell key={index} style={sku_style}>
+            <TableCell key={index} className={classes.sku_style}>
               {data.sku}
             </TableCell>
-            <TableCell key={index} style={sn_style}>
+            <TableCell key={index} className={classes.sn_style}>
               {data.sn}
             </TableCell>
-            <TableCell key={index} style={borrower_style}>
+            <TableCell key={index} className={classes.borrower_style}>
               {data.borrower}
             </TableCell>
-            <TableCell key={index} style={status_style}>
+            <TableCell key={index} className={classes.status_style}>
               {data.status}
             </TableCell>
-            <TableCell key={index} style={position_style}>
+            <TableCell key={index} className={classes.position_style}>
               {data.position}
             </TableCell>
-            <TableCell key={index} style={remark_style}>
+            <TableCell key={index} className={classes.remark_style}>
               {data.remark}
             </TableCell>
-            <TableCell key={index} style={update_time_style}>
+            <TableCell key={index} className={classes.update_time_style}>
               {formatTimeForFrontend(data.update_time)}
             </TableCell>
           </TableRow>
@@ -369,7 +357,7 @@ function DropdownWithButton(props) {
   };
   useEffect(() => {}, [machine_data]);
   const get_machine_status_report = async () => {
-    // setLoading(true);
+    setLoading(true);
     set_select_iur_machine([]);
     let response = await IURAPI.filtersearch({
       start_time: new Date(Date.now() - 3650 * 24 * 60 * 60 * 1000),
@@ -389,18 +377,9 @@ function DropdownWithButton(props) {
     } else if (response.data.error) {
       alert(response.data.error);
     }
-    // setLoading(false);
+    setLoading(false);
   };
-  /*
-  const handle_option_change = (event, selectedOption, fieldName) => {
-    const selectedValue = selectedOption ? selectedOption.label : "";
-    setFormData({
-      ...formData,
-      [fieldName]: selectedValue,
-    });
-    console.log(formData);
-  };
-  */
+
   //load module option
   const openModal = (modalNumber) => {
     setPopFilters((prev) => ({ ...prev, [modalNumber]: true }));
@@ -428,62 +407,105 @@ function DropdownWithButton(props) {
     },
   };
   Modal.setAppElement("#root");
-  useEffect(() => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      cycle: [],
-    }));
-  }, [formData.target, formData.group]);
-  useEffect(() => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      platform: [],
-    }));
-  }, [formData.target, formData.group, formData.cycle]);
 
-  function one_day_setting() {
-    setStartDate(new Date(Date.now() - 24 * 60 * 60 * 1000));
-    setEndDate(new Date());
-  }
-  function one_week_setting() {
-    setStartDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
-    setEndDate(new Date());
-  }
-  function one_month_setting() {
-    setStartDate(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
-    setEndDate(new Date());
-  }
-  function one_year_setting() {
-    setStartDate(new Date(Date.now() - 365 * 24 * 60 * 60 * 1000));
-    setEndDate(new Date());
-  }
-  function ten_year_setting() {
-    setStartDate(new Date(Date.now() - 3650 * 24 * 60 * 60 * 1000));
-    setEndDate(new Date());
-  }
+  useEffect(() => {
+    const option_data = async () => {
+      const requestData = {
+        target: selectoption.target.map((option) => option.title),
+        group: selectoption.group.map((option) => option.title),
+        cycle: selectoption.cycle.map((option) => option.title),
+        platform: selectoption.platform.map((option) => option.title),
+        phase: selectoption.phase.map((option) => option.title),
+        status: selectoption.status.map((option) => option.title),
+      };
+      if (button_name) {
+        requestData[button_name] = [];
+      }
+      console.log(requestData);
+      let response = await IURAPI.filter_option(requestData);
+      if (response.data.finaldata) {
+        for (let key in response.data.finaldata) {
+          setoption_list((prevOptionList) => ({
+            ...prevOptionList,
+            [key]: response.data.finaldata[key],
+          }));
+        }
+        console.log(response.data.finaldata);
+      }
+    };
+    option_data();
+  }, [selectoption, machine_data, button_name]);
+
   function pop_filter_content() {
     return (
       <>
         <div style={containerStyle}>
           <div className={classes.leftBlockStyle}>
             <div className={classes.line_form_style}>
-              <Button onClick={one_day_setting} style={{ marginLeft: "16px" }}>
-                one day
-              </Button>
-              <Button onClick={one_week_setting} style={{ marginLeft: "16px" }}>
-                one week
-              </Button>
+              <Filter
+                options={option_list.platform}
+                selectedOptions={selectoption.platform}
+                setSelectedOptions={(newOptions) =>
+                  setselectoption({ ...selectoption, platform: newOptions })
+                }
+                buttonText="Platform"
+                setButtonName={set_button_name}
+              />
             </div>
             <div className={classes.line_form_style}>
-              <Button onClick={one_month_setting} style={{ marginLeft: "16px" }}>
-                one month
-              </Button>
-              <Button onClick={one_year_setting} style={{ marginLeft: "16px" }}>
-                one year
-              </Button>
-              <Button onClick={ten_year_setting} style={{ marginLeft: "16px" }}>
-                ten year
-              </Button>
+              <Filter
+                options={option_list.phase}
+                selectedOptions={selectoption.phase}
+                setSelectedOptions={(newOptions) =>
+                  setselectoption({ ...selectoption, phase: newOptions })
+                }
+                buttonText="Phase"
+                setButtonName={set_button_name}
+              />
+            </div>
+            <div className={classes.line_form_style}>
+              <Filter
+                options={option_list.cycle}
+                selectedOptions={selectoption.cycle}
+                setSelectedOptions={(newOptions) =>
+                  setselectoption({ ...selectoption, cycle: newOptions })
+                }
+                buttonText="Cycle"
+                setButtonName={set_button_name}
+              />
+            </div>
+            <div className={classes.line_form_style}>
+              <Filter
+                options={option_list.target}
+                selectedOptions={selectoption.target}
+                setSelectedOptions={(newOptions) =>
+                  setselectoption({ ...selectoption, target: newOptions })
+                }
+                buttonText="Target"
+                setButtonName={set_button_name}
+              />
+            </div>
+            <div className={classes.line_form_style}>
+              <Filter
+                options={option_list.group}
+                selectedOptions={selectoption.group}
+                setSelectedOptions={(newOptions) =>
+                  setselectoption({ ...selectoption, group: newOptions })
+                }
+                buttonText="Group"
+                setButtonName={set_button_name}
+              />
+            </div>
+            <div className={classes.line_form_style}>
+              <Filter
+                options={option_list.status}
+                selectedOptions={selectoption.status}
+                setSelectedOptions={(newOptions) =>
+                  setselectoption({ ...selectoption, status: newOptions })
+                }
+                buttonText="Status"
+                setButtonName={set_button_name}
+              />
             </div>
             <div className={classes.line_form_style}>
               <DateTimePicker
@@ -493,119 +515,104 @@ function DropdownWithButton(props) {
                 setEndDatetime={setEndDate}
               />
             </div>
-            <div className={classes.line_form_style}>
-              <Filter
-                api="polls/api/target"
-                item_name="target"
-                selectedOptions={formData.target}
-                setSelectedOptions={(newOptions) =>
-                  setFormData({ ...formData, target: newOptions })
-                }
-                buttonLabel="Target"
-              />
-            </div>
-            <div className={classes.line_form_style}>
-              <Filter
-                api="polls/api/group"
-                item_name="group"
-                selectedOptions={formData.group}
-                setSelectedOptions={(newOptions) => setFormData({ ...formData, group: newOptions })}
-                buttonLabel="Group"
-              />
-            </div>
-            <div className={classes.line_form_style}>
-              <Filter
-                api="polls/api/cycle"
-                item_name="cycle"
-                request={{
-                  target: formData.target,
-                  group: formData.group,
-                }}
-                selectedOptions={formData.cycle}
-                setSelectedOptions={(newOptions) => setFormData({ ...formData, cycle: newOptions })}
-                buttonLabel="Cycle"
-              />
-            </div>
-            <div className={classes.line_form_style}>
-              <Filter
-                api="polls/api/platform"
-                item_name="platform"
-                request={{
-                  target: formData.target,
-                  group: formData.group,
-                  cycle: formData.cycle,
-                }}
-                selectedOptions={formData.platform}
-                setSelectedOptions={(newOptions) =>
-                  setFormData({ ...formData, platform: newOptions })
-                }
-                buttonLabel="Platform"
-              />
-            </div>
-            <div className={classes.line_form_style}>
-              <Filter
-                api="polls/api/phase"
-                item_name="phase"
-                selectedOptions={formData.phase}
-                setSelectedOptions={(newOptions) => setFormData({ ...formData, phase: newOptions })}
-                buttonLabel="Phase"
-              />
-            </div>
-            <div className={classes.line_form_style}>
-              <Filter
-                api="polls/api/status"
-                item_name="status"
-                selectedOptions={formData.status}
-                setSelectedOptions={(newOptions) =>
-                  setFormData({ ...formData, status: newOptions })
-                }
-                buttonLabel="Status"
-              />
-            </div>
             <Inputbox inputList={inputList} setInputList={setInputList} />
           </div>
           <div className={classes.rightBlockStyle}>
+            <p>platform</p>
             <div className={classes.line_form_style}>
-              <p>target</p>
-              <Filterbutton
-                options={formData.target}
-                onClick={(newOptions) => setFormData({ ...formData, target: newOptions })}
-              />
+              <div className={classes.filter_display}>
+                <Filterbutton
+                  options={Object.values(selectoption.platform).map((option) => option.title)}
+                  onClick={(newOptions) =>
+                    setselectoption({
+                      ...selectoption,
+                      platform: selectoption.platform.filter((option) =>
+                        newOptions.includes(option.title)
+                      ),
+                    })
+                  }
+                />
+              </div>
             </div>
+            <p>phase</p>
             <div className={classes.line_form_style}>
-              <p>group</p>
-              <Filterbutton
-                options={formData.group}
-                onClick={(newOptions) => setFormData({ ...formData, group: newOptions })}
-              />
+              <div className={classes.filter_display}>
+                <Filterbutton
+                  options={Object.values(selectoption.phase).map((option) => option.title)}
+                  onClick={(newOptions) =>
+                    setselectoption({
+                      ...selectoption,
+                      phase: selectoption.phase.filter((option) =>
+                        newOptions.includes(option.title)
+                      ),
+                    })
+                  }
+                />
+              </div>
             </div>
+            <p>cycle</p>
             <div className={classes.line_form_style}>
-              <p>cycle</p>
-              <Filterbutton
-                options={formData.cycle}
-                onClick={(newOptions) => setFormData({ ...formData, cycle: newOptions })}
-              />
+              <div className={classes.filter_display}>
+                <Filterbutton
+                  options={Object.values(selectoption.cycle).map((option) => option.title)}
+                  onClick={(newOptions) =>
+                    setselectoption({
+                      ...selectoption,
+                      cycle: selectoption.cycle.filter((option) =>
+                        newOptions.includes(option.title)
+                      ),
+                    })
+                  }
+                />
+              </div>
             </div>
+            <p>target</p>
             <div className={classes.line_form_style}>
-              <p>platform</p>
-              <Filterbutton
-                options={formData.platform}
-                onClick={(newOptions) => setFormData({ ...formData, platform: newOptions })}
-              />
+              <div className={classes.filter_display}>
+                <Filterbutton
+                  options={Object.values(selectoption.target).map((option) => option.title)}
+                  onClick={(newOptions) =>
+                    setselectoption({
+                      ...selectoption,
+                      target: selectoption.target.filter((option) =>
+                        newOptions.includes(option.title)
+                      ),
+                    })
+                  }
+                />
+              </div>
             </div>
+            <p>group</p>
             <div className={classes.line_form_style}>
-              <p>phase</p>
-              <Filterbutton
-                options={formData.phase}
-                onClick={(newOptions) => setFormData({ ...formData, phase: newOptions })}
-              />
+              <div className={classes.filter_display}>
+                <Filterbutton
+                  options={Object.values(selectoption.group).map((option) => option.title)}
+                  onClick={(newOptions) =>
+                    setselectoption({
+                      ...selectoption,
+                      group: selectoption.group.filter((option) =>
+                        newOptions.includes(option.title)
+                      ),
+                    })
+                  }
+                />
+              </div>
             </div>
+            <p>status</p>
             <div className={classes.line_form_style}>
-              <p>status</p>
-              <Filterbutton
-                options={formData.status}
-                onClick={(newOptions) => setFormData({ ...formData, status: newOptions })}
-              />
+              <div className={classes.filter_display}>
+                <Filterbutton
+                  options={Object.values(selectoption.status).map((option) => option.title)}
+                  onClick={(newOptions) =>
+                    setselectoption({
+                      ...selectoption,
+                      status: selectoption.status.filter((option) =>
+                        newOptions.includes(option.title)
+                      ),
+                    })
+                  }
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -857,7 +864,7 @@ function DropdownWithButton(props) {
   };
 
   const clearmodel = () => {
-    setFormData({
+    setselectoption({
       target: [],
       group: [],
       cycle: [],
@@ -883,13 +890,13 @@ function DropdownWithButton(props) {
     let response = await IURAPI.filtersearch({
       start_time: startDate,
       end_time: endDate,
-      target: formData.target,
-      group: formData.group,
-      cycle: formData.cycle,
-      platform: formData.platform,
+      target: Object.values(selectoption.target).map((option) => option.title),
+      group: Object.values(selectoption.group).map((option) => option.title),
+      cycle: Object.values(selectoption.cycle).map((option) => option.title),
+      platform: Object.values(selectoption.platform).map((option) => option.title),
       SN: inputList,
-      phase: formData.phase,
-      status: formData.status,
+      phase: Object.values(selectoption.phase).map((option) => option.title),
+      status: Object.values(selectoption.status).map((option) => option.title),
     });
     if (response.data.finaldata) {
       console.log(response.data);
@@ -985,7 +992,7 @@ function DropdownWithButton(props) {
             // style={classes.customStyles}
             contentLabel="filter"
           >
-            <h2>filter</h2>
+            <h2>Filter</h2>
             {pop_filter_content()}
             <Button style={{ margin: "10px", padding: "10px" }} onClick={filtersearch}>
               Apply Filters
@@ -1066,11 +1073,10 @@ function DropdownWithButton(props) {
                 >
                   Add new machine
                 </Button>
-                <FolderChoose />
+                <Button onClick={() => openModal(3)}>Add member</Button>
               </div>
             )}
             <Button onClick={excel_export_function}>Excel export</Button>
-            <Button onClick={() => openModal(3)}>Add member</Button>
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <p

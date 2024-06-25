@@ -20,6 +20,18 @@ class CATAPI {
   static create_task = (data) => {
     return axios.post("/cat/create_task/", data);
   };
+
+  static stop_task = (data) => {
+    return axios.post("/cat/stop_machine/", data);
+  };
+
+  static pause_task = (data) => {
+    return axios.post("/cat/pause_machine/", data);
+  };
+
+  static continue_task = (data) => {
+    return axios.post("/cat/continue_machine/", data);
+  };
 }
 
 export default CATAPI;

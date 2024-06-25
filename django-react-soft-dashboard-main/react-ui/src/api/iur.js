@@ -5,6 +5,10 @@ class IURAPI {
     return axios.get("/polls/api/phase/");
   };
 
+  static filter_option = (data) => {
+    return axios.post("/polls/filter_option/", data);
+  };
+
   static filtersearch = (data) => {
     return axios.post("/polls/api/filtersearch/", data);
   };
@@ -45,6 +49,14 @@ class IURAPI {
 
   static new_machine_mail = (data) => {
     return axios.post("/polls/send_mail_newplatform/", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  };
+
+  static addnewplatform = (data) => {
+    return axios.post("/polls/addnewplatform/", data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

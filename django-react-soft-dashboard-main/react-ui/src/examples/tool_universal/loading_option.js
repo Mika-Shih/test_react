@@ -31,6 +31,10 @@ export default function Asynchronous({
           await sleep(1e3);
           if (request == null) {
             const response = await TOOLAPI.filter_get(api);
+            if (response.data[name].length === 0) {
+              // if no data, alert
+              alert("No data");
+            }
             const formattedOptions = response.data[name]
               .filter((item) => item !== "")
               .map((item) => ({
@@ -42,6 +46,10 @@ export default function Asynchronous({
             }
           } else {
             const response = await TOOLAPI.filter_post(api, request);
+            if (response.data[name].length === 0) {
+              // if no data, alert
+              alert("No data");
+            }
             const formattedOptions = response.data[name]
               .filter((item) => item !== "")
               .map((item) => ({
@@ -99,7 +107,6 @@ export default function Asynchronous({
       options={options}
       loading={loading}
       value={selectedOptions}
-      s
       onChange={(event, newValue) => {
         setSelectedOptions(newValue);
       }}
