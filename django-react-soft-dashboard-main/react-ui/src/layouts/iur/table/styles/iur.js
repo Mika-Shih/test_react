@@ -179,6 +179,15 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       border: "none",
       color: "white",
     },
+    iur_UI_delete: {
+      cursor: "pointer",
+      padding: "5px",
+      backgroundColor: "#FA8072",
+      border: "none",
+      color: "white",
+      position: "absolute",
+      right: "15px",
+    },
     filter_display: {
       maxWidth: "600px",
       maxHeight: "115px",
