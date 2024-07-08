@@ -62,13 +62,13 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       },
     },
     platform_style: {
-      width: pxToRem(150),
+      width: pxToRem(200),
       textAlign: "center",
       fontSize: pxToRem(12),
       wordWrap: "break-word",
     },
     phase_style: {
-      width: pxToRem(80),
+      width: pxToRem(120),
       textAlign: "center",
       fontSize: pxToRem(12),
       wordWrap: "break-word",
@@ -118,6 +118,13 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
     position_style: {
       width: pxToRem(100),
       textAlign: "center",
+      fontSize: pxToRem(12),
+      wordWrap: "break-word",
+    },
+    acquire_style: {
+      width: pxToRem(270),
+      textAlign: "center",
+      alignItems: "center",
       fontSize: pxToRem(12),
       wordWrap: "break-word",
     },

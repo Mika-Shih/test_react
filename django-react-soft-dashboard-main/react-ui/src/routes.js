@@ -53,6 +53,21 @@ import SignIn from "layouts/authentication/sign-in";
 // import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
 
+//
+import TestPlanDashboard from "layouts/test_plan/TestPlanDashboard";
+import PersonalItem from "layouts/test_plan/testPlanList/case";
+import TestPlanList from "layouts/test_plan/testPlanList/plan";
+import TestItemList from "layouts/test_plan/testCaseList";
+import NewPlan from "layouts/test_plan/newPlan";
+import NewCase from "layouts/test_plan/newCase";
+import EditCase from "layouts/test_plan/editCase";
+import HistoryCase from "layouts/test_plan/historyCase";
+import EditPlan from "layouts/test_plan/editPlan";
+import CopyPlan from "layouts/test_plan/copyPlan";
+import ViewPlan from "layouts/test_plan/viewPlan";
+import AIComparison from "layouts/test_plan/AIComparisonPage";
+//
+
 //pulsar
 import pulsar from "layouts/pulsar";
 import add_device from "layouts/pulsar/add_device";
@@ -239,6 +254,128 @@ const routes = [
     noCollapse: true,
     protected: true,
   },
+  //
+  {
+    type: "collapse",
+    name: "AIComparison",
+    key: "AIComparison",
+    route: "/AIComparison",
+    icon: <Office size="12px" />,
+    component: AIComparison,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Test Plan List",
+    key: "test_plan_list",
+    route: "/test_plan_list",
+    icon: <Office size="12px" />,
+    component: TestPlanList,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Test Case List",
+    key: "test_case_list",
+    route: "/test_case_list",
+    icon: <Office size="12px" />,
+    component: TestItemList,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Test Plan Dashboard",
+    key: "test_plan_dashboard",
+    route: "/test_plan_dashboard",
+    icon: <Office size="12px" />,
+    component: TestPlanDashboard,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Test Item",
+    key: "personal_test_item",
+    route: "/personal_test_item",
+    icon: <Office size="12px" />,
+    component: PersonalItem,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Create Test Plan",
+    key: "new_plan",
+    route: "/new_plan",
+    icon: <Office size="12px" />,
+    component: NewPlan,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Edit Test Plan",
+    key: "edit_plan",
+    route: "/edit_plan",
+    icon: <Office size="12px" />,
+    component: EditPlan,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Copy Test Plan",
+    key: "copy_plan",
+    route: "/copy_plan",
+    icon: <Office size="12px" />,
+    component: CopyPlan,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "View Test Plan",
+    key: "view_plan",
+    route: "/view_plan",
+    icon: <Office size="12px" />,
+    component: ViewPlan,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Create Test Case",
+    key: "new_case",
+    route: "/new_case",
+    icon: <Office size="12px" />,
+    component: NewCase,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Edit Test Case",
+    key: "edit_case",
+    route: "/edit_case",
+    icon: <Office size="12px" />,
+    component: EditCase,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Test Case History",
+    key: "history_case",
+    route: "/history_case",
+    icon: <Office size="12px" />,
+    component: HistoryCase,
+    noCollapse: true,
+    protected: true,
+  },
+  //
   { type: "title", title: "Account Pages", key: "account-pages" },
   {
     type: "collapse",

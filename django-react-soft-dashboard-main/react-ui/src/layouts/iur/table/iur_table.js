@@ -1039,6 +1039,11 @@ function DropdownWithButton(props) {
               value={widthsearch}
               onChange={(event) => setWidthsearch(event.target.value)}
               placeholder=" SN / platform / borrower "
+              onKeyPress={(event) => {
+                if (event.key === "Enter") {
+                  widthsearth_function();
+                }
+              }}
               style={{ marginLeft: "30px" }}
             />
             <Button onClick={widthsearth_function}>search</Button>

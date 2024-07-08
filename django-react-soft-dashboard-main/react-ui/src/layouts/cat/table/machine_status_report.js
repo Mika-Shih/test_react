@@ -24,6 +24,7 @@ function DropdownWithButton() {
   const [endDate, setEndDate] = useState(new Date());
   const [data, setData] = useState([]);
   const [machine_data, set_machine_data] = useState([]);
+  const [unit_data, set_unit_data] = useState([]);
   const [popFilters, setPopFilters] = useState({
     1: false,
     2: false,
@@ -154,7 +155,20 @@ function DropdownWithButton() {
             {data.status}
           </TableCell>
           <TableCell key={index} style={item_style}>
-            {data.devicename}/{data.IOT_CATM_status}
+            {data.devicename}/{data.IOT_CATM_status}/
+            {data.task_unit_array &&
+              data.task_unit_array.some(
+                (item) => item.status === "running" && item.testcontent
+              ) && (
+                <button
+                  onClick={() => {
+                    openModal(5);
+                    set_unit_data(data);
+                  }}
+                >
+                  task
+                </button>
+              )}
           </TableCell>
           <TableCell key={index} style={active_style}>
             {remote_button_contorl(data.serial_number, data.status, data.task_unit_array)}
@@ -743,6 +757,7 @@ function DropdownWithButton() {
         </>
       );
     }
+
     return (
       <>
         {/* <TableContainer>
@@ -878,6 +893,64 @@ function DropdownWithButton() {
               )}
             </div>
           </div>
+        </div>
+      </>
+    );
+  }
+  function task_content(data) {
+    console.log(data);
+    const handle_select_machine = (sn) => {
+      if (task.select_machine.includes(sn)) {
+        set_task({
+          ...task,
+          select_machine: task.select_machine.filter((value) => value !== sn),
+        });
+      } else {
+        set_task({
+          ...task,
+          select_machine: [...task.select_machine, sn],
+        });
+      }
+    };
+    const title_data = [
+      { style: classes.checkbox_style, children: "" },
+      { style: classes.pending_task_tool, children: "Tool" },
+      { style: classes.pending_task_mode, children: "Mode" },
+      { style: classes.pending_task_count, children: "Count" },
+    ];
+    function assign_task_data_row(index, data) {
+      const machine_data = [
+        {
+          style: classes.checkbox_style,
+          children: (
+            <input
+              type="checkbox"
+              checked={task.select_machine.includes(data.serial_number)}
+              onChange={() => {
+                handle_select_machine(data.serial_number);
+              }}
+            />
+          ),
+        },
+        { style: classes.pending_task_tool, children: data.testcontent.tool },
+        { style: classes.pending_task_mode, children: data.testcontent.mode },
+        { style: classes.pending_task_count, children: data.testcontent.count },
+      ];
+      return (
+        <>
+          <Table row_style={classes.table_row_style} data={machine_data}></Table>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <div className={classes.upperBlockStyle}>
+          <TableContainer>
+            <Table row_style={classes.table_row_style} data={title_data}></Table>
+            {data.task_unit_array &&
+              data.task_unit_array.map((data, index) => assign_task_data_row(index, data))}
+          </TableContainer>
         </div>
       </>
     );
@@ -1137,6 +1210,18 @@ function DropdownWithButton() {
             確定
           </Button>
           <Button onClick={() => closeModal(4)}>關閉</Button>
+        </Modal>
+      </div>
+      <div style={{ display: "flex", overflowY: "auto" }}>
+        <Modal
+          isOpen={popFilters[5]}
+          onRequestClose={() => closeModal(5)}
+          style={assign_task_style}
+          contentLabel="task"
+        >
+          <h1 className={classes.textStyle}>Task Pending</h1>
+          {task_content(unit_data)}
+          <Button onClick={() => closeModal(5)}>關閉</Button>
         </Modal>
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>

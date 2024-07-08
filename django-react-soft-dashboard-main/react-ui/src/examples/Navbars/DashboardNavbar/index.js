@@ -62,9 +62,11 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
   const classes = styles({ transparentNavbar, absolute, light, isMini });
   const route = useLocation().pathname.split("/").slice(1);
   const [machine_arrive_mail_hint, set_machine_arrive_mail_hint] = useState([]);
-
+  if (!Array.isArray(routes)) {
+    routes = [];
+  }
   // view level
-  const level_view = ["Pulsar", "Token"];
+  const level_view = ["CAT", "Pulsar", "Token"];
   if (!hasAzureAccess()) {
     routes = routes.filter((route) => !level_view.includes(route.name));
   }
@@ -78,9 +80,22 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
     "Test table",
     "Tables",
     "Control table",
+    //
+    "AIComparison",
+    "Test Plan Dashboard",
+    "Test Item",
+    "Create Test Plan",
+    "Edit Test Plan",
+    "Copy Test Plan",
+    "View Test Plan",
+    "Create Test Case",
+    "Edit Test Case",
+    "Test Case History",
   ];
   const titlesToFilter = ["Test", "Account Pages"];
   const rightFilter = ["Token", "Logout"];
+  console.log(routes);
+  routes = routes.filter((route) => route !== undefined);
   routes = routes.filter((route) => !namesToFilter.includes(route.name));
   routes = routes.filter((route) => !titlesToFilter.includes(route.title));
   const right_routes = routes.filter((route) => rightFilter.includes(route.name));

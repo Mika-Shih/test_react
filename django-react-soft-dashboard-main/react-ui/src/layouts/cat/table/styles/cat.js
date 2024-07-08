@@ -90,6 +90,24 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       fontSize: pxToRem(12),
       wordWrap: "break-word",
     },
+    pending_task_mode: {
+      width: pxToRem(200),
+      textAlign: "center",
+      fontSize: pxToRem(12),
+      wordWrap: "break-word",
+    },
+    pending_task_tool: {
+      width: pxToRem(200),
+      textAlign: "center",
+      fontSize: pxToRem(12),
+      wordWrap: "break-word",
+    },
+    pending_task_count: {
+      width: pxToRem(200),
+      textAlign: "center",
+      fontSize: pxToRem(12),
+      wordWrap: "break-word",
+    },
     textStyle: {
       fontWeight: "1000",
       color: "#99bceb", // water-blue color

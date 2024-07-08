@@ -10,9 +10,11 @@ import Loading from "examples/tool_universal/loading";
 import Loading_option from "examples/tool_universal/loading_option";
 import Table from "examples/Table/table_row";
 // import useStyles from "layouts/new machine/table/styles/new_machine_style";
-import useStyles from "layouts/iur/table/styles/iur";
+import useStyles from "./styles/new_machine_style";
 import IURAPI from "api/iur";
 import { useHistory } from "react-router-dom";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
 function InputWithAddAndClearButton(props) {
   const history = useHistory();
   const [options, setOptions] = useState([]);
@@ -42,6 +44,7 @@ function InputWithAddAndClearButton(props) {
         cycle: "",
         sku: "",
         sn: sn,
+        acquirer: null,
         position: "",
         remark: "",
       }));
@@ -78,6 +81,7 @@ function InputWithAddAndClearButton(props) {
       { style: classes.cycle_style, children: "cycle" },
       { style: classes.sku_style, children: "sku" },
       { style: classes.sn_style, children: "serial_number" },
+      { style: classes.acquire_style, children: "acquirer" },
       { style: classes.position_style, children: "position" },
       { style: classes.remark_style, children: "remark" },
     ];
@@ -87,6 +91,32 @@ function InputWithAddAndClearButton(props) {
       </>
     );
   }
+  const acquire_data = [
+    "WWAN",
+    "WLAN_Intel",
+    "WLAN_Realtek",
+    "Ethernet",
+    "NFC",
+    "Lab all functional test 24hrs",
+    "Antenna & Radio NUD",
+    "HW development",
+    "Carrier sample - EMEA",
+    "Carrier sample - APJ",
+    "Field Test (EMEA)",
+    "Field Test (TDC)",
+    "Field Test for TC",
+    "COMMs Storage/5G testing/dogfood/Donatiog to Kevin Lab",
+    "Carrier sample -(NA/LA)",
+    "Field Test (NA/LA)",
+    "WLAN_QCOM",
+    "CAT-M",
+    "WLAN MediaTek",
+    "R&D innovation Programs",
+    "Field Test (NA/LA)",
+    "COMMs Houston Lab",
+    "Field Test",
+    "Factory Support",
+  ];
   function data_row(index, data) {
     if (!data) {
       return null;
@@ -197,6 +227,27 @@ function InputWithAddAndClearButton(props) {
           <TableCell key={index} className={classes.sn_style}>
             {machine_data[index].sn}
           </TableCell>
+          <TableCell key={index} className={classes.acquire_style}>
+            <Autocomplete
+              id="combo-box-demo"
+              options={acquire_data}
+              sx={{ width: 250, height: 20 }}
+              MenuProps={{
+                MenuListProps: {
+                  "aria-labelledby": "combo-box-demo",
+                  position: "fixed",
+                },
+              }}
+              onChange={(e, selectedOption) => {
+                set_machine_data((prevData) => {
+                  const newData = [...prevData];
+                  newData[index] = { ...newData[index], acquirer: selectedOption };
+                  return newData;
+                });
+              }}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </TableCell>
           <TableCell
             key={index}
             className={classes.position_style}
@@ -251,6 +302,9 @@ function InputWithAddAndClearButton(props) {
       </>
     );
   }
+  const test = () => {
+    console.log(machine_data);
+  };
   const inputRef = useRef(null);
   const [isEditing, setIsEditing] = useState({});
   const indexRef = useRef(null);
@@ -439,6 +493,7 @@ function InputWithAddAndClearButton(props) {
       { style: classes.cycle_style, children: data.cycle },
       { style: classes.sku_style, children: data.sku },
       { style: classes.sn_style, children: data.sn },
+      { style: classes.acquire_style, children: data.acquirer },
       { style: classes.position_style, children: data.position },
       { style: classes.remark_style, children: data.remark },
     ];
@@ -458,6 +513,7 @@ function InputWithAddAndClearButton(props) {
     <>
       <div style={{ marginLeft: "16px" }}>
         <Loading loading={loading} />
+        <button onClick={test}>Click me</button>
         <div style={{ display: "flex", overflowY: "auto" }}>
           <Modal
             isOpen={popFilters[1]}

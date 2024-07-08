@@ -47,6 +47,7 @@ function MachineRecord() {
   const borrower_style = getCellStyle(100);
   const status_style = getCellStyle(90);
   const position_style = getCellStyle(100);
+  const acquirer_style = getCellStyle(160);
   const remark_style = getCellStyle(90);
   const update_time_style = getCellStyle(200);
   const table_row_style = {
@@ -79,6 +80,9 @@ function MachineRecord() {
           </TableCell>
           <TableCell key={index} style={position_style}>
             {"position"}
+          </TableCell>
+          <TableCell key={index} style={acquirer_style}>
+            {"acquirer"}
           </TableCell>
           <TableCell key={index} style={sn_style}>
             {"serial_number"}
@@ -140,6 +144,9 @@ function MachineRecord() {
           </TableCell>
           <TableCell key={index} style={position_style}>
             {data.position}
+          </TableCell>
+          <TableCell key={index} style={acquirer_style}>
+            {data.acquirer}
           </TableCell>
           <TableCell key={index} style={sn_style}>
             {data.sn}
