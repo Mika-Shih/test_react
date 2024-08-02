@@ -1,6 +1,6 @@
 import { makeStyles } from "@mui/styles";
 
-export default makeStyles(({ boxShadows, functions, borders, typography }) => {
+export default makeStyles(({ boxShadows = {}, functions = {}, borders = {}, typography = {} }) => {
   const { navbarBoxShadow } = boxShadows;
   const { rgba, pxToRem } = functions;
   const { borderRadius, borderWidth } = borders;
@@ -53,6 +53,13 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
     rightBlockStyle: {
       flex: 1,
       background: "#f5f5f5",
+    },
+    selected: {
+      backgroundColor: "#ccc",
+      display: "inline-block",
+      padding: "5px",
+      borderRadius: "3px",
+      margin: "5px",
     },
     checkbox_style: {
       width: pxToRem(10),

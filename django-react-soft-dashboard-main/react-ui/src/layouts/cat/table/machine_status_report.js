@@ -16,6 +16,8 @@ import Filter from "examples/tool_universal/filter_function";
 import Loading from "examples/tool_universal/loading";
 import { hasAzureAccess } from "../../../auth-context/auth.context";
 import useStyles from "./styles/cat";
+import ReactDOMServer from "react-dom/server";
+import MachineReportDownload from "./machine_report_download";
 import CATAPI from "api/cat";
 function DropdownWithButton() {
   const [loading, setLoading] = useState(false);
@@ -49,6 +51,11 @@ function DropdownWithButton() {
   const [showToolName, setShowToolName] = useState(data.map(() => false));
   useEffect(() => {
     get_machine_status_report();
+    const interval = setInterval(() => {
+      get_machine_status_report();
+      console.log("update");
+    }, 10000);
+    return () => clearInterval(interval);
   }, []);
   const toggleItem = (index) => {
     setShowToolName((prevShowToolName) => ({
@@ -448,15 +455,52 @@ function DropdownWithButton() {
     marginLeft: "14px",
     fontSize: "16px",
   };
-  useEffect(() => {}, [data]);
-  const handleButtonClick = async () => {
-    let response = await CATAPI.machine_report();
-    if (response.data) {
-      console.log(response.data);
-      setData(response.data);
-    } else if (response.data.error) {
-      alert(response.data.error);
+  const handle_machine_report = async () => {
+    setLoading(true);
+    try {
+      let request_data = new FormData();
+      request_data.append(
+        "serial_number",
+        JSON.stringify(
+          machine_data.map((machine) => machine.serial_number).filter((number) => number !== null)
+        )
+      );
+      let response = await CATAPI.select_machine_report(request_data);
+      downloadFile(response.data, "machine_report.html");
+      alert("successful download");
+      setData([]);
+    } catch (error) {
+      console.error(error);
+      alert("Please contact the administrator.");
+    } finally {
+      setLoading(false);
     }
+  };
+  const download_machine_report = async () => {
+    setLoading(true);
+    // window.open(`/machine_report/?sn=${machine_data}`);
+    const jsxContent = ReactDOMServer.renderToString(<MachineReportDownload data={machine_data} />);
+    // const jsxContent = document.documentElement.outerHTML;
+    const blob = new Blob([jsxContent], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "page.html";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setLoading(false);
+  };
+  const downloadFile = (fileData, fileName) => {
+    const blob = new Blob([fileData], { type: "application/octet-stream" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
   useEffect(() => {
     console.log(machine_data);
@@ -720,6 +764,35 @@ function DropdownWithButton() {
       "update",
       "update-Patches",
     ];
+    const add = () => {
+      set_task((prevData) => ({
+        ...prevData,
+        task: [
+          ...prevData.task,
+          {
+            tool: task.tool,
+            mode: task.mode,
+            count: 0,
+            check: false,
+          },
+        ],
+      }));
+    };
+    const delete_select = () => {
+      if (task.select_index != null) {
+        const updatedTask = [...task.task];
+        console.log(task.select_index);
+        updatedTask.splice(task.select_index, 1);
+        set_task((prevData) => ({
+          ...prevData,
+          task: updatedTask,
+        }));
+        set_task((prevData) => ({
+          ...prevData,
+          select_index: null,
+        }));
+      }
+    };
     const title_data = [
       { style: classes.checkbox_style, children: "" },
       { style: classes.platform_style, children: "platform" },
@@ -748,7 +821,7 @@ function DropdownWithButton() {
         { style: classes.remark_style, children: data.remark },
         { style: classes.update_time_style, children: formatTimeForFrontend(data.finish_time) },
       ];
-      if (!data || data.status != "idle") {
+      if (!data) {
         return null;
       }
       return (
@@ -800,15 +873,6 @@ function DropdownWithButton() {
                     set_task((prevData) => ({
                       ...prevData,
                       mode: e.target.value,
-                      task: [
-                        ...prevData.task,
-                        {
-                          tool: prevData.tool,
-                          mode: e.target.value,
-                          count: 0,
-                          check: false,
-                        },
-                      ],
                     }));
                   }}
                   style={{ padding: "5px 1px", marginRight: "10px" }}
@@ -819,24 +883,30 @@ function DropdownWithButton() {
                     </option>
                   ))}
                 </select>
+                <Button onClick={add}>Add</Button>
+                <Button onClick={delete_select}>Delete</Button>
               </div>
             </div>
             <div className={classes.leftBlockStyle_assign_value}>
               <div>
-                {task.task.map((option, index) => (
-                  <div key={index}>
-                    <span
-                      onClick={() =>
-                        set_task((prevData) => ({
-                          ...prevData,
-                          select_index: index,
-                        }))
-                      }
-                    >
-                      {option.tool}/{option.mode}
-                    </span>
-                  </div>
-                ))}
+                {task.task.map((option, index) => {
+                  const isSelected = task.select_index === index;
+                  return (
+                    <div key={index}>
+                      <span
+                        onClick={() =>
+                          set_task((prevData) => ({
+                            ...prevData,
+                            select_index: index,
+                          }))
+                        }
+                        className={isSelected ? classes.selected : ""}
+                      >
+                        {option.tool}/{option.mode}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -1243,7 +1313,10 @@ function DropdownWithButton() {
             <Tablebody>{machine_data.map((data, index) => data_row(index, data))}</Tablebody>
           </div>
         </TableContainer>
-        <Button onClick={handleButtonClick} style={button_style}>
+        <Button onClick={handle_machine_report} style={button_style}>
+          report_get_X
+        </Button>
+        <Button onClick={download_machine_report} style={button_style}>
           report_get
         </Button>
         {data.map((data, index) => (

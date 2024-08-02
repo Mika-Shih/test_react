@@ -12,8 +12,15 @@ import Button from "examples/Icons/Button";
 import Loading from "examples/tool_universal/loading";
 import PropTypes from "prop-types";
 import USERAPI from "api/user";
+import useStyles from "./styles/account";
+import { useHistory } from "react-router-dom";
+import IconButton from "@material-ui/core/IconButton";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 const frontendServer = process.env.REACT_APP_FRONTEND_SERVER;
 function DropdownWithButton() {
+  const classes = useStyles();
+  const history = useHistory();
   const [option, setOption] = useState(1);
   const [select_token, select_setToken] = useState([]);
   const [token, setToken] = useState([]);
@@ -313,6 +320,84 @@ function DropdownWithButton() {
   useEffect(() => {
     console.log(popdata);
   }, [popdata]);
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  function account_change_content() {
+    return (
+      <>
+        <div className={classes.containerStyle}>
+          <div className={classes.leftBlockStyle}>
+            <div className={classes.inputContainer}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="password"
+                className={classes.textField}
+              />
+              <IconButton className={classes.eyeIcon} onClick={togglePasswordVisibility}>
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </div>
+            <div className={classes.inputContainer}>
+              {/* <TextField type="password" placeholder="New Password" className={classes.textField} /> */}
+            </div>
+            <div className={classes.inputContainer}>
+              {/* <TextField
+                type="password"
+                placeholder="Confirm New Password"
+                className={classes.textField}
+              /> */}
+            </div>
+          </div>
+          <div style={rightBlockStyle}>
+            <div style={line_form_style}>
+              {formData.target.map((option, index) => (
+                <div key={index} style={borderedOptionStyle}>
+                  {option}
+                </div>
+              ))}
+            </div>
+            <div style={line_form_style}>
+              {formData.group.map((option, index) => (
+                <div key={index} style={borderedOptionStyle}>
+                  {option}
+                </div>
+              ))}
+            </div>
+            <div style={line_form_style}>
+              {formData.cycle.map((option, index) => (
+                <div key={index} style={borderedOptionStyle}>
+                  {option}
+                </div>
+              ))}
+            </div>
+            <div style={line_form_style}>
+              {formData.platform.map((option, index) => (
+                <div key={index} style={borderedOptionStyle}>
+                  {option}
+                </div>
+              ))}
+            </div>
+            <div style={line_form_style}>
+              {formData.phase.map((option, index) => (
+                <div key={index} style={borderedOptionStyle}>
+                  {option}
+                </div>
+              ))}
+            </div>
+            <div style={line_form_style}>
+              {formData.status.map((option, index) => (
+                <div key={index} style={borderedOptionStyle}>
+                  {option}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
   function pop_filter_content() {
     return (
       <>
@@ -560,6 +645,26 @@ function DropdownWithButton() {
           style={customStyles}
           contentLabel="filter"
         >
+          <h2>Change Password</h2>
+          {account_change_content()}
+          <Button style={{ margin: "10px", padding: "10px" }} onClick={filtersearch}>
+            應用篩選
+          </Button>
+          <Button style={{ margin: "10px", padding: "10px" }} onClick={clearmodel}>
+            清除
+          </Button>
+          <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
+            關閉
+          </Button>
+        </Modal>
+      </div>
+      <div style={{ display: "flex", overflowY: "auto" }}>
+        <Modal
+          isOpen={popFilters[3]}
+          onRequestClose={() => closeModal(3)}
+          style={customStyles}
+          contentLabel="filter"
+        >
           <h2>filter</h2>
           <p>設置內容</p>
           {pop_filter_content()}
@@ -569,7 +674,7 @@ function DropdownWithButton() {
           <Button style={{ margin: "10px", padding: "10px" }} onClick={clearmodel}>
             清除
           </Button>
-          <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
+          <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(3)}>
             關閉
           </Button>
         </Modal>
@@ -589,7 +694,14 @@ function DropdownWithButton() {
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ display: "flex", flexDirection: "row", marginBottom: "20px" }}>
-          <Button onClick={() => openModal(1)}>Filter</Button>
+          <Button
+            onClick={() => {
+              history.push("/account/change_password");
+            }}
+          >
+            Change Password
+          </Button>
+          <Button onClick={() => openModal(3)}>Filter</Button>
           <input
             type="text"
             value={widthsearch}

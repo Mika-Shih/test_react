@@ -10,7 +10,7 @@ const axios = Axios.create({
 axios.interceptors.request.use(
   (config) => {
     console.log(config);
-    if (!config.url.includes("/user")) {
+    if (!config.url.includes("/user/verify/")) {
       const token = Cookies.get("token");
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;

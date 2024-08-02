@@ -13,7 +13,6 @@ function DropdownWithButton() {
     }));
   };
   function formatTimeForFrontend(inputTime) {
-    // 月份名称数组
     const months = [
       "January",
       "February",

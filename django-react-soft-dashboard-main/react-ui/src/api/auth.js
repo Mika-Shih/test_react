@@ -17,6 +17,14 @@ class AuthApi {
       headers: { Authorization: `Bearer ${data.token}` },
     });
   };
+
+  static change_password = (data) => {
+    return axios.post("/user/change_password/", data);
+  };
+
+  static active_code = (data) => {
+    return axios.post("/user/active_code/", data);
+  };
 }
 
 let base = "users";

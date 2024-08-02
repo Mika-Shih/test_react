@@ -302,9 +302,6 @@ function InputWithAddAndClearButton(props) {
       </>
     );
   }
-  const test = () => {
-    console.log(machine_data);
-  };
   const inputRef = useRef(null);
   const [isEditing, setIsEditing] = useState({});
   const indexRef = useRef(null);
@@ -513,7 +510,6 @@ function InputWithAddAndClearButton(props) {
     <>
       <div style={{ marginLeft: "16px" }}>
         <Loading loading={loading} />
-        <button onClick={test}>Click me</button>
         <div style={{ display: "flex", overflowY: "auto" }}>
           <Modal
             isOpen={popFilters[1]}

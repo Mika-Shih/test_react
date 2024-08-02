@@ -13,8 +13,8 @@ class CATAPI {
     return axios.post("/cat/download_cth/", data);
   };
 
-  static machine_report = () => {
-    return axios.get("/cat/machine_report/");
+  static select_machine_report = (data) => {
+    return axios.post("/cat/select_machine_report/", data);
   };
 
   static create_task = (data) => {

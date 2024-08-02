@@ -36,6 +36,8 @@ Coded by www.creative-tim.com
 */
 
 // Soft UI Dashboard React layouts
+import Change_password from "layouts/account/change_password";
+import Machine_report from "layouts/cat/table/machine_report_download";
 import Dashboard from "layouts/dashboard";
 import Cat from "layouts/cat";
 import Tables from "layouts/tables";
@@ -48,6 +50,7 @@ import Iur_machine_record from "layouts/machine record";
 import Billing from "layouts/billing";
 import VirtualReality from "layouts/virtual-reality";
 import RTL from "layouts/rtl";
+import Member from "layouts/member";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 // import SignUp from "layouts/authentication/sign-up";
@@ -84,6 +87,20 @@ import CreditCard from "examples/Icons/CreditCard";
 import Cube from "examples/Icons/Cube";
 
 const routes = [
+  {
+    key: "machine_report",
+    route: "/machine_report",
+    component: Machine_report,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    key: "change password",
+    route: "/account/change_password",
+    component: Change_password,
+    noCollapse: true,
+    protected: true,
+  },
   {
     type: "collapse",
     name: "IUR",
@@ -376,6 +393,16 @@ const routes = [
     protected: true,
   },
   //
+  {
+    type: "collapse",
+    name: "Member",
+    key: "member",
+    route: "/member",
+    icon: <Shop size="16px" />,
+    component: Member,
+    noCollapse: true,
+    protected: true,
+  },
   { type: "title", title: "Account Pages", key: "account-pages" },
   {
     type: "collapse",
