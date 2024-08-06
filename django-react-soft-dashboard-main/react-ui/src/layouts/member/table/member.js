@@ -136,7 +136,7 @@ function DropdownWithButton() {
           variant="outlined"
           value={search_text}
           onChange={(event) => set_search_text(event.target.value)}
-          placeholder="Search  eamil..."
+          placeholder="Search  email..."
           className={classes.search}
         />
         <TableContainer>

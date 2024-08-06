@@ -17,11 +17,9 @@ import { useHistory } from "react-router-dom";
 import IconButton from "@material-ui/core/IconButton";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-const frontendServer = process.env.REACT_APP_FRONTEND_SERVER;
 function DropdownWithButton() {
   const classes = useStyles();
   const history = useHistory();
-  const [option, setOption] = useState(1);
   const [select_token, select_setToken] = useState([]);
   const [token, setToken] = useState([]);
   const [popdata, setPopdata] = useState([]);
@@ -54,7 +52,6 @@ function DropdownWithButton() {
     cc_mail: [],
   });
   const [inputList, setInputList] = useState([""]);
-  const [widthsearch, setWidthsearch] = useState([""]);
   function getCellStyle(width) {
     return {
       minWidth: `${width}px`,
@@ -556,23 +553,6 @@ function DropdownWithButton() {
     });
     setInputList([""]);
   };
-  const widthsearth_function = () => {
-    const request_data = {
-      keyword: [widthsearch],
-    };
-    console.log(request_data);
-    axios
-      .post(`${backendServer}polls/api/widthsearch/`, request_data, { timeout: 10000 })
-      .then((response) => {
-        if (response.data.finaldata) {
-          console.log(response.data);
-          set_machine_data(response.data.finaldata);
-        } else if (response.data.error) {
-          alert(response.data.error);
-        }
-      });
-    select_setToken([]);
-  };
   const filtersearch = () => {
     const request_data = {
       target: formData.target,
@@ -701,57 +681,6 @@ function DropdownWithButton() {
           >
             Change Password
           </Button>
-          <Button onClick={() => openModal(3)}>Filter</Button>
-          <input
-            type="text"
-            value={widthsearch}
-            onChange={(event) => setWidthsearch(event.target.value)}
-            placeholder=" SN / platform / borrower "
-            style={{ marginLeft: "30px" }}
-          />
-          <Button onClick={widthsearth_function}>搜索</Button>
-          <div style={{ marginLeft: "auto", marginRight: "70px" }}>
-            <select
-              value={option}
-              onChange={(event) => {
-                setOption(event.target.value);
-              }}
-              style={{ padding: "5px 25px", marginLeft: "20px", marginRight: "10px" }}
-            >
-              <option value="1">借出</option>
-              <option value="2">歸還</option>
-              <option value="3">新機入庫</option>
-              <option value="4">批次修改</option>
-              <option value="5">批次刪除</option>
-              <option value="6">批次報廢機台</option>
-            </select>
-            <Button
-              style={{ marginLeft: "40px" }}
-              onClick={() => {
-                window.location.href = `${frontendServer}new_machine/`;
-              }}
-            >
-              新增機台
-            </Button>
-          </div>
-        </div>
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          <p
-            style={{
-              marginLeft: "16px",
-              fontFamily: "微軟正黑體, Microsoft JhengHei, Arial, sans-serif",
-            }}
-          >
-            當前機台數量: {machine_data.length}
-          </p>
-          <p
-            style={{
-              marginLeft: "16px",
-              fontFamily: "微軟正黑體, Microsoft JhengHei, Arial, sans-serif",
-            }}
-          >
-            已勾選機台數量: {select_token.length}
-          </p>
         </div>
         <TableContainer>
           <div style={{}}>
