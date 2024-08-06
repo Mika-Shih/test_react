@@ -654,10 +654,10 @@ function DropdownWithButton(props) {
     if (options == 2) {
       machine_length("Rent");
     }
-    if (options == 3 || options == 5 || options == 6) {
+    if (options == 5 || options == 6) {
       machine_length("Keep On");
     }
-    if (options == 4) {
+    if (options == 3 || options == 4) {
       props.iur_option(options);
       setOptions(0);
     }

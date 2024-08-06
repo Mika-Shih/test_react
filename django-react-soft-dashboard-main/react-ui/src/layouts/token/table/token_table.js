@@ -14,9 +14,6 @@ import PropTypes from "prop-types";
 import USERAPI from "api/user";
 import useStyles from "./styles/account";
 import { useHistory } from "react-router-dom";
-import IconButton from "@material-ui/core/IconButton";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
 function DropdownWithButton() {
   const classes = useStyles();
   const history = useHistory();
@@ -317,25 +314,11 @@ function DropdownWithButton() {
   useEffect(() => {
     console.log(popdata);
   }, [popdata]);
-  const [showPassword, setShowPassword] = useState(false);
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
   function account_change_content() {
     return (
       <>
         <div className={classes.containerStyle}>
           <div className={classes.leftBlockStyle}>
-            <div className={classes.inputContainer}>
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="password"
-                className={classes.textField}
-              />
-              <IconButton className={classes.eyeIcon} onClick={togglePasswordVisibility}>
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </div>
             <div className={classes.inputContainer}>
               {/* <TextField type="password" placeholder="New Password" className={classes.textField} /> */}
             </div>
