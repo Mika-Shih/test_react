@@ -81,22 +81,24 @@ function Footer({ company, links }) {
 // Setting default values for the props of Footer
 Footer.defaultProps = {
   company: {
-    href: "http://lab-management-env.eba-8nvxpmcv.ap-southeast-1.elasticbeanstalk.com/iur",
-    name: "Uut Lab ",
+    // href: "http://lab-management-env.eba-8nvxpmcv.ap-southeast-1.elasticbeanstalk.com/iur",
+    // name: "Uut Lab ",
+    href: "mailto:bill.chang@hp.com",
+    name: "bill.chang@hp.com ",
   },
   links: [
-    {
-      href: "http://lab-management-env.eba-8nvxpmcv.ap-southeast-1.elasticbeanstalk.com/iur/uut",
-      name: "Old IUR System",
-    },
-    {
-      href: "http://lab-management-env.eba-8nvxpmcv.ap-southeast-1.elasticbeanstalk.com/labreport/index.html",
-      name: "COMM auto test",
-    },
-    {
-      href: "http://lab-management-env.eba-8nvxpmcv.ap-southeast-1.elasticbeanstalk.com/wwanmapper/",
-      name: "Wwan mapper",
-    },
+    // {
+    //   href: "http://lab-management-env.eba-8nvxpmcv.ap-southeast-1.elasticbeanstalk.com/iur/uut",
+    //   name: "Old IUR System",
+    // },
+    // {
+    //   href: "http://lab-management-env.eba-8nvxpmcv.ap-southeast-1.elasticbeanstalk.com/labreport/index.html",
+    //   name: "COMM auto test",
+    // },
+    // {
+    //   href: "http://lab-management-env.eba-8nvxpmcv.ap-southeast-1.elasticbeanstalk.com/wwanmapper/",
+    //   name: "Wwan mapper",
+    // },
   ],
 };
 

@@ -4,7 +4,7 @@ services:
   django:
     container_name: django
     build:
-      context: ../../mysite
+      context: ../mysite
       dockerfile: Dockerfile
     ports:
       - "8000:8000"

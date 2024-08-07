@@ -66,7 +66,7 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
     routes = [];
   }
   // view level
-  const level_view = ["CAT", "Pulsar", "Token"];
+  const level_view = ["CAT", "Pulsar", "Test Plan List", "Test Case List", "Member", "Token"];
   if (!hasAzureAccess()) {
     routes = routes.filter((route) => !level_view.includes(route.name));
   }

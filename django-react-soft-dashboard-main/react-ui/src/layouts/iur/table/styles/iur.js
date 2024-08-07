@@ -61,10 +61,88 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
         zIndex: 9999,
       },
     },
+    title_checkbox_style: {
+      width: pxToRem(10),
+      textAlign: "center",
+      fontSize: pxToRem(16),
+      wordWrap: "break-word",
+    },
+    title_platform_style: {
+      width: pxToRem(150),
+      textAlign: "center",
+      fontSize: pxToRem(17),
+      wordWrap: "break-word",
+    },
+    title_phase_style: {
+      width: pxToRem(80),
+      textAlign: "center",
+      fontSize: pxToRem(17),
+      wordWrap: "break-word",
+    },
+    title_target_style: {
+      width: pxToRem(80),
+      textAlign: "center",
+      fontSize: pxToRem(17),
+      wordWrap: "break-word",
+    },
+    title_group_style: {
+      width: pxToRem(130),
+      textAlign: "center",
+      fontSize: pxToRem(17),
+      wordWrap: "break-word",
+    },
+    title_cycle_style: {
+      width: pxToRem(90),
+      textAlign: "center",
+      fontSize: pxToRem(17),
+      wordWrap: "break-word",
+    },
+    title_sku_style: {
+      width: pxToRem(70),
+      textAlign: "center",
+      fontSize: pxToRem(17),
+      wordWrap: "break-word",
+    },
+    title_sn_style: {
+      width: pxToRem(150),
+      textAlign: "center",
+      fontSize: pxToRem(17),
+      wordWrap: "break-word",
+    },
+    title_borrower_style: {
+      width: pxToRem(100),
+      textAlign: "center",
+      fontSize: pxToRem(16),
+      wordWrap: "break-word",
+    },
+    title_status_style: {
+      width: pxToRem(100),
+      textAlign: "center",
+      fontSize: pxToRem(17),
+      wordWrap: "break-word",
+    },
+    title_position_style: {
+      width: pxToRem(100),
+      textAlign: "center",
+      fontSize: pxToRem(17),
+      wordWrap: "break-word",
+    },
+    title_remark_style: {
+      width: pxToRem(100),
+      textAlign: "center",
+      fontSize: pxToRem(17),
+      wordWrap: "break-word",
+    },
+    title_update_time_style: {
+      width: pxToRem(200),
+      textAlign: "center",
+      fontSize: pxToRem(17),
+      wordWrap: "break-word",
+    },
     checkbox_style: {
       width: pxToRem(10),
       textAlign: "center",
-      fontSize: pxToRem(13),
+      fontSize: pxToRem(16),
       wordWrap: "break-word",
     },
     platform_style: {
@@ -192,6 +270,24 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       maxWidth: "600px",
       maxHeight: "115px",
       overflowY: "auto",
+    },
+    add_new_machine: {
+      display: "flex",
+      alignItems: "center",
+      backgroundColor: "#d32f2f", // 按钮背景色，深红色
+      color: "#fff", // 按钮文字颜色，白色
+      border: "none", // 移除按钮边框
+      borderRadius: "4px", // 按钮圆角
+      padding: "8px 16px", // 按钮内边距
+      boxShadow: "none",
+      "&:hover": {
+        backgroundColor: "#b71c1c", // 按钮悬停背景色，深红色
+        color: "#fff", // 按钮悬停文字颜色，白色
+        boxShadow: "none",
+      },
+    },
+    icon: {
+      marginRight: "8px", // 图标与文本之间的间距
     },
     test: {
       display: "flex",

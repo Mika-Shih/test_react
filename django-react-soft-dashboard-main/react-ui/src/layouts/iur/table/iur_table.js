@@ -21,11 +21,14 @@ import { useHistory } from "react-router-dom";
 import { useAuth, hasAzureAccess } from "../../../auth-context/auth.context";
 import useStyles from "layouts/iur/table/styles/iur";
 import IURAPI from "api/iur";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import AddIcon from "@mui/icons-material/Add";
 function DropdownWithButton(props) {
   const classes = useStyles();
   const { user } = useAuth();
   const history = useHistory();
-  const [option, setOption] = useState(1);
+  const [option, setOption] = useState();
   const [options, setOptions] = useState(0);
   const [button_name, set_button_name] = useState("");
   const [select_iur_machine, set_select_iur_machine] = useState([]);
@@ -89,19 +92,21 @@ function DropdownWithButton(props) {
     children: PropTypes.node.isRequired,
   };
   const data = [
-    ...(hasAzureAccess() ? [{ index: "1", className: classes.checkbox_style, children: "/" }] : []),
-    { index: "1", className: classes.platform_style, children: "platform" },
-    { index: "1", className: classes.phase_style, children: "phase" },
-    { index: "1", className: classes.target_style, children: "target" },
-    { index: "1", className: classes.group_style, children: "group" },
-    { index: "1", className: classes.cycle_style, children: "cycle" },
-    { index: "1", className: classes.sku_style, children: "sku" },
-    { index: "1", className: classes.sn_style, children: "serial_number" },
-    { index: "1", className: classes.borrower_style, children: "borrower" },
-    { index: "1", className: classes.status_style, children: "status" },
-    { index: "1", className: classes.position_style, children: "position" },
-    { index: "1", className: classes.remark_style, children: "remark" },
-    { index: "1", className: classes.update_time_style, children: "update_time" },
+    ...(hasAzureAccess()
+      ? [{ index: "1", className: classes.title_checkbox_style, children: "/" }]
+      : []),
+    { index: "1", className: classes.title_platform_style, children: "platform" },
+    { index: "1", className: classes.title_phase_style, children: "phase" },
+    { index: "1", className: classes.title_target_style, children: "target" },
+    { index: "1", className: classes.title_group_style, children: "group" },
+    { index: "1", className: classes.title_cycle_style, children: "cycle" },
+    { index: "1", className: classes.title_sku_style, children: "sku" },
+    { index: "1", className: classes.title_sn_style, children: "serial_number" },
+    { index: "1", className: classes.title_borrower_style, children: "borrower" },
+    { index: "1", className: classes.title_status_style, children: "status" },
+    { index: "1", className: classes.title_position_style, children: "position" },
+    { index: "1", className: classes.title_remark_style, children: "remark" },
+    { index: "1", className: classes.title_update_time_style, children: "update_time" },
   ];
   function title_row(index, request = true) {
     if (request) {
@@ -120,40 +125,40 @@ function DropdownWithButton(props) {
       return (
         <>
           <TableRow className={classes.table_row_style}>
-            <TableCell key={index} className={classes.platform_style}>
+            <TableCell key={index} className={classes.title_platform_style}>
               {"platform"}
             </TableCell>
-            <TableCell key={index} className={classes.phase_style}>
+            <TableCell key={index} className={classes.title_phase_style}>
               {"phase"}
             </TableCell>
-            <TableCell key={index} className={classes.target_style}>
+            <TableCell key={index} className={classes.title_target_style}>
               {"target"}
             </TableCell>
-            <TableCell key={index} className={classes.group_style}>
+            <TableCell key={index} className={classes.title_group_style}>
               {"group"}
             </TableCell>
-            <TableCell key={index} className={classes.cycle_style}>
+            <TableCell key={index} className={classes.title_cycle_style}>
               {"cycle"}
             </TableCell>
-            <TableCell key={index} className={classes.sku_style}>
+            <TableCell key={index} className={classes.title_sku_style}>
               {"sku"}
             </TableCell>
-            <TableCell key={index} className={classes.sn_style}>
+            <TableCell key={index} className={classes.title_title_sn_style}>
               {"serial_number"}
             </TableCell>
-            <TableCell key={index} className={classes.borrower_style}>
+            <TableCell key={index} className={classes.title_borrower_style}>
               {"borrower"}
             </TableCell>
-            <TableCell key={index} className={classes.status_style}>
+            <TableCell key={index} className={classes.title_status_style}>
               {"status"}
             </TableCell>
-            <TableCell key={index} className={classes.position_style}>
+            <TableCell key={index} className={classes.title_position_style}>
               {"position"}
             </TableCell>
-            <TableCell key={index} className={classes.remark_style}>
+            <TableCell key={index} className={classes.title_remark_style}>
               {"remark"}
             </TableCell>
-            <TableCell key={index} className={classes.update_time_style}>
+            <TableCell key={index} className={classes.title_update_time_style}>
               {"update_time"}
             </TableCell>
           </TableRow>
@@ -1034,6 +1039,14 @@ function DropdownWithButton(props) {
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", flexDirection: "row", marginBottom: "20px" }}>
             <Button onClick={() => openModal(1)}>Filter</Button>
+            {hasAzureAccess() && (
+              <div style={{ marginLeft: "auto", marginRight: "10px" }}>
+                <Button onClick={() => openModal(3)}>Add member</Button>
+              </div>
+            )}
+            <Button onClick={excel_export_function}>Excel export</Button>
+          </div>
+          <div style={{ display: "flex", flexDirection: "row", marginBottom: "20px" }}>
             <input
               type="text"
               value={widthsearch}
@@ -1044,44 +1057,29 @@ function DropdownWithButton(props) {
                   widthsearth_function();
                 }
               }}
-              style={{ marginLeft: "30px" }}
+              style={{ marginLeft: "10px" }}
             />
-            <Button onClick={widthsearth_function}>search</Button>
+            <button className="search-button" onClick={widthsearth_function}>
+              <FontAwesomeIcon icon={faSearch} />
+            </button>
             {hasAzureAccess() && (
-              <div style={{ marginLeft: "auto", marginRight: "70px" }}>
-                <select
-                  value={option}
-                  onChange={(event) => {
-                    setOption(event.target.value);
-                  }}
-                  style={{ padding: "5px 25px", marginLeft: "20px", marginRight: "10px" }}
-                >
-                  <option value="1">Borrow</option>
-                  <option value="2">Return</option>
-                  <option value="3">New Machine In</option>
-                  <option value="4">Batch Modify</option>
-                  <option value="5">Batch Delete</option>
-                  <option value="6">Batch Scrap</option>
-                </select>
-                <Button
-                  onClick={() => {
-                    setOptions(option);
-                  }}
-                >
-                  Submit
-                </Button>
-                <Button
-                  style={{ marginLeft: "40px" }}
-                  onClick={() => {
-                    history.push("/new_machine/");
-                  }}
-                >
-                  Add new machine
-                </Button>
-                <Button onClick={() => openModal(3)}>Add member</Button>
-              </div>
+              <select
+                value={option}
+                onChange={(event) => {
+                  setOption(event.target.value);
+                  setOptions(event.target.value);
+                }}
+                style={{ padding: "5px 25px", marginLeft: "20px", marginRight: "10px" }}
+              >
+                <option value="">-</option>
+                <option value="1">Borrow</option>
+                <option value="2">Return</option>
+                <option value="3">New Machine In</option>
+                <option value="4">Batch Modify</option>
+                <option value="5">Batch Delete</option>
+                <option value="6">Batch Scrap</option>
+              </select>
             )}
-            <Button onClick={excel_export_function}>Excel export</Button>
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <p
@@ -1093,6 +1091,20 @@ function DropdownWithButton(props) {
               Machine amount: {machine_data.length} &nbsp;&nbsp;&nbsp;
               {hasAzureAccess() && <>Select amount: {select_iur_machine.length}</>}
             </p>
+            <div style={{ marginRight: "30px", position: "absolute", right: "0" }}>
+              {hasAzureAccess() && (
+                <button
+                  style={{ marginLeft: "40px" }}
+                  className={classes.add_new_machine}
+                  onClick={() => {
+                    history.push("/new_machine/");
+                  }}
+                >
+                  <AddIcon className={classes.icon} />
+                  Add new machine
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
