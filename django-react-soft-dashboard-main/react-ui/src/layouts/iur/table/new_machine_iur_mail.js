@@ -9,6 +9,8 @@ import FileChoose from "examples/tool_universal/file_choose";
 import FilterButton from "examples/Icons/Filter_button";
 import useStyles from "layouts/iur/table/styles/iur";
 import IURAPI from "api/iur";
+import PropTypes from "prop-types";
+import { Tabs, Tab, Box, Typography } from "@mui/material";
 function DropdownWithButton(iur_data) {
   useEffect(() => {
     console.log(iur_data["iur_data"]);
@@ -16,12 +18,17 @@ function DropdownWithButton(iur_data) {
   }, []);
   const [machine_data, set_machine_data] = useState([]);
   const [folder_choose, set_folder_choose] = useState([]);
+  const [folder, set_folder] = useState([]);
   const [file_choose, set_file_choose] = useState([]);
-  const [pop_filter, set_pop_filter] = useState(false);
+  const [file, set_file] = useState([]);
+  const [pop_filter, set_pop_filter] = useState({
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+  });
   const [loading, setLoading] = useState(false);
-  const [user_experience, set_user_experience] = useState(0);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [visible, set_visible] = useState(false);
   const classes = useStyles();
   const title_data = [
     { style: classes.platform_style, children: "platform" },
@@ -89,12 +96,6 @@ function DropdownWithButton(iur_data) {
     return `${month} ${day}, ${year}, ${formattedTime}`;
   }
   useEffect(() => {}, [machine_data]);
-  const openModal = () => {
-    set_pop_filter(true);
-  };
-  const closeModal = () => {
-    set_pop_filter(false);
-  };
   const customStyles = {
     content: {
       maxWidth: "900px",
@@ -108,26 +109,234 @@ function DropdownWithButton(iur_data) {
       overflowY: "auto",
     },
     overlay: {
-      zIndex: 1000,
+      zIndex: 1200,
+    },
+  };
+  const choose_file_style = {
+    content: {
+      maxWidth: "1000px",
+      maxHeight: "800px",
+      minWidth: "1000px",
+      minHeight: "800px",
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-450px",
+      transform: "translate(-50%, -50%)",
+      overflowY: "auto",
+    },
+    overlay: {
+      zIndex: 1200,
     },
   };
   Modal.setAppElement("#root");
+
+  const TabPanel = (props) => {
+    const { children, value, index, ...other } = props;
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box p={3}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
+    );
+  };
+  TabPanel.propTypes = {
+    children: PropTypes.node.isRequired,
+    value: PropTypes.number.isRequired,
+    index: PropTypes.number.isRequired,
+  };
+
+  const choose_attach_file = () => {
+    const [value, setValue] = useState(0);
+
+    const handleChange = (event, newValue) => {
+      setValue(newValue);
+    };
+    return (
+      <>
+        <div>
+          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+            <Tab label="Choose Attach File" />
+            <Tab label="Choose Upload File" />
+          </Tabs>
+          <TabPanel value={value} index={0}>
+            <div style={{ display: "flex", flexDirection: "column" }}>{attach_file()}</div>
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <div style={{ display: "flex", flexDirection: "column" }}>{upload_file()}</div>
+          </TabPanel>
+        </div>
+      </>
+    );
+  };
+  const attach_file = () => {
+    return (
+      <>
+        <div className={classes.choose_container}>
+          <FileChoose data={file_choose} setData={set_file_choose}></FileChoose>
+          <p>config address&nbsp;:&nbsp;</p>
+          <FilterButton
+            options={Object.values(file_choose).map((option) => option.title)}
+            onClick={(newOptions) => {
+              const index = file_choose.findIndex((option) => !newOptions.includes(option.title));
+              console.log(index, newOptions);
+              if (index !== -1) {
+                set_file_choose(file_choose.slice(0, index));
+              }
+            }}
+          />
+          <div className={classes.file_add_button}>
+            <Button
+              onClick={() => {
+                if (file_choose.length > 0) {
+                  set_file((prevFile) => [...prevFile, file_choose]);
+                  set_file_choose([]);
+                } else {
+                  alert("Please select file path.");
+                }
+              }}
+            >
+              + Add
+            </Button>
+          </div>
+        </div>
+        <div className={classes.choose_view_container}>
+          {file.map((file_row, index) => (
+            <>
+              <div className={classes.row}>
+                <p key={index}>
+                  {Object.values(file_row)
+                    .map((option) => option.title)
+                    .join(" → ")}
+                </p>
+                <button
+                  className={classes.delete_button}
+                  onClick={() => set_file(file.filter((_, i) => i !== index))}
+                >
+                  X
+                </button>
+              </div>
+            </>
+          ))}
+        </div>
+      </>
+    );
+  };
+  useEffect(() => {
+    console.log(file);
+  }, [file]);
+  useEffect(() => {
+    console.log(folder);
+  }, [folder]);
+  const upload_file = () => {
+    return (
+      <>
+        <div className={classes.choose_container}>
+          <FolderChoose data={folder_choose} setData={set_folder_choose}></FolderChoose>
+          <p>config address&nbsp;:&nbsp;</p>
+          <FilterButton
+            options={Object.values(folder_choose).map((option) => option.title)}
+            onClick={(newOptions) => {
+              const index = folder_choose.findIndex((option) => !newOptions.includes(option.title));
+              console.log(index, newOptions);
+              if (index !== -1) {
+                set_folder_choose(folder_choose.slice(0, index));
+              }
+            }}
+          />
+          <div style={{ marginRight: "16px", position: "absolute", right: "0" }}>
+            <input
+              type="file"
+              onChange={(event) => {
+                const file = event.target.files[0];
+                setSelectedFile(file);
+                console.log("Selected file:", file);
+              }}
+              style={{ display: "none" }}
+              id="file-upload"
+            />
+            <label htmlFor="file-upload" className={classes.fileUploadButton}>
+              {selectedFile ? selectedFile.name : "Select a file"}
+            </label>
+            <button
+              className={classes.deleteButtonStyle}
+              onClick={() => {
+                setSelectedFile(null);
+              }}
+            >
+              X
+            </button>
+          </div>
+          <div className={classes.file_add_button}>
+            <Button
+              onClick={() => {
+                if (folder_choose.length > 0 && selectedFile) {
+                  set_folder((prevFolder) => [
+                    ...prevFolder,
+                    { folder_path: folder_choose, file: selectedFile },
+                  ]);
+                  set_folder_choose([]);
+                  setSelectedFile(null);
+                } else {
+                  alert("Please select a file and folder path.");
+                }
+              }}
+            >
+              + Add
+            </Button>
+          </div>
+        </div>
+        <div className={classes.choose_view_container}>
+          {folder.map((data, index) => (
+            <>
+              <div className={classes.row}>
+                <p key={index}>
+                  {Object.values(data.folder_path)
+                    .map((option) => option.title)
+                    .join(" → ")}
+                  {" → "}
+                </p>
+                <p style={{ color: "darkred" }}>&nbsp;{data.file.name}</p>
+                <button
+                  className={classes.delete_button}
+                  onClick={() => set_folder(folder.filter((_, i) => i !== index))}
+                >
+                  X
+                </button>
+              </div>
+            </>
+          ))}
+        </div>
+      </>
+    );
+  };
 
   const new_machine_mail_model = async () => {
     setLoading(true);
     try {
       let request_data = new FormData();
       request_data.append("finaldata", JSON.stringify(machine_data));
-      request_data.append("file", selectedFile);
-      request_data.append(
-        "folder_choose",
-        JSON.stringify(Object.values(folder_choose).map((option) => option.title))
-      );
+      request_data.append("folder_length", JSON.stringify(folder.length));
+      folder.forEach((onefile, index) => {
+        const folderPath = Object.values(onefile.folder_path).map((option) => option.title);
+        request_data.append(`folder_choose[${index}][folder_path]`, JSON.stringify(folderPath));
+        request_data.append(`folder_choose[${index}][file]`, onefile.file);
+      });
       request_data.append(
         "file_choose",
-        JSON.stringify(Object.values(file_choose).map((option) => option.title))
+        JSON.stringify(file.map((onefile) => Object.values(onefile).map((option) => option.title)))
       );
-      request_data.append("choose", visible);
       let response = await IURAPI.new_machine_mail(request_data);
       if (response.data.finaldata) {
         alert(response.data.finaldata);
@@ -143,14 +352,22 @@ function DropdownWithButton(iur_data) {
       set_pop_filter(false);
     }
   };
+
+  //load module option
+  const openModal = (modalNumber) => {
+    set_pop_filter((prev) => ({ ...prev, [modalNumber]: true }));
+  };
+  const closeModal = (modalNumber) => {
+    set_pop_filter((prev) => ({ ...prev, [modalNumber]: false }));
+  };
   return (
     <>
       <div style={{ display: "flex", alignItems: "center", marginLeft: "20px" }}>
         <Loading loading={loading} />
         <div style={{ display: "flex", overflowY: "auto" }}>
           <Modal
-            isOpen={pop_filter}
-            onRequestClose={closeModal}
+            isOpen={pop_filter[1]}
+            onRequestClose={() => closeModal(1)}
             style={customStyles}
             contentLabel="filter"
           >
@@ -158,78 +375,34 @@ function DropdownWithButton(iur_data) {
             <Button style={{ margin: "10px", padding: "10px" }} onClick={new_machine_mail_model}>
               Confirm
             </Button>
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={closeModal}>
+            <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
               Close
             </Button>
           </Modal>
         </div>
-        <Button
-          onClick={() => {
-            set_visible(!visible);
-          }}
-          style={{ marginRight: "20px", padding: "10px" }}
-        >
-          {visible ? "Upload File" : "File Location"}
+        <div style={{ display: "flex", overflowY: "auto" }}>
+          <Modal
+            isOpen={pop_filter[2]}
+            onRequestClose={() => closeModal(2)}
+            style={choose_file_style}
+            contentLabel="filter"
+          >
+            {choose_attach_file()}
+            <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(2)}>
+              Close
+            </Button>
+          </Modal>
+        </div>
+        <Button onClick={() => openModal(2)} className={classes.button_style}>
+          Choose Attach File
         </Button>
-        {visible ? (
-          <div className={classes.line_form_style} style={{ marginLeft: "20px", padding: "10px" }}>
-            <FolderChoose data={folder_choose} setData={set_folder_choose}></FolderChoose>
-            <p style={{ marginLeft: "16px" }}>config address&nbsp;:&nbsp;</p>
-            <FilterButton
-              options={Object.values(folder_choose).map((option) => option.title)}
-              onClick={(newOptions) => {
-                const index = folder_choose.findIndex(
-                  (option) => !newOptions.includes(option.title)
-                );
-                console.log(index, newOptions);
-                if (index !== -1) {
-                  set_folder_choose(folder_choose.slice(0, index));
-                }
-              }}
-            />
-            <div style={{ marginRight: "16px", position: "absolute", right: "0" }}>
-              <input
-                key={user_experience}
-                type="file"
-                onChange={(event) => {
-                  const file = event.target.files[0];
-                  setSelectedFile(file);
-                }}
-              />
-              <button
-                className={classes.deleteButtonStyle}
-                onClick={() => {
-                  setSelectedFile(null);
-                  set_user_experience((prevKey) => prevKey + 1);
-                }}
-              >
-                X
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className={classes.line_form_style} style={{ marginLeft: "20px", padding: "10px" }}>
-            <FileChoose data={file_choose} setData={set_file_choose}></FileChoose>
-            <p style={{ marginLeft: "16px" }}>config address&nbsp;:&nbsp;</p>
-            <FilterButton
-              options={Object.values(file_choose).map((option) => option.title)}
-              onClick={(newOptions) => {
-                const index = file_choose.findIndex((option) => !newOptions.includes(option.title));
-                console.log(index, newOptions);
-                if (index !== -1) {
-                  set_file_choose(file_choose.slice(0, index));
-                }
-              }}
-            />
-          </div>
-        )}
       </div>
       <TableContainer>
         <Table row_style={classes.table_row_style} data={title_data}></Table>
         {machine_data.map((data) => data_row(data))}
       </TableContainer>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <Button onClick={openModal} className={classes.button_style}>
+        <Button onClick={() => openModal(1)} className={classes.button_style}>
           Send email
         </Button>
       </div>

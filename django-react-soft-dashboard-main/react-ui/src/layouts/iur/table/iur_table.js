@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
@@ -6,11 +6,9 @@ import Tablehead from "@mui/material/TableHead";
 import TableCell from "@mui/material/TableCell";
 import Tablebody from "@mui/material/TableBody";
 import DateTimePicker from "examples/tool_universal/calendar_delay";
-// import Filter from "examples/tool_universal/filter_function";
 import Inputbox from "examples/tool_universal/inputbox";
 import { FixedSizeList } from "react-window";
 import Button from "examples/Icons/Button";
-import Table from "examples/Table/table_row";
 import Filterbutton from "examples/Icons/Filter_button";
 import Filter from "examples/tool_universal/filter";
 import Loading_option from "examples/tool_universal/loading_option";
@@ -21,8 +19,6 @@ import { useHistory } from "react-router-dom";
 import { useAuth, hasAzureAccess } from "../../../auth-context/auth.context";
 import useStyles from "layouts/iur/table/styles/iur";
 import IURAPI from "api/iur";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import AddIcon from "@mui/icons-material/Add";
 function DropdownWithButton(props) {
   const classes = useStyles();
@@ -70,11 +66,6 @@ function DropdownWithButton(props) {
     purpose: "",
     message: "",
     cc_mail: [],
-  });
-  const [memberData, setmemberData] = useState({
-    username: "",
-    site: "TW",
-    email: "",
   });
   const [inputList, setInputList] = useState([""]);
   const [widthsearch, setWidthsearch] = useState([""]);
@@ -397,8 +388,8 @@ function DropdownWithButton(props) {
     content: {
       maxWidth: "1000px",
       minWidth: "1000px",
-      maxHeight: "800px",
-      minHeight: "800px",
+      maxHeight: "700px",
+      minHeight: "700px",
       top: "50%",
       left: "50%",
       right: "auto",
@@ -408,7 +399,7 @@ function DropdownWithButton(props) {
       overflowY: "auto",
     },
     overlay: {
-      zIndex: 1000,
+      zIndex: 1200,
     },
   };
   Modal.setAppElement("#root");
@@ -520,7 +511,9 @@ function DropdownWithButton(props) {
                 setEndDatetime={setEndDate}
               />
             </div>
-            <Inputbox inputList={inputList} setInputList={setInputList} />
+            <div className={classes.sn_scroll_container}>
+              <Inputbox inputList={inputList} setInputList={setInputList} />
+            </div>
           </div>
           <div className={classes.rightBlockStyle}>
             <p>platform</p>
@@ -663,9 +656,14 @@ function DropdownWithButton(props) {
       machine_length("Keep On");
     }
     if (options == 3 || options == 4) {
-      props.iur_option(options);
+      if (select_iur_machine.length > 0) {
+        props.iur_option(options);
+      } else {
+        alert("Please select the machine.");
+      }
       setOptions(0);
     }
+    setOption("");
   }, [options]);
   function lend_content() {
     return (
@@ -683,14 +681,10 @@ function DropdownWithButton(props) {
           </div>
           <div className={classes.line_form_style}>
             <TableContainer>
-              <div style={{}}>
-                <Tablehead>{title_row("1", false)}</Tablehead>
-              </div>
-              <div style={{ marginLeft: "16px" }}>
-                <Tablebody>
-                  {select_iur_machine.map((data, index) => data_row(index, data, false))}
-                </Tablebody>
-              </div>
+              <Tablebody>{title_row("1", false)}</Tablebody>
+              <Tablebody>
+                {select_iur_machine.map((data, index) => data_row(index, data, false))}
+              </Tablebody>
             </TableContainer>
           </div>
           <div className={classes.line_form_style}>
@@ -715,18 +709,6 @@ function DropdownWithButton(props) {
             <label htmlFor="cc_mail">cc mail:</label>
           </div>
           <div className={classes.line_form_style}>
-            {/* <input
-              id="cc_mail"
-              name="cc_mail"
-              style={{ width: "200px", padding: "8px" }}
-              value={lendData.cc_mail}
-              onChange={(e) => {
-                setlendData({
-                  ...lendData,
-                  cc_mail: e.target.value,
-                });
-              }}
-            /> */}
             <Loading_option_add_remove
               api="polls/lendpersonnel"
               name="user_mail"
@@ -755,119 +737,6 @@ function DropdownWithButton(props) {
       </>
     );
   }
-
-  function add_member_content() {
-    const member_data = [
-      { style: classes.username_style, children: "user name" },
-      { style: classes.site_style, children: "site" },
-      { style: classes.email_style, children: "mail" },
-    ];
-    const options = ["TW", "CN"];
-    return (
-      <>
-        <div style={{ flexDirection: "column", ...containerStyle }}>
-          <TableContainer>
-            <Table row_style={classes.table_row_style} data={member_data}></Table>
-            <TableRow className={classes.table_row_style}>
-              <TableCell
-                className={classes.username_style}
-                onClick={() => handleDoubleClick(1, "username")}
-              >
-                {isEditing[`${1}_username`] ? (
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={memberData.username}
-                    style={{ width: "120px", height: "30px" }}
-                    onChange={(e) => {
-                      setmemberData((prevData) => ({
-                        ...prevData,
-                        username: e.target.value,
-                      }));
-                    }}
-                    onBlur={() => handleBlur(1, "username")}
-                    onKeyDown={(e) => handleKeyDown(e, 1, "username")}
-                  />
-                ) : (
-                  memberData.username
-                )}
-              </TableCell>
-              <TableCell className={classes.username_style}>
-                <select
-                  value={memberData.site}
-                  onChange={(e) => {
-                    setmemberData((prevData) => ({
-                      ...prevData,
-                      site: e.target.value,
-                    }));
-                  }}
-                  style={{ padding: "5px 1px", marginRight: "10px" }}
-                >
-                  {options.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </TableCell>
-
-              <TableCell
-                className={classes.email_style}
-                onClick={() => handleDoubleClick(1, "email")}
-              >
-                {isEditing[`${1}_email`] ? (
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={memberData.email}
-                    style={{ width: "220px", height: "30px" }}
-                    onChange={(e) => {
-                      setmemberData((prevData) => ({
-                        ...prevData,
-                        email: e.target.value,
-                      }));
-                    }}
-                    onBlur={() => handleBlur(1, "email")}
-                    onKeyDown={(e) => handleKeyDown(e, 1, "email")}
-                  />
-                ) : (
-                  memberData.email
-                )}
-              </TableCell>
-            </TableRow>
-          </TableContainer>
-        </div>
-      </>
-    );
-  }
-  const inputRef = useRef(null);
-  const [isEditing, setIsEditing] = useState({});
-  const indexRef = useRef(null);
-  useEffect(() => {
-    if (isEditing[indexRef.current] && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isEditing]);
-  const handleDoubleClick = (index, data) => {
-    indexRef.current = `${index}_${data}`;
-    setIsEditing((prevIsEditing) => ({
-      ...prevIsEditing,
-      [`${index}_${data}`]: true,
-    }));
-  };
-  const handleBlur = (index, data) => {
-    setIsEditing((prevIsEditing) => ({
-      ...prevIsEditing,
-      [`${index}_${data}`]: false,
-    }));
-    console.log(isEditing);
-  };
-  const handleKeyDown = (e, index, data) => {
-    if (e.key === "Enter") {
-      handleBlur(index, data);
-    }
-  };
-
   const clearmodel = () => {
     setselectoption({
       target: [],
@@ -938,26 +807,6 @@ function DropdownWithButton(props) {
       setLoading(false);
     }
   };
-  const add_member = async () => {
-    setLoading(true);
-    try {
-      const response = await IURAPI.add_member({
-        finaldata: [memberData],
-      });
-      if (response.data.finaldata) {
-        alert(response.data.finaldata);
-        closeModal(3);
-        window.location.reload();
-      } else if (response.data.error) {
-        alert(response.data.error);
-      }
-    } catch (error) {
-      console.log(error);
-      alert("Please contact the administrator.");
-    } finally {
-      setLoading(false);
-    }
-  };
   const downloadFile = (fileData, fileName) => {
     const blob = new Blob([fileData], { type: "application/octet-stream" });
     const url = window.URL.createObjectURL(blob);
@@ -994,10 +843,8 @@ function DropdownWithButton(props) {
             isOpen={popFilters[1]}
             onRequestClose={() => closeModal(1)}
             style={customStyles}
-            // style={classes.customStyles}
             contentLabel="filter"
           >
-            <h2>Filter</h2>
             {pop_filter_content()}
             <Button style={{ margin: "10px", padding: "10px" }} onClick={filtersearch}>
               Apply Filters
@@ -1023,27 +870,9 @@ function DropdownWithButton(props) {
             <Button onClick={() => closeModal(2)}>Close</Button>
           </Modal>
         </div>
-        <div style={{ display: "flex", overflowY: "auto" }}>
-          <Modal
-            isOpen={popFilters[3]}
-            onRequestClose={() => closeModal(3)}
-            style={customStyles}
-            contentLabel="add member"
-          >
-            <h2>Add member</h2>
-            {add_member_content()}
-            <Button onClick={add_member}>Add</Button>
-            <Button onClick={() => closeModal(3)}>Close</Button>
-          </Modal>
-        </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", flexDirection: "row", marginBottom: "20px" }}>
             <Button onClick={() => openModal(1)}>Filter</Button>
-            {hasAzureAccess() && (
-              <div style={{ marginLeft: "auto", marginRight: "10px" }}>
-                <Button onClick={() => openModal(3)}>Add member</Button>
-              </div>
-            )}
             <Button onClick={excel_export_function}>Excel export</Button>
           </div>
           <div style={{ display: "flex", flexDirection: "row", marginBottom: "20px" }}>
@@ -1059,9 +888,7 @@ function DropdownWithButton(props) {
               }}
               style={{ marginLeft: "10px" }}
             />
-            <button className="search-button" onClick={widthsearth_function}>
-              <FontAwesomeIcon icon={faSearch} />
-            </button>
+            <button className="search-button" onClick={widthsearth_function}></button>
             {hasAzureAccess() && (
               <select
                 value={option}
@@ -1071,7 +898,7 @@ function DropdownWithButton(props) {
                 }}
                 style={{ padding: "5px 25px", marginLeft: "20px", marginRight: "10px" }}
               >
-                <option value="">-</option>
+                <option value="">Select Action</option>
                 <option value="1">Borrow</option>
                 <option value="2">Return</option>
                 <option value="3">New Machine In</option>
@@ -1086,6 +913,7 @@ function DropdownWithButton(props) {
               style={{
                 marginLeft: "12px",
                 fontFamily: "Calibri, sans-serif",
+                fontSize: "18px",
               }}
             >
               Machine amount: {machine_data.length} &nbsp;&nbsp;&nbsp;

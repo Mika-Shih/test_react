@@ -67,10 +67,6 @@ class IURAPI {
     return axios.post("/polls/machine_record/", data);
   };
 
-  static add_member = (data) => {
-    return axios.post("/account/add_member/", data);
-  };
-
   static hint_machine_mail = () => {
     return axios.get("/polls/hint_machine_arrive_mail/");
   };
