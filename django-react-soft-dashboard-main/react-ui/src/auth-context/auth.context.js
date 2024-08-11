@@ -44,6 +44,20 @@ export const hasAzureAccess = () => {
   );
 };
 
+export const TestPlanAccess = () => {
+  const { user } = useAuth();
+  return (
+    user &&
+    (user.username === "bill.chang@hp.com" ||
+      user.username === "catherine.jia@hp.com" ||
+      user.username === "timothy.wang1@hp.com" ||
+      user.username === "seanl@hp.com" ||
+      user.username === "mike.cheng@hp.com" ||
+      user.username === "cindy.chou@hp.com" ||
+      user.username === "emma.lu@hp.com")
+  );
+};
+
 export const hasEditorAccess = (user) => {
   return user && (user.role === "admin" || user.role === "editor");
 };

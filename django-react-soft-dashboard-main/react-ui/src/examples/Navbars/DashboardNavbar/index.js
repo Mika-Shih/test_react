@@ -38,7 +38,7 @@ import NotificationItem from "examples/NotificationItem";
 
 // Custom styles for DashboardNavbar
 import styles from "examples/Navbars/DashboardNavbar/styles";
-import { hasAzureAccess } from "../../../auth-context/auth.context";
+import { hasAzureAccess, TestPlanAccess } from "../../../auth-context/auth.context";
 // Soft UI Dashboard React context
 import { useSoftUIController } from "context";
 
@@ -66,7 +66,11 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
     routes = [];
   }
   // view level
-  const level_view = ["CAT", "Pulsar", "Test Plan List", "Test Case List", "Member", "Token"];
+  const level_view_2 = ["Test Plan List", "Test Case List"];
+  const level_view = ["CAT", "Pulsar", "Member", "Token"];
+  if (!TestPlanAccess()) {
+    routes = routes.filter((route) => !level_view_2.includes(route.name));
+  }
   if (!hasAzureAccess()) {
     routes = routes.filter((route) => !level_view.includes(route.name));
   }
