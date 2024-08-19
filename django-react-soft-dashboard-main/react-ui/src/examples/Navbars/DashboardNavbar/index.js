@@ -60,7 +60,9 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
   const { miniSidenav, transparentNavbar, fixedNavbar /*openConfigurator*/ } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const classes = styles({ transparentNavbar, absolute, light, isMini });
-  const route = useLocation().pathname.split("/").slice(1);
+  const location = useLocation();
+  const { pathname } = location;
+  const collapseName = pathname.split("/").slice(1)[0];
   const [machine_arrive_mail_hint, set_machine_arrive_mail_hint] = useState([]);
   if (!Array.isArray(routes)) {
     routes = [];
@@ -105,7 +107,6 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
   const right_routes = routes.filter((route) => rightFilter.includes(route.name));
   routes = routes.filter((route) => !rightFilter.includes(route.name));
 
-  useEffect(() => {}, [route]);
   useEffect(() => {
     // Setting the navbar type
     if (fixedNavbar) {
@@ -190,7 +191,7 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
       />
     </Menu>
   );
-
+  // returnValue != herf
   const renderRoutes = (routes) => {
     return (
       routes &&
@@ -208,7 +209,7 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
               <SidenavCollapse
                 name={name}
                 icon={icon}
-                active={key === route}
+                active={key === collapseName}
                 noCollapse={noCollapse}
               />
             </Link>
@@ -217,7 +218,7 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
               <SidenavCollapse
                 name={name}
                 icon={icon}
-                active={key === route}
+                active={key === collapseName}
                 noCollapse={noCollapse}
               />
             </NavLink>
@@ -237,7 +238,7 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
             <SidenavCollapse
               name={title}
               icon={icon}
-              active={key === route}
+              active={key === collapseName}
               noCollapse={noCollapse}
             >
               {children}

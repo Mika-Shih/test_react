@@ -41,5 +41,8 @@ export default makeStyles(({ functions, borders }) => {
       marginLeft: pxToRem(-32),
       height: "100%",
     },
+    logo: {
+      width: pxToRem(76),
+    },
   };
 });

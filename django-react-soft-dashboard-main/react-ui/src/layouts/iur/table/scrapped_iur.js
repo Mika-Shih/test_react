@@ -16,18 +16,18 @@ function DropdownWithButton(iur_data) {
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const title_data = [
-    { style: classes.platform_style, children: "platform" },
-    { style: classes.phase_style, children: "phase" },
-    { style: classes.target_style, children: "target" },
-    { style: classes.group_style, children: "group" },
-    { style: classes.cycle_style, children: "cycle" },
-    { style: classes.sku_style, children: "sku" },
-    { style: classes.sn_style, children: "serial_number" },
-    { style: classes.borrower_style, children: "borrower" },
-    { style: classes.status_style, children: "status" },
-    { style: classes.position_style, children: "position" },
-    { style: classes.remark_style, children: "remark" },
-    { style: classes.update_time_style, children: "update_time" },
+    { style: classes.title_platform_style, children: "Platform" },
+    { style: classes.title_phase_style, children: "Phase" },
+    { style: classes.title_target_style, children: "Target" },
+    { style: classes.title_group_style, children: "Group" },
+    { style: classes.title_cycle_style, children: "Cycle" },
+    { style: classes.title_sku_style, children: "Sku" },
+    { style: classes.title_sn_style, children: "Serial_number" },
+    { style: classes.title_borrower_style, children: "Borrower" },
+    { style: classes.title_status_style, children: "Status" },
+    { style: classes.title_position_style, children: "Position" },
+    { style: classes.title_remark_style, children: "Remark" },
+    { style: classes.title_update_time_style, children: "Update_time" },
   ];
   function data_row(data) {
     if (!data) {
@@ -165,7 +165,7 @@ function DropdownWithButton(iur_data) {
         </div>
       </div>
       <TableContainer>
-        <Table row_style={classes.table_row_style} data={title_data}></Table>
+        <Table row_style={classes.title_table_row_style} data={title_data}></Table>
         {machine_data.map((data) => data_row(data))}
       </TableContainer>
     </>

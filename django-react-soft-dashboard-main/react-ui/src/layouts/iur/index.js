@@ -17,7 +17,7 @@ Coded by www.creative-tim.com
 import Card from "@mui/material/Card";
 // Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
-// import SuiTypography from "components/SuiTypography";
+import SuiTypography from "components/SuiTypography";
 
 // Soft UI Dashboard React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -56,8 +56,16 @@ function Tables() {
           <>
             <SuiBox mb={3}>
               <Card>
-                <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-                  {/* <SuiTypography variant="h4">iur_machine</SuiTypography> */}
+                <SuiBox display="flex" justifyContent="center" alignItems="center" p={3}>
+                  <SuiTypography
+                    variant="h2"
+                    textColor="info"
+                    fontWeight="bold"
+                    textGradient
+                    style={{ letterSpacing: "2px" }}
+                  >
+                    IUR System
+                  </SuiTypography>
                 </SuiBox>
                 <SuiBox customClass={classes.tables_table}>
                   <Iur_machine

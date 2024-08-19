@@ -32,12 +32,11 @@ import PageLayout from "examples/LayoutContainers/PageLayout";
 
 // Custom styles for the Baise
 import styles from "layouts/authentication/components/CoverLayout/styles";
-import SuiButton from "components/SuiButton";
 
 // Soft UI Dashboard React page layout routes
 // import routes from "routes";
 
-function CoverLayout({ color, header, title, description, image, top, button, onClick, children }) {
+function CoverLayout({ color, header, title, description, image, top, children }) {
   const classes = styles({ image });
 
   return (
@@ -59,17 +58,16 @@ function CoverLayout({ color, header, title, description, image, top, button, on
                 <>
                   <SuiBox mb={1} display="flex" alignItems="center">
                     <SuiTypography
-                      variant="h4"
+                      variant="h2"
                       fontWeight="bold"
                       textColor={color}
                       textGradient
                       p={3}
+                      style={{ whiteSpace: "nowrap" }}
                     >
                       {title}
                     </SuiTypography>
-                    <SuiButton variant="gradient" buttonColor="info" onClick={onClick}>
-                      {button}
-                    </SuiButton>
+                    <SuiBox component="img" src={image} alt="HP" customClass={classes.logo} />
                   </SuiBox>
                   <SuiTypography variant="body2" fontWeight="regular" textColor="text">
                     {description}
@@ -82,7 +80,7 @@ function CoverLayout({ color, header, title, description, image, top, button, on
             <SuiBox p={3}>{children}</SuiBox>
           </SuiBox>
         </Grid>
-        <Grid item xs={12} md={5}>
+        {/* <Grid item xs={12} md={5}>
           <SuiBox
             display={{ xs: "none", md: "block" }}
             position="relative"
@@ -91,7 +89,7 @@ function CoverLayout({ color, header, title, description, image, top, button, on
           >
             <SuiBox customClass={classes.coverLayout_image} />
           </SuiBox>
-        </Grid>
+        </Grid> */}
       </Grid>
       {/* <Footer /> */}
     </PageLayout>
@@ -125,7 +123,6 @@ CoverLayout.propTypes = {
   image: PropTypes.string.isRequired,
   top: PropTypes.number,
   button: PropTypes.string,
-  onClick: PropTypes.func,
   children: PropTypes.node.isRequired,
 };
 

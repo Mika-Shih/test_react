@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
-import Tablehead from "@mui/material/TableHead";
 import TableCell from "@mui/material/TableCell";
 import Tablebody from "@mui/material/TableBody";
 import DateTimePicker from "examples/tool_universal/calendar_delay";
@@ -20,6 +19,7 @@ import { useAuth, hasAzureAccess } from "../../../auth-context/auth.context";
 import useStyles from "layouts/iur/table/styles/iur";
 import IURAPI from "api/iur";
 import AddIcon from "@mui/icons-material/Add";
+import DownloadIcon from "@mui/icons-material/Download";
 function DropdownWithButton(props) {
   const classes = useStyles();
   const { user } = useAuth();
@@ -28,6 +28,20 @@ function DropdownWithButton(props) {
   const [options, setOptions] = useState(0);
   const [button_name, set_button_name] = useState("");
   const [select_iur_machine, set_select_iur_machine] = useState([]);
+  const [shiftKeyPressed, setShiftKeyPressed] = useState(false);
+  useEffect(() => {
+    const handleKey = (event) => {
+      if (event.key === "Shift") {
+        setShiftKeyPressed(event.type === "keydown");
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    window.addEventListener("keyup", handleKey);
+    return () => {
+      window.removeEventListener("keydown", handleKey);
+      window.removeEventListener("keyup", handleKey);
+    };
+  }, []);
   useEffect(() => {
     props.iur(select_iur_machine);
   }, [select_iur_machine]);
@@ -84,26 +98,38 @@ function DropdownWithButton(props) {
   };
   const data = [
     ...(hasAzureAccess()
-      ? [{ index: "1", className: classes.title_checkbox_style, children: "/" }]
+      ? [
+          {
+            index: "1",
+            className: classes.title_checkbox_style,
+            children: (
+              <input
+                type="checkbox"
+                checked={select_iur_machine.length === machine_data.length}
+                onChange={() => select_all_checkbox()}
+              />
+            ),
+          },
+        ]
       : []),
-    { index: "1", className: classes.title_platform_style, children: "platform" },
-    { index: "1", className: classes.title_phase_style, children: "phase" },
-    { index: "1", className: classes.title_target_style, children: "target" },
-    { index: "1", className: classes.title_group_style, children: "group" },
-    { index: "1", className: classes.title_cycle_style, children: "cycle" },
-    { index: "1", className: classes.title_sku_style, children: "sku" },
-    { index: "1", className: classes.title_sn_style, children: "serial_number" },
-    { index: "1", className: classes.title_borrower_style, children: "borrower" },
-    { index: "1", className: classes.title_status_style, children: "status" },
-    { index: "1", className: classes.title_position_style, children: "position" },
-    { index: "1", className: classes.title_remark_style, children: "remark" },
-    { index: "1", className: classes.title_update_time_style, children: "update_time" },
+    { index: "1", className: classes.title_platform_style, children: "Platform" },
+    { index: "1", className: classes.title_phase_style, children: "Phase" },
+    { index: "1", className: classes.title_target_style, children: "Target" },
+    { index: "1", className: classes.title_group_style, children: "Group" },
+    { index: "1", className: classes.title_cycle_style, children: "Cycle" },
+    { index: "1", className: classes.title_sku_style, children: "Sku" },
+    { index: "1", className: classes.title_sn_style, children: "Serial_number" },
+    { index: "1", className: classes.title_borrower_style, children: "Borrower" },
+    { index: "1", className: classes.title_status_style, children: "Status" },
+    { index: "1", className: classes.title_position_style, children: "Position" },
+    { index: "1", className: classes.title_remark_style, children: "Remark" },
+    { index: "1", className: classes.title_update_time_style, children: "Update_time" },
   ];
   function title_row(index, request = true) {
     if (request) {
       return (
         <>
-          <TableRow className={classes.table_row_style}>
+          <TableRow className={classes.title_table_row_style}>
             {data.map((item, index) => (
               <MyTableCell key={index} className={item.className}>
                 {item.children}
@@ -115,42 +141,42 @@ function DropdownWithButton(props) {
     } else {
       return (
         <>
-          <TableRow className={classes.table_row_style}>
+          <TableRow className={classes.title_table_row_style}>
             <TableCell key={index} className={classes.title_platform_style}>
-              {"platform"}
+              {"Platform"}
             </TableCell>
             <TableCell key={index} className={classes.title_phase_style}>
-              {"phase"}
+              {"Phase"}
             </TableCell>
             <TableCell key={index} className={classes.title_target_style}>
-              {"target"}
+              {"Target"}
             </TableCell>
             <TableCell key={index} className={classes.title_group_style}>
-              {"group"}
+              {"Group"}
             </TableCell>
             <TableCell key={index} className={classes.title_cycle_style}>
-              {"cycle"}
+              {"Cycle"}
             </TableCell>
             <TableCell key={index} className={classes.title_sku_style}>
-              {"sku"}
+              {"Sku"}
             </TableCell>
-            <TableCell key={index} className={classes.title_title_sn_style}>
-              {"serial_number"}
+            <TableCell key={index} className={classes.title_sn_style}>
+              {"Serial_number"}
             </TableCell>
             <TableCell key={index} className={classes.title_borrower_style}>
-              {"borrower"}
+              {"Borrower"}
             </TableCell>
             <TableCell key={index} className={classes.title_status_style}>
-              {"status"}
+              {"Status"}
             </TableCell>
             <TableCell key={index} className={classes.title_position_style}>
-              {"position"}
+              {"Position"}
             </TableCell>
             <TableCell key={index} className={classes.title_remark_style}>
-              {"remark"}
+              {"Remark"}
             </TableCell>
             <TableCell key={index} className={classes.title_update_time_style}>
-              {"update_time"}
+              {"Update_time"}
             </TableCell>
           </TableRow>
         </>
@@ -158,13 +184,39 @@ function DropdownWithButton(props) {
     }
   }
   const handleCheckboxChange = (data) => {
+    console.log(data);
     const updatedSelect_iur_machine = [...select_iur_machine];
     if (updatedSelect_iur_machine.includes(data)) {
       updatedSelect_iur_machine.splice(updatedSelect_iur_machine.indexOf(data), 1);
     } else {
-      updatedSelect_iur_machine.push(data);
+      if (shiftKeyPressed && updatedSelect_iur_machine.length > 0) {
+        const last_index = machine_data.findIndex(
+          (item) => item === updatedSelect_iur_machine[updatedSelect_iur_machine.length - 1]
+        );
+        const new_index = machine_data.findIndex((item) => item === data);
+        const start = Math.min(new_index, last_index);
+        const end = Math.max(new_index, last_index);
+        const newData = machine_data
+          .slice(start, end + 1)
+          .filter((item) => !updatedSelect_iur_machine.some((existing) => existing === item));
+        updatedSelect_iur_machine.push(...newData);
+      } else {
+        updatedSelect_iur_machine.push(data);
+      }
     }
     set_select_iur_machine(updatedSelect_iur_machine);
+  };
+  useEffect(() => {
+    console.log(select_iur_machine);
+    [select_iur_machine];
+  });
+  const select_all_checkbox = () => {
+    if (select_iur_machine.length === machine_data.length) {
+      set_select_iur_machine([]);
+    } else {
+      set_select_iur_machine([]);
+      set_select_iur_machine(machine_data);
+    }
   };
   function data_row(index, data, request = true) {
     if (!data) {
@@ -670,6 +722,7 @@ function DropdownWithButton(props) {
       <>
         <div style={{ flexDirection: "column", ...containerStyle }}>
           <div className={classes.line_form_style}>
+            <label htmlFor="lendperson">Borrower&nbsp;:&nbsp;&nbsp;</label>
             <Loading_option
               api="polls/lendpersonnel"
               name="user_mail"
@@ -691,10 +744,9 @@ function DropdownWithButton(props) {
             <label htmlFor="Purpose">Purpose:</label>
           </div>
           <div className={classes.line_form_style}>
-            <textarea
+            <input
               id="Purpose"
               name="Purpose"
-              rows={4}
               style={{ width: "200px", padding: "8px" }}
               value={lendData.purpose}
               onChange={(e) => {
@@ -720,9 +772,10 @@ function DropdownWithButton(props) {
             <label htmlFor="message">mail message:</label>
           </div>
           <div className={classes.line_form_style}>
-            <input
+            <textarea
               id="message"
               name="message"
+              rows={4}
               style={{ width: "200px", padding: "8px" }}
               value={lendData.message}
               onChange={(e) => {
@@ -749,36 +802,62 @@ function DropdownWithButton(props) {
     setInputList([""]);
   };
   const widthsearth_function = async () => {
-    let response = await IURAPI.widthsearch({
-      keyword: [widthsearch],
-    });
-    if (response.data.finaldata) {
-      console.log(response.data);
-      set_machine_data(response.data.finaldata);
-    } else if (response.data.error) {
-      alert(response.data.error);
+    setLoading(true);
+    try {
+      let response = await IURAPI.widthsearch({
+        keyword: [widthsearch],
+      });
+      if (response.data.finaldata) {
+        console.log(response.data);
+        set_machine_data(response.data.finaldata);
+      } else if (response.data.error) {
+        alert(response.data.error);
+      }
+      set_select_iur_machine([]);
+    } catch (error) {
+      console.log(error);
+      alert("Please contact the administrator.");
+    } finally {
+      setLoading(false);
     }
-    set_select_iur_machine([]);
+    // let response = await IURAPI.widthsearch({
+    //   keyword: [widthsearch],
+    // });
+    // if (response.data.finaldata) {
+    //   console.log(response.data);
+    //   set_machine_data(response.data.finaldata);
+    // } else if (response.data.error) {
+    //   alert(response.data.error);
+    // }
+    // set_select_iur_machine([]);
   };
   const filtersearch = async () => {
-    let response = await IURAPI.filtersearch({
-      start_time: startDate,
-      end_time: endDate,
-      target: Object.values(selectoption.target).map((option) => option.title),
-      group: Object.values(selectoption.group).map((option) => option.title),
-      cycle: Object.values(selectoption.cycle).map((option) => option.title),
-      platform: Object.values(selectoption.platform).map((option) => option.title),
-      SN: inputList,
-      phase: Object.values(selectoption.phase).map((option) => option.title),
-      status: Object.values(selectoption.status).map((option) => option.title),
-    });
-    if (response.data.finaldata) {
-      console.log(response.data);
-      set_machine_data(response.data.finaldata);
-      set_select_iur_machine([]);
-      closeModal(1);
-    } else if (response.data.error) {
-      alert(response.data.error);
+    setLoading(true);
+    try {
+      let response = await IURAPI.filtersearch({
+        start_time: startDate,
+        end_time: endDate,
+        target: Object.values(selectoption.target).map((option) => option.title),
+        group: Object.values(selectoption.group).map((option) => option.title),
+        cycle: Object.values(selectoption.cycle).map((option) => option.title),
+        platform: Object.values(selectoption.platform).map((option) => option.title),
+        SN: inputList,
+        phase: Object.values(selectoption.phase).map((option) => option.title),
+        status: Object.values(selectoption.status).map((option) => option.title),
+      });
+      if (response.data.finaldata) {
+        console.log(response.data);
+        set_machine_data(response.data.finaldata);
+        set_select_iur_machine([]);
+        closeModal(1);
+      } else if (response.data.error) {
+        alert(response.data.error);
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Please contact the administrator.");
+    } finally {
+      setLoading(false);
     }
   };
   const lend = async () => {
@@ -864,18 +943,14 @@ function DropdownWithButton(props) {
             style={customStyles}
             contentLabel="lend"
           >
-            <h2>Borrow</h2>
             {lend_content()}
             <Button onClick={lend}>Borrow</Button>
             <Button onClick={() => closeModal(2)}>Close</Button>
           </Modal>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", flexDirection: "row", marginBottom: "20px" }}>
+          <div className={classes.title_bottom}>
             <Button onClick={() => openModal(1)}>Filter</Button>
-            <Button onClick={excel_export_function}>Excel export</Button>
-          </div>
-          <div style={{ display: "flex", flexDirection: "row", marginBottom: "20px" }}>
             <input
               type="text"
               value={widthsearch}
@@ -886,7 +961,7 @@ function DropdownWithButton(props) {
                   widthsearth_function();
                 }
               }}
-              style={{ marginLeft: "10px" }}
+              className={classes.width_search}
             />
             <button className="search-button" onClick={widthsearth_function}></button>
             {hasAzureAccess() && (
@@ -896,7 +971,7 @@ function DropdownWithButton(props) {
                   setOption(event.target.value);
                   setOptions(event.target.value);
                 }}
-                style={{ padding: "5px 25px", marginLeft: "20px", marginRight: "10px" }}
+                className={classes.select}
               >
                 <option value="">Select Action</option>
                 <option value="1">Borrow</option>
@@ -907,28 +982,29 @@ function DropdownWithButton(props) {
                 <option value="6">Batch Scrap</option>
               </select>
             )}
-          </div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <p
-              style={{
-                marginLeft: "12px",
-                fontFamily: "Calibri, sans-serif",
-                fontSize: "18px",
-              }}
-            >
-              Machine amount: {machine_data.length} &nbsp;&nbsp;&nbsp;
-              {hasAzureAccess() && <>Select amount: {select_iur_machine.length}</>}
-            </p>
-            <div style={{ marginRight: "30px", position: "absolute", right: "0" }}>
+            <div className={classes.title_right}>
+              <p
+                style={{
+                  marginRight: "12px",
+                  fontFamily: "Calibri, sans-serif",
+                  fontSize: "18px",
+                }}
+              >
+                {hasAzureAccess() && <>Select amount: {select_iur_machine.length}</>}
+              </p>
+              <button className={classes.add_new_machine} onClick={excel_export_function}>
+                Excel export
+                <DownloadIcon className={classes.downloadicon} />
+              </button>
               {hasAzureAccess() && (
                 <button
-                  style={{ marginLeft: "40px" }}
+                  style={{ marginLeft: "10px" }}
                   className={classes.add_new_machine}
                   onClick={() => {
                     history.push("/new_machine/");
                   }}
                 >
-                  <AddIcon className={classes.icon} />
+                  <AddIcon className={classes.addicon} />
                   Add new machine
                 </button>
               )}
@@ -937,9 +1013,7 @@ function DropdownWithButton(props) {
         </div>
       </div>
       <TableContainer>
-        <div style={{}}>
-          <Tablehead>{title_row("1")}</Tablehead>
-        </div>
+        <div style={{ marginLeft: "15px" }}>{title_row("1")}</div>
         <div style={{ display: "flex", overflowY: "auto", width: "100%", marginLeft: "15px" }}>
           <FixedSizeList height={600} itemCount={machine_data.length} itemSize={70} width={"100%"}>
             {Row}

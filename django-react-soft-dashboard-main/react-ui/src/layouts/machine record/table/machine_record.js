@@ -49,6 +49,7 @@ function MachineRecord() {
   const position_style = getCellStyle(100);
   const acquirer_style = getCellStyle(160);
   const remark_style = getCellStyle(90);
+  const purpose_remark_style = getCellStyle(150);
   const update_time_style = getCellStyle(200);
   const table_row_style = {
     display: "flex",
@@ -81,6 +82,9 @@ function MachineRecord() {
           <TableCell key={index} style={position_style}>
             {"position"}
           </TableCell>
+          <TableCell key={index} style={remark_style}>
+            {"remark"}
+          </TableCell>
           <TableCell key={index} style={acquirer_style}>
             {"acquirer"}
           </TableCell>
@@ -104,8 +108,8 @@ function MachineRecord() {
           <TableCell key={index} style={borrower_style}>
             {"borrower"}
           </TableCell>
-          <TableCell key={index} style={remark_style}>
-            {"remark"}
+          <TableCell key={index} style={purpose_remark_style}>
+            {"purpose / remark"}
           </TableCell>
           <TableCell key={index} style={update_time_style}>
             {"start time"}
@@ -145,6 +149,9 @@ function MachineRecord() {
           <TableCell key={index} style={position_style}>
             {data.position}
           </TableCell>
+          <TableCell key={index} style={remark_style}>
+            {data.remark}
+          </TableCell>
           <TableCell key={index} style={acquirer_style}>
             {data.acquirer}
           </TableCell>
@@ -171,8 +178,8 @@ function MachineRecord() {
           <TableCell key={index} style={borrower_style}>
             {data.borrower}
           </TableCell>
-          <TableCell key={index} style={remark_style}>
-            {data.remark}
+          <TableCell key={index} style={purpose_remark_style}>
+            {data.purpose}
           </TableCell>
           <TableCell key={index} style={update_time_style}>
             {formatTimeForFrontend(data.update_time)}

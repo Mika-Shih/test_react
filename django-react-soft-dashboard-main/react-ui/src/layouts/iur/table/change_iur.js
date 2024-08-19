@@ -48,18 +48,18 @@ function DropdownWithButton(iur_data) {
   });
   useEffect(() => {}, [formData, options]);
   const title_data = [
-    { style: classes.platform_style, children: "platform" },
-    { style: classes.phase_style, children: "phase" },
-    { style: classes.target_style, children: "target" },
-    { style: classes.group_style, children: "group" },
-    { style: classes.cycle_style, children: "cycle" },
-    { style: classes.sku_style, children: "sku" },
-    { style: classes.sn_style, children: "serial_number" },
-    { style: classes.borrower_style, children: "borrower" },
-    { style: classes.status_style, children: "status" },
-    { style: classes.position_style, children: "position" },
-    { style: classes.remark_style, children: "remark" },
-    { style: classes.update_time_style, children: "update_time" },
+    { style: classes.title_platform_style, children: "platform" },
+    { style: classes.title_phase_style, children: "phase" },
+    { style: classes.title_target_style, children: "target" },
+    { style: classes.title_group_style, children: "group" },
+    { style: classes.title_cycle_style, children: "cycle" },
+    { style: classes.title_sku_style, children: "sku" },
+    { style: classes.title_sn_style, children: "serial_number" },
+    { style: classes.title_borrower_style, children: "borrower" },
+    { style: classes.title_status_style, children: "status" },
+    { style: classes.title_position_style, children: "position" },
+    { style: classes.title_remark_style, children: "remark" },
+    { style: classes.title_update_time_style, children: "update_time" },
   ];
   useEffect(() => {
     console.log(platform_combine);
@@ -192,8 +192,30 @@ function DropdownWithButton(iur_data) {
               machine_data[index].position
             )}
           </TableCell>
-          <TableCell key={index} className={classes.remark_style}>
-            {data.remark}
+          <TableCell
+            key={index}
+            className={classes.remark_style}
+            onClick={() => handleDoubleClick(index, "remark")}
+          >
+            {isEditing[`${index}_remark`] ? (
+              <input
+                ref={inputRef}
+                type="text"
+                value={machine_data[index].remark}
+                style={{ width: "80px" }}
+                onChange={(e) => {
+                  set_machine_data((prevData) => {
+                    const newData = [...prevData];
+                    newData[index] = { ...newData[index], remark: e.target.value };
+                    return newData;
+                  });
+                }}
+                onBlur={() => handleBlur(index, "remark")}
+                onKeyDown={(e) => handleKeyDown(e, index, "remark")}
+              />
+            ) : (
+              machine_data[index].remark
+            )}
           </TableCell>
           <TableCell key={index} className={classes.update_time_style}>
             {formatTimeForFrontend(data.update_time)}
@@ -486,7 +508,7 @@ function DropdownWithButton(iur_data) {
         </div>
       </div>
       <TableContainer>
-        <Table row_style={classes.table_row_style} data={title_data}></Table>
+        <Table row_style={classes.title_table_row_style} data={title_data}></Table>
         {machine_data.map((data, index) => data_row(index, data))}
       </TableContainer>
     </>

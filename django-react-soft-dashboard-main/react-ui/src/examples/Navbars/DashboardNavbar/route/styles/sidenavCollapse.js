@@ -23,7 +23,7 @@ export default makeStyles(
     const { regular, xxl } = boxShadows;
     const { borderRadius } = borders;
     const { pxToRem } = functions;
-
+    console.log(dark, text);
     return {
       collapse_item: {
         background: ({ active }) => (active ? white.main : transparent.main),
@@ -117,8 +117,9 @@ export default makeStyles(
 
         "& span": {
           fontWeight: ({ active }) => (active ? fontWeightMedium : fontWeightRegular),
-          fontSize: size.sm,
+          fontSize: ({ active }) => (active ? size.lg : size.sm),
           lineHeight: 0,
+          transition: "all 0.3s ease",
         },
       },
     };

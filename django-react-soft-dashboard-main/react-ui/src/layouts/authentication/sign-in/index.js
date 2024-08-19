@@ -16,7 +16,7 @@ Coded by www.creative-tim.com
 import { useState } from "react";
 
 // react-router-dom components
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 // @mui material components
 import Switch from "@mui/material/Switch";
@@ -137,8 +137,8 @@ function SignIn() {
 
   return (
     <CoverLayout
-      title="HP COMM Web"
-      description={`${user && user.token ? "" : "Enter your email and password to sign in"}`}
+      title="HP COMM Portal"
+      // description={`${user && user.token ? "" : "Enter your email and password to sign in"}`}
       image={logo_hp}
       button="Guest"
       onClick={() => {
@@ -222,15 +222,28 @@ function SignIn() {
           <SuiBox mt={3} textAlign="center">
             <SuiTypography variant="button" textColor="text" fontWeight="regular">
               Don&apos;t have an account?{" "}
-              <SuiTypography
+              {/* <SuiTypography
                 component={Link}
                 to="/authentication/sign-up"
                 variant="button"
                 textColor="info"
                 fontWeight="medium"
                 textGradient
+                
               >
                 Sign up
+              </SuiTypography> */}
+              <SuiTypography
+                variant="button"
+                textColor="info"
+                fontWeight="medium"
+                textGradient
+                onClick={() => {
+                  guestlogin();
+                }}
+                style={{ cursor: "pointer" }}
+              >
+                Login as guest
               </SuiTypography>
             </SuiTypography>
           </SuiBox>
