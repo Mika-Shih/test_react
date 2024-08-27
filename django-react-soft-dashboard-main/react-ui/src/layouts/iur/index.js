@@ -31,14 +31,13 @@ import Scrapped_machine from "layouts/iur/table/scrapped_iur";
 import Change_machine from "layouts/iur/table/change_iur";
 import Return_machine from "layouts/iur/table/return_iur";
 import New_machine_mail from "layouts/iur/table/new_machine_iur_mail";
+import Transfer_machine from "layouts/iur/table/transfer_new_owner";
 // Custom styles for the Tables
 import styles from "layouts/tables/styles";
-import useStyles from "layouts/iur/table/styles/iur";
 import { useEffect, useState } from "react";
 
 function Tables() {
   const classes = styles();
-  const classes_iur = useStyles();
   const [result, setResult] = useState(0);
   const option_get = (option) => {
     setResult(option);
@@ -81,11 +80,12 @@ function Tables() {
           <>
             <SuiBox mb={3}>
               <Card>
-                <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-                  <button className={classes_iur.iur_UI_delete} onClick={() => setResult(0)}>
-                    X
-                  </button>
-                </SuiBox>
+                <SuiBox
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  p={3}
+                ></SuiBox>
                 <SuiBox customClass={classes.tables_table}>
                   <Return_machine iur_data={select_iur_machine} />
                 </SuiBox>
@@ -97,11 +97,12 @@ function Tables() {
           <>
             <SuiBox mb={3}>
               <Card>
-                <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-                  <button className={classes_iur.iur_UI_delete} onClick={() => setResult(0)}>
-                    X
-                  </button>
-                </SuiBox>
+                <SuiBox
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  p={3}
+                ></SuiBox>
                 <SuiBox customClass={classes.tables_table}>
                   <New_machine_mail iur_data={select_iur_machine} />
                 </SuiBox>
@@ -113,11 +114,12 @@ function Tables() {
           <>
             <SuiBox mb={3}>
               <Card>
-                <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-                  <button className={classes_iur.iur_UI_delete} onClick={() => setResult(0)}>
-                    X
-                  </button>
-                </SuiBox>
+                <SuiBox
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  p={3}
+                ></SuiBox>
                 <SuiBox customClass={classes.tables_table}>
                   <Change_machine iur_data={select_iur_machine} />
                 </SuiBox>
@@ -129,11 +131,12 @@ function Tables() {
           <>
             <SuiBox mb={3}>
               <Card>
-                <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-                  <button className={classes_iur.iur_UI_delete} onClick={() => setResult(0)}>
-                    X
-                  </button>
-                </SuiBox>
+                <SuiBox
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  p={3}
+                ></SuiBox>
                 <SuiBox customClass={classes.tables_table}>
                   <Delete_machine iur_data={select_iur_machine} />
                 </SuiBox>
@@ -145,13 +148,31 @@ function Tables() {
           <>
             <SuiBox mb={3}>
               <Card>
-                <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-                  <button className={classes_iur.iur_UI_delete} onClick={() => setResult(0)}>
-                    X
-                  </button>
-                </SuiBox>
+                <SuiBox
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  p={3}
+                ></SuiBox>
                 <SuiBox customClass={classes.tables_table}>
                   <Scrapped_machine iur_data={select_iur_machine} />
+                </SuiBox>
+              </Card>
+            </SuiBox>
+          </>
+        )}
+        {result == 7 && (
+          <>
+            <SuiBox mb={3}>
+              <Card>
+                <SuiBox
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  p={3}
+                ></SuiBox>
+                <SuiBox customClass={classes.tables_table}>
+                  <Transfer_machine iur_data={select_iur_machine} />
                 </SuiBox>
               </Card>
             </SuiBox>

@@ -126,14 +126,16 @@ export default function Asynchronous({
           />
           {index === numberOfOptions - 1 && (
             <>
-              <IconButton onClick={handleAddOption}>
-                <AddIcon />
-              </IconButton>
-              {numberOfOptions > 1 && (
-                <IconButton onClick={handleRemoveOption}>
-                  <RemoveIcon />
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
+                <IconButton onClick={handleAddOption}>
+                  <AddIcon />
                 </IconButton>
-              )}
+                {numberOfOptions > 1 && (
+                  <IconButton onClick={handleRemoveOption}>
+                    <RemoveIcon />
+                  </IconButton>
+                )}
+              </div>
             </>
           )}
         </div>

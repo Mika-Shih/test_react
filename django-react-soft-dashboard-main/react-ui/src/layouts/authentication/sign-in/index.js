@@ -221,7 +221,7 @@ function SignIn() {
           </SuiBox>
           <SuiBox mt={3} textAlign="center">
             <SuiTypography variant="button" textColor="text" fontWeight="regular">
-              Don&apos;t have an account?{" "}
+              {/* Don&apos;t have an account?{" "} */}
               {/* <SuiTypography
                 component={Link}
                 to="/authentication/sign-up"

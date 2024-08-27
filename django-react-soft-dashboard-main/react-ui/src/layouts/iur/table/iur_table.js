@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Modal from "react-modal";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
-import Tablebody from "@mui/material/TableBody";
 import DateTimePicker from "examples/tool_universal/calendar_delay";
 import Inputbox from "examples/tool_universal/inputbox";
 import { FixedSizeList } from "react-window";
@@ -20,6 +18,8 @@ import useStyles from "layouts/iur/table/styles/iur";
 import IURAPI from "api/iur";
 import AddIcon from "@mui/icons-material/Add";
 import DownloadIcon from "@mui/icons-material/Download";
+import { Dialog, Box } from "@mui/material";
+// import SuiBox from "components/SuiBox";
 function DropdownWithButton(props) {
   const classes = useStyles();
   const { user } = useAuth();
@@ -118,12 +118,12 @@ function DropdownWithButton(props) {
     { index: "1", className: classes.title_group_style, children: "Group" },
     { index: "1", className: classes.title_cycle_style, children: "Cycle" },
     { index: "1", className: classes.title_sku_style, children: "Sku" },
-    { index: "1", className: classes.title_sn_style, children: "Serial_number" },
+    { index: "1", className: classes.title_sn_style, children: "Serial Number" },
     { index: "1", className: classes.title_borrower_style, children: "Borrower" },
     { index: "1", className: classes.title_status_style, children: "Status" },
     { index: "1", className: classes.title_position_style, children: "Position" },
     { index: "1", className: classes.title_remark_style, children: "Remark" },
-    { index: "1", className: classes.title_update_time_style, children: "Update_time" },
+    { index: "1", className: classes.title_update_time_style, children: "Update Time" },
   ];
   function title_row(index, request = true) {
     if (request) {
@@ -161,7 +161,7 @@ function DropdownWithButton(props) {
               {"Sku"}
             </TableCell>
             <TableCell key={index} className={classes.title_sn_style}>
-              {"Serial_number"}
+              {"Serial Number"}
             </TableCell>
             <TableCell key={index} className={classes.title_borrower_style}>
               {"Borrower"}
@@ -176,7 +176,7 @@ function DropdownWithButton(props) {
               {"Remark"}
             </TableCell>
             <TableCell key={index} className={classes.title_update_time_style}>
-              {"Update_time"}
+              {"Update Time"}
             </TableCell>
           </TableRow>
         </>
@@ -436,26 +436,6 @@ function DropdownWithButton(props) {
     setPopFilters((prev) => ({ ...prev, [modalNumber]: false }));
   };
 
-  const customStyles = {
-    content: {
-      maxWidth: "1000px",
-      minWidth: "1000px",
-      maxHeight: "700px",
-      minHeight: "700px",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-500px",
-      transform: "translate(-50%, -50%)",
-      overflowY: "auto",
-    },
-    overlay: {
-      zIndex: 1200,
-    },
-  };
-  Modal.setAppElement("#root");
-
   useEffect(() => {
     const option_data = async () => {
       const requestData = {
@@ -701,7 +681,7 @@ function DropdownWithButton(props) {
         alert("Please select the machine.");
       }
     }
-    if (options == 2) {
+    if (options == 2 || options == 7) {
       machine_length("Rent");
     }
     if (options == 5 || options == 6) {
@@ -720,7 +700,7 @@ function DropdownWithButton(props) {
   function lend_content() {
     return (
       <>
-        <div style={{ flexDirection: "column", ...containerStyle }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <div className={classes.line_form_style}>
             <label htmlFor="lendperson">Borrower&nbsp;:&nbsp;&nbsp;</label>
             <Loading_option
@@ -732,14 +712,8 @@ function DropdownWithButton(props) {
               }
             />
           </div>
-          <div className={classes.line_form_style}>
-            <TableContainer>
-              <Tablebody>{title_row("1", false)}</Tablebody>
-              <Tablebody>
-                {select_iur_machine.map((data, index) => data_row(index, data, false))}
-              </Tablebody>
-            </TableContainer>
-          </div>
+          {title_row("1", false)}
+          {select_iur_machine.map((data, index) => data_row(index, data, false))}
           <div className={classes.line_form_style}>
             <label htmlFor="Purpose">Purpose:</label>
           </div>
@@ -747,7 +721,7 @@ function DropdownWithButton(props) {
             <input
               id="Purpose"
               name="Purpose"
-              style={{ width: "200px", padding: "8px" }}
+              style={{ width: "300px", padding: "8px" }}
               value={lendData.purpose}
               onChange={(e) => {
                 setlendData({
@@ -758,7 +732,7 @@ function DropdownWithButton(props) {
             />
           </div>
           <div className={classes.line_form_style}>
-            <label htmlFor="cc_mail">cc mail:</label>
+            <label htmlFor="cc_mail">CC Mail:</label>
           </div>
           <div className={classes.line_form_style}>
             <Loading_option_add_remove
@@ -769,7 +743,7 @@ function DropdownWithButton(props) {
             />
           </div>
           <div className={classes.line_form_style}>
-            <label htmlFor="message">mail message:</label>
+            <label htmlFor="message">Mail Message:</label>
           </div>
           <div className={classes.line_form_style}>
             <textarea
@@ -785,6 +759,10 @@ function DropdownWithButton(props) {
                 });
               }}
             />
+          </div>
+          <div className={classes.line_form_style}>
+            <Button onClick={lend}>Borrow</Button>
+            <Button onClick={() => closeModal(2)}>Close</Button>
           </div>
         </div>
       </>
@@ -820,16 +798,6 @@ function DropdownWithButton(props) {
     } finally {
       setLoading(false);
     }
-    // let response = await IURAPI.widthsearch({
-    //   keyword: [widthsearch],
-    // });
-    // if (response.data.finaldata) {
-    //   console.log(response.data);
-    //   set_machine_data(response.data.finaldata);
-    // } else if (response.data.error) {
-    //   alert(response.data.error);
-    // }
-    // set_select_iur_machine([]);
   };
   const filtersearch = async () => {
     setLoading(true);
@@ -918,35 +886,25 @@ function DropdownWithButton(props) {
       <div style={{ display: "flex", alignItems: "center", marginLeft: "20px" }}>
         <Loading loading={loading} />
         <div style={{ display: "flex", overflowY: "auto" }}>
-          <Modal
-            isOpen={popFilters[1]}
-            onRequestClose={() => closeModal(1)}
-            style={customStyles}
-            contentLabel="filter"
-          >
-            {pop_filter_content()}
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={filtersearch}>
-              Apply Filters
-            </Button>
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={clearmodel}>
-              Clear
-            </Button>
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
-              Close
-            </Button>
-          </Modal>
+          <Dialog open={popFilters[1]} onClose={() => closeModal(1)} fullWidth maxWidth="lg">
+            <Box sx={{ padding: "30px" }}>
+              {pop_filter_content()}
+              <Button style={{ margin: "10px", padding: "10px" }} onClick={filtersearch}>
+                Apply Filters
+              </Button>
+              <Button style={{ margin: "10px", padding: "10px" }} onClick={clearmodel}>
+                Clear
+              </Button>
+              <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
+                Close
+              </Button>
+            </Box>
+          </Dialog>
         </div>
         <div style={{ display: "flex", overflowY: "auto" }}>
-          <Modal
-            isOpen={popFilters[2]}
-            onRequestClose={() => closeModal(2)}
-            style={customStyles}
-            contentLabel="lend"
-          >
-            {lend_content()}
-            <Button onClick={lend}>Borrow</Button>
-            <Button onClick={() => closeModal(2)}>Close</Button>
-          </Modal>
+          <Dialog open={popFilters[2]} onClose={() => closeModal(2)} fullWidth maxWidth={false}>
+            <Box sx={{ padding: "30px" }}>{lend_content()}</Box>
+          </Dialog>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div className={classes.title_bottom}>
@@ -973,13 +931,14 @@ function DropdownWithButton(props) {
                 }}
                 className={classes.select}
               >
-                <option value="">Select Action</option>
+                <option value="">Selected Action</option>
                 <option value="1">Borrow</option>
                 <option value="2">Return</option>
                 <option value="3">New Machine In</option>
                 <option value="4">Batch Modify</option>
                 <option value="5">Batch Delete</option>
                 <option value="6">Batch Scrap</option>
+                <option value="7">Transfer New Owner</option>
               </select>
             )}
             <div className={classes.title_right}>
@@ -990,10 +949,10 @@ function DropdownWithButton(props) {
                   fontSize: "18px",
                 }}
               >
-                {hasAzureAccess() && <>Select amount: {select_iur_machine.length}</>}
+                {hasAzureAccess() && <>Selected Unit : {select_iur_machine.length}</>}
               </p>
               <button className={classes.add_new_machine} onClick={excel_export_function}>
-                Excel export
+                Excel Export
                 <DownloadIcon className={classes.downloadicon} />
               </button>
               {hasAzureAccess() && (
@@ -1005,7 +964,7 @@ function DropdownWithButton(props) {
                   }}
                 >
                   <AddIcon className={classes.addicon} />
-                  Add new machine
+                  Add New Machine
                 </button>
               )}
             </div>

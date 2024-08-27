@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Button from "examples/Icons/Button";
+import Loading_option from "examples/tool_universal/loading_option";
 import Loading_option_add_remove from "examples/tool_universal/loading_option_add_remove";
 import Loading from "examples/tool_universal/loading";
 import Table from "examples/Table/table_row";
@@ -20,6 +21,7 @@ function DropdownWithButton(iur_data) {
     2: false,
   });
   const [lendData, setlendData] = useState({
+    lendperson: null,
     purpose: "",
     message: "",
     cc_mail: [],
@@ -75,7 +77,7 @@ function DropdownWithButton(iur_data) {
             {data.status}
           </TableCell>
           <TableCell key={index} className={classes.position_style}>
-            {
+            {/* {
               <input
                 ref={inputRef}
                 type="text"
@@ -91,10 +93,11 @@ function DropdownWithButton(iur_data) {
                 onBlur={() => handleBlur(index, "position")}
                 onKeyDown={(e) => handleKeyDown(e, index, "position")}
               />
-            }
+            } */}
+            {data.position}
           </TableCell>
           <TableCell key={index} className={classes.remark_style}>
-            {
+            {/* {
               <input
                 ref={inputRef}
                 type="text"
@@ -110,7 +113,8 @@ function DropdownWithButton(iur_data) {
                 onBlur={() => handleBlur(index, "remark")}
                 onKeyDown={(e) => handleKeyDown(e, index, "remark")}
               />
-            }
+            } */}
+            {data.remark}
           </TableCell>
           <TableCell key={index} className={classes.update_time_style}>
             {formatTimeForFrontend(data.update_time)}
@@ -119,15 +123,15 @@ function DropdownWithButton(iur_data) {
       </>
     );
   }
-  const inputRef = useRef(null);
-  const [isEditing, setIsEditing] = useState({});
-  const indexRef = useRef(null);
+  //   const inputRef = useRef(null);
+  //   const [isEditing, setIsEditing] = useState({});
+  //   const indexRef = useRef(null);
 
-  useEffect(() => {
-    if (isEditing[indexRef.current] && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isEditing]);
+  //   useEffect(() => {
+  //     if (isEditing[indexRef.current] && inputRef.current) {
+  //       inputRef.current.focus();
+  //     }
+  //   }, [isEditing]);
 
   // const handleDoubleClick = (index, data) => {
   //   indexRef.current = `${index}_${data}`;
@@ -139,18 +143,18 @@ function DropdownWithButton(iur_data) {
   //   console.log(inputRef);
   // };
 
-  const handleBlur = (index, data) => {
-    setIsEditing((prevIsEditing) => ({
-      ...prevIsEditing,
-      [`${index}_${data}`]: false,
-    }));
-    console.log(isEditing);
-  };
-  const handleKeyDown = (e, index, data) => {
-    if (e.key === "Enter") {
-      handleBlur(index, data);
-    }
-  };
+  //   const handleBlur = (index, data) => {
+  //     setIsEditing((prevIsEditing) => ({
+  //       ...prevIsEditing,
+  //       [`${index}_${data}`]: false,
+  //     }));
+  //     console.log(isEditing);
+  //   };
+  //   const handleKeyDown = (e, index, data) => {
+  //     if (e.key === "Enter") {
+  //       handleBlur(index, data);
+  //     }
+  //   };
 
   function check_platform_change() {
     return (
@@ -230,17 +234,35 @@ function DropdownWithButton(iur_data) {
         finaldata: machine_data,
         message: lendData.message,
         purpose: lendData.purpose,
-        cc_mail: cc_mail_list,
       });
       if (response.data.finaldata) {
-        alert(response.data.finaldata);
-        window.location.reload();
+        try {
+          const response_lend = await IURAPI.lend({
+            finaldata: machine_data,
+            lendperson: lendData.lendperson == null ? "" : lendData.lendperson.value,
+            purpose: lendData.purpose,
+            message: lendData.message,
+            cc_mail: cc_mail_list,
+          });
+          if (response_lend.data.finaldata) {
+            alert("Successfully transferred.");
+            window.location.reload();
+          } else if (response_lend.data.error) {
+            alert(response_lend.data.error);
+          }
+        } catch (error) {
+          console.error("Error in Axios request:", error);
+          alert(
+            "Return completed, but there was an error when lending to the new user. Please contact the administrator."
+          );
+        }
       } else if (response.data.error) {
         alert(response.data.error);
       }
     } catch (error) {
       console.error("Error in Axios request:", error);
       alert("Please contact the administrator.");
+      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -264,11 +286,20 @@ function DropdownWithButton(iur_data) {
                 gap: "30px",
               }}
             >
-              <p>Confirm returning the following machines?</p>
+              <p>Confirm transferring the following machines?</p>
               {check_platform_change()}
               <div claasName={classes.line_form_style}>
-                <Button style={{ margin: "10px", padding: "10px" }} onClick={clearmodel}>
-                  Return
+                <Button
+                  style={{ margin: "10px", padding: "10px" }}
+                  onClick={() => {
+                    if (lendData.lendperson == null) {
+                      alert("User cannot be empty.");
+                    } else {
+                      clearmodel();
+                    }
+                  }}
+                >
+                  Transfer
                 </Button>
                 <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
                   Close
@@ -286,6 +317,13 @@ function DropdownWithButton(iur_data) {
           marginTop: "20px",
         }}
       >
+        <label htmlFor="new_owner">New Owner:</label>
+        <Loading_option
+          api="polls/lendpersonnel"
+          name="user_mail"
+          selectedOptions={lendData.lendperson}
+          setSelectedOptions={(newOptions) => setlendData({ ...lendData, lendperson: newOptions })}
+        />
         <label htmlFor="Purpose">Purpose:</label>
         <input
           id="Purpose"
@@ -329,7 +367,7 @@ function DropdownWithButton(iur_data) {
             marginTop: "20px",
           }}
         >
-          <Button onClick={() => openModal(1)}>Return Machine</Button>
+          <Button onClick={() => openModal(1)}>Transfer Machine</Button>
           <Button onClick={() => window.location.reload()}>Cancel</Button>
         </div>
       </div>

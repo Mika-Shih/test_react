@@ -3,10 +3,12 @@ import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Tablebody from "@mui/material/TableBody";
+import useStyles from "layouts/machine record/table/styles/iur";
 import IURAPI from "api/iur";
 function MachineRecord() {
   const [machineRecord, setMachineRecord] = useState(null);
   const [machine_data, set_machine_data] = useState([]);
+  const classes = useStyles();
   const urlParams = new URLSearchParams(window.location.href);
   useEffect(() => {
     console.log(urlParams);
@@ -28,71 +30,42 @@ function MachineRecord() {
     };
     fetchData();
   }, [machineRecord]);
-  function getCellStyle(width) {
-    return {
-      minWidth: `${width}px`,
-      maxWidth: `${width}px`,
-      textAlign: "center",
-      fontSize: "12px",
-    };
-  }
-
-  const platform_style = getCellStyle(150);
-  const phase_style = getCellStyle(80);
-  const target_style = getCellStyle(80);
-  const group_style = getCellStyle(120);
-  const cycle_style = getCellStyle(80);
-  const sku_style = getCellStyle(60);
-  const sn_style = getCellStyle(150);
-  const borrower_style = getCellStyle(100);
-  const status_style = getCellStyle(90);
-  const position_style = getCellStyle(100);
-  const acquirer_style = getCellStyle(160);
-  const remark_style = getCellStyle(90);
-  const purpose_remark_style = getCellStyle(150);
-  const update_time_style = getCellStyle(200);
-  const table_row_style = {
-    display: "flex",
-    justifyContent: "space-between",
-    width: "100%",
-    textAlign: "center",
-  };
   function title_row(index) {
     return (
       <>
-        <TableRow style={{ ...table_row_style, backgroundColor: "#E6C786" }}>
-          <TableCell key={index} style={platform_style}>
-            {"platform"}
+        <TableRow className={classes.title_table_row_style}>
+          <TableCell key={index} className={classes.title_platform_style}>
+            {"Platform"}
           </TableCell>
-          <TableCell key={index} style={phase_style}>
-            {"phase"}
+          <TableCell key={index} className={classes.title_phase_style}>
+            {"Phase"}
           </TableCell>
-          <TableCell key={index} style={target_style}>
-            {"target"}
+          <TableCell key={index} className={classes.title_target_style}>
+            {"Target"}
           </TableCell>
-          <TableCell key={index} style={group_style}>
-            {"group"}
+          <TableCell key={index} className={classes.title_group_style}>
+            {"Group"}
           </TableCell>
-          <TableCell key={index} style={cycle_style}>
-            {"cycle"}
+          <TableCell key={index} className={classes.title_cycle_style}>
+            {"Cycle"}
           </TableCell>
-          <TableCell key={index} style={sku_style}>
-            {"sku"}
+          <TableCell key={index} className={classes.title_sku_style}>
+            {"Sku"}
           </TableCell>
-          <TableCell key={index} style={position_style}>
-            {"position"}
+          <TableCell key={index} className={classes.title_position_style}>
+            {"Position"}
           </TableCell>
-          <TableCell key={index} style={remark_style}>
-            {"remark"}
+          <TableCell key={index} className={classes.title_remark_style}>
+            {"Remark"}
           </TableCell>
-          <TableCell key={index} style={acquirer_style}>
-            {"acquirer"}
+          <TableCell key={index} className={classes.title_acquirer_style}>
+            {"Acquirer"}
           </TableCell>
-          <TableCell key={index} style={sn_style}>
-            {"serial_number"}
+          <TableCell key={index} className={classes.title_sn_style}>
+            {"Serial Number"}
           </TableCell>
-          <TableCell key={index} style={update_time_style}>
-            {"key in time"}
+          <TableCell key={index} className={classes.title_update_time_style}>
+            {"Key In Time"}
           </TableCell>
         </TableRow>
       </>
@@ -101,21 +74,21 @@ function MachineRecord() {
   function record_title_row(index) {
     return (
       <>
-        <TableRow style={{ ...table_row_style, backgroundColor: "#E6C786" }}>
-          <TableCell key={index} style={status_style}>
-            {"status"}
+        <TableRow className={classes.title_table_row_style}>
+          <TableCell key={index} className={classes.title_status_style}>
+            {"Status"}
           </TableCell>
-          <TableCell key={index} style={borrower_style}>
-            {"borrower"}
+          <TableCell key={index} className={classes.title_borrower_style}>
+            {"Borrower"}
           </TableCell>
-          <TableCell key={index} style={purpose_remark_style}>
-            {"purpose / remark"}
+          <TableCell key={index} className={classes.title_purpose_remark_style}>
+            {"Purpose / Remark"}
           </TableCell>
-          <TableCell key={index} style={update_time_style}>
-            {"start time"}
+          <TableCell key={index} className={classes.title_update_time_style}>
+            {"Start Time"}
           </TableCell>
-          <TableCell key={index} style={update_time_style}>
-            {"end time"}
+          <TableCell key={index} className={classes.title_update_time_style}>
+            {"End Time"}
           </TableCell>
         </TableRow>
       </>
@@ -127,38 +100,38 @@ function MachineRecord() {
     }
     return (
       <>
-        <TableRow style={table_row_style}>
-          <TableCell key={index} style={platform_style}>
+        <TableRow className={classes.table_row_style}>
+          <TableCell key={index} className={classes.platform_style}>
             {data.platform}
           </TableCell>
-          <TableCell key={index} style={phase_style}>
+          <TableCell key={index} className={classes.phase_style}>
             {data.phase}
           </TableCell>
-          <TableCell key={index} style={target_style}>
+          <TableCell key={index} className={classes.target_style}>
             {data.target}
           </TableCell>
-          <TableCell key={index} style={group_style}>
+          <TableCell key={index} className={classes.group_style}>
             {data.group}
           </TableCell>
-          <TableCell key={index} style={cycle_style}>
+          <TableCell key={index} className={classes.cycle_style}>
             {data.cycle}
           </TableCell>
-          <TableCell key={index} style={sku_style}>
+          <TableCell key={index} className={classes.sku_style}>
             {data.sku}
           </TableCell>
-          <TableCell key={index} style={position_style}>
+          <TableCell key={index} className={classes.position_style}>
             {data.position}
           </TableCell>
-          <TableCell key={index} style={remark_style}>
+          <TableCell key={index} className={classes.remark_style}>
             {data.remark}
           </TableCell>
-          <TableCell key={index} style={acquirer_style}>
+          <TableCell key={index} className={classes.acquirer_style}>
             {data.acquirer}
           </TableCell>
-          <TableCell key={index} style={sn_style}>
+          <TableCell key={index} className={classes.sn_style}>
             {data.sn}
           </TableCell>
-          <TableCell key={index} style={update_time_style}>
+          <TableCell key={index} className={classes.update_time_style}>
             {formatTimeForFrontend(data.update_time)}
           </TableCell>
         </TableRow>
@@ -171,20 +144,20 @@ function MachineRecord() {
     }
     return (
       <>
-        <TableRow style={table_row_style}>
-          <TableCell key={index} style={status_style}>
+        <TableRow className={classes.table_row_style}>
+          <TableCell key={index} className={classes.status_style}>
             {data.status}
           </TableCell>
-          <TableCell key={index} style={borrower_style}>
+          <TableCell key={index} className={classes.borrower_style}>
             {data.borrower}
           </TableCell>
-          <TableCell key={index} style={purpose_remark_style}>
+          <TableCell key={index} className={classes.purpose_remark_style}>
             {data.purpose}
           </TableCell>
-          <TableCell key={index} style={update_time_style}>
+          <TableCell key={index} className={classes.update_time_style}>
             {formatTimeForFrontend(data.update_time)}
           </TableCell>
-          <TableCell key={index} style={update_time_style}>
+          <TableCell key={index} className={classes.update_time_style}>
             {nextData ? formatTimeForFrontend(nextData.update_time) : ""}
           </TableCell>
         </TableRow>

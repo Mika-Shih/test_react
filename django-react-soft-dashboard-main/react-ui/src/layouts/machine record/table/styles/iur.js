@@ -1,10 +1,7 @@
 import { makeStyles } from "@mui/styles";
 
-export default makeStyles(({ boxShadows, functions, borders, typography }) => {
-  const { navbarBoxShadow } = boxShadows;
-  const { rgba, pxToRem } = functions;
-  const { borderRadius, borderWidth } = borders;
-  const { size } = typography;
+export default makeStyles(({ functions }) => {
+  const { pxToRem } = functions;
   return {
     title_table_row_style: {
       display: "flex",
@@ -35,19 +32,6 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
     containerStyle: {
       display: "flex",
     },
-    leftBlockStyle: {
-      maxWidth: "400px",
-      minWidth: "400px",
-      flex: "0 0 400px", //flex-grow(區域優先級)、flex-shrink(區域空間不夠縮放優先級)、flex-basis
-      marginRight: "10px",
-      padding: "10px",
-      background: "#efefef",
-    },
-    rightBlockStyle: {
-      flex: "1",
-      padding: "10px",
-      background: "#f5f5f5",
-    },
     line_form_style: {
       display: "flex",
       alignItems: "center",
@@ -55,33 +39,8 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       color: "#000000",
       fontSize: "18px",
     },
-    customStyles: {
-      content: {
-        maxWidth: "1000px",
-        minWidth: "1000px",
-        maxHeight: "800px",
-        minHeight: "800px",
-        top: "50%",
-        left: "50%",
-        right: "auto",
-        bottom: "auto",
-        marginRight: "-500px",
-        transform: "translate(-50%, -50%)",
-        overflowY: "auto",
-      },
-      overlay: {
-        zIndex: 9999,
-      },
-    },
-    title_checkbox_style: {
-      width: pxToRem(10),
-      textAlign: "center",
-      fontSize: pxToRem(16),
-      wordWrap: "break-word",
-      borderBottom: "none !important",
-    },
     title_platform_style: {
-      width: pxToRem(200),
+      width: pxToRem(150),
       textAlign: "center",
       fontSize: pxToRem(17),
       wordWrap: "break-word",
@@ -90,7 +49,7 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       color: "#333333",
     },
     title_phase_style: {
-      width: pxToRem(120),
+      width: pxToRem(90),
       textAlign: "center",
       fontSize: pxToRem(17),
       wordWrap: "break-word",
@@ -99,7 +58,7 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       color: "#333333",
     },
     title_target_style: {
-      width: pxToRem(80),
+      width: pxToRem(90),
       textAlign: "center",
       fontSize: pxToRem(17),
       wordWrap: "break-word",
@@ -108,7 +67,7 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       color: "#333333",
     },
     title_group_style: {
-      width: pxToRem(120),
+      width: pxToRem(130),
       textAlign: "center",
       fontSize: pxToRem(17),
       wordWrap: "break-word",
@@ -117,7 +76,7 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       color: "#333333",
     },
     title_cycle_style: {
-      width: pxToRem(80),
+      width: pxToRem(90),
       textAlign: "center",
       fontSize: pxToRem(17),
       wordWrap: "break-word",
@@ -126,7 +85,7 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       color: "#333333",
     },
     title_sku_style: {
-      width: pxToRem(60),
+      width: pxToRem(70),
       textAlign: "center",
       fontSize: pxToRem(17),
       wordWrap: "break-word",
@@ -136,6 +95,24 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
     },
     title_sn_style: {
       width: pxToRem(150),
+      textAlign: "center",
+      fontSize: pxToRem(17),
+      wordWrap: "break-word",
+      borderBottom: "none !important",
+      fontWeight: 900,
+      color: "#333333",
+    },
+    title_borrower_style: {
+      width: pxToRem(100),
+      textAlign: "center",
+      fontSize: pxToRem(16),
+      wordWrap: "break-word",
+      borderBottom: "none !important",
+      fontWeight: 900,
+      color: "#333333",
+    },
+    title_status_style: {
+      width: pxToRem(100),
       textAlign: "center",
       fontSize: pxToRem(17),
       wordWrap: "break-word",
@@ -161,6 +138,15 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       fontWeight: 900,
       color: "#333333",
     },
+    title_update_time_style: {
+      width: pxToRem(200),
+      textAlign: "center",
+      fontSize: pxToRem(17),
+      wordWrap: "break-word",
+      borderBottom: "none !important",
+      fontWeight: 900,
+      color: "#333333",
+    },
     title_acquirer_style: {
       width: pxToRem(200),
       textAlign: "center",
@@ -170,50 +156,52 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       fontWeight: 900,
       color: "#333333",
     },
-    checkbox_style: {
-      width: pxToRem(10),
+    title_purpose_remark_style: {
+      width: pxToRem(180),
       textAlign: "center",
-      fontSize: pxToRem(16),
+      fontSize: pxToRem(17),
       wordWrap: "break-word",
       borderBottom: "none !important",
+      fontWeight: 900,
+      color: "#333333",
     },
     platform_style: {
-      width: pxToRem(200),
+      width: pxToRem(150),
       textAlign: "center",
       fontSize: pxToRem(14),
       wordWrap: "break-word",
       borderBottom: "none !important",
     },
     phase_style: {
-      width: pxToRem(120),
+      width: pxToRem(90),
       textAlign: "center",
       fontSize: pxToRem(14),
       wordWrap: "break-word",
       borderBottom: "none !important",
     },
     target_style: {
-      width: pxToRem(80),
+      width: pxToRem(90),
       textAlign: "center",
       fontSize: pxToRem(14),
       wordWrap: "break-word",
       borderBottom: "none !important",
     },
     group_style: {
-      width: pxToRem(120),
+      width: pxToRem(130),
       textAlign: "center",
       fontSize: pxToRem(14),
       wordWrap: "break-word",
       borderBottom: "none !important",
     },
     cycle_style: {
-      width: pxToRem(80),
+      width: pxToRem(90),
       textAlign: "center",
       fontSize: pxToRem(14),
       wordWrap: "break-word",
       borderBottom: "none !important",
     },
     sku_style: {
-      width: pxToRem(60),
+      width: pxToRem(70),
       textAlign: "center",
       fontSize: pxToRem(14),
       wordWrap: "break-word",
@@ -227,6 +215,13 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       borderBottom: "none !important",
     },
     borrower_style: {
+      width: pxToRem(100),
+      textAlign: "center",
+      fontSize: pxToRem(14),
+      wordWrap: "break-word",
+      borderBottom: "none !important",
+    },
+    status_style: {
       width: pxToRem(100),
       textAlign: "center",
       fontSize: pxToRem(14),
@@ -247,6 +242,13 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       wordWrap: "break-word",
       borderBottom: "none !important",
     },
+    update_time_style: {
+      width: pxToRem(200),
+      textAlign: "center",
+      fontSize: pxToRem(14),
+      wordWrap: "break-word",
+      borderBottom: "none !important",
+    },
     acquirer_style: {
       width: pxToRem(200),
       textAlign: "center",
@@ -254,31 +256,12 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       wordWrap: "break-word",
       borderBottom: "none !important",
     },
-    button_style: {
-      display: "flex",
-      width: "100px",
-      padding: "5px 10px",
-      transform: "rotate(0deg)",
-      whiteSpace: "nowrap",
-      backgroundColor: "#007bff",
-      color: "#fff",
-      border: "none",
-      borderRadius: "5px",
-      cursor: "pointer",
-      fontSize: "14px",
-      fontWeight: "bold",
-      outline: "none",
-    },
-    test: {
-      display: "flex",
-      justifyContent: "space-between",
-      width: "100%",
+    purpose_remark_style: {
+      width: pxToRem(180),
       textAlign: "center",
-      boxShadow: navbarBoxShadow,
-      color: rgba(0, 0, 0, 0.5),
-      fontSize: pxToRem(size),
-      borderRadius: borderRadius,
-      borderWidth: borderWidth,
+      fontSize: pxToRem(17),
+      wordWrap: "break-word",
+      borderBottom: "none !important",
     },
   };
 });

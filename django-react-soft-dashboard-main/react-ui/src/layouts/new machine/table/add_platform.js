@@ -9,7 +9,6 @@ import PropTypes from "prop-types";
 import Loading from "examples/tool_universal/loading";
 import Loading_option from "examples/tool_universal/loading_option";
 import Table from "examples/Table/table_row";
-// import useStyles from "layouts/new machine/table/styles/new_machine_style";
 import useStyles from "./styles/new_machine_style";
 import IURAPI from "api/iur";
 import { useHistory } from "react-router-dom";
@@ -87,7 +86,7 @@ function InputWithAddAndClearButton(props) {
     ];
     return (
       <>
-        <Table row_style={classes.table_row_style} data={title_data}></Table>
+        <Table row_style={classes.title_table_row_style} data={title_data}></Table>
       </>
     );
   }

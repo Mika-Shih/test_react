@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import Modal from "react-modal";
 import TableContainer from "@mui/material/TableContainer";
 import Button from "examples/Icons/Button";
 import Table from "examples/Table/table_row";
 import Loading from "examples/tool_universal/loading";
 import useStyles from "layouts/iur/table/styles/iur";
+import { Box, Dialog } from "@mui/material";
 import IURAPI from "api/iur";
 function DropdownWithButton(iur_data) {
   useEffect(() => {
@@ -16,18 +16,18 @@ function DropdownWithButton(iur_data) {
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const title_data = [
-    { style: classes.title_platform_style, children: "platform" },
-    { style: classes.title_phase_style, children: "phase" },
-    { style: classes.title_target_style, children: "target" },
-    { style: classes.title_group_style, children: "group" },
-    { style: classes.title_cycle_style, children: "cycle" },
-    { style: classes.title_sku_style, children: "sku" },
-    { style: classes.title_sn_style, children: "serial_number" },
-    { style: classes.title_borrower_style, children: "borrower" },
-    { style: classes.title_status_style, children: "status" },
-    { style: classes.title_position_style, children: "position" },
-    { style: classes.title_remark_style, children: "remark" },
-    { style: classes.title_update_time_style, children: "update_time" },
+    { style: classes.title_platform_style, children: "Platform" },
+    { style: classes.title_phase_style, children: "Phase" },
+    { style: classes.title_target_style, children: "Target" },
+    { style: classes.title_group_style, children: "Group" },
+    { style: classes.title_cycle_style, children: "Cycle" },
+    { style: classes.title_sku_style, children: "Sku" },
+    { style: classes.title_sn_style, children: "Serial Number" },
+    { style: classes.title_borrower_style, children: "Borrower" },
+    { style: classes.title_status_style, children: "Status" },
+    { style: classes.title_position_style, children: "Position" },
+    { style: classes.title_remark_style, children: "Remark" },
+    { style: classes.title_update_time_style, children: "Update Time" },
   ];
   function data_row(data) {
     if (!data) {
@@ -87,23 +87,6 @@ function DropdownWithButton(iur_data) {
   const closeModal = () => {
     set_pop_filter(false);
   };
-  const customStyles = {
-    content: {
-      maxWidth: "900px",
-      maxHeight: "800px",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-450px",
-      transform: "translate(-50%, -50%)",
-      overflowY: "auto",
-    },
-    overlay: {
-      zIndex: 1000,
-    },
-  };
-  Modal.setAppElement("#root");
 
   const clearmodel = async () => {
     setLoading(true);
@@ -129,32 +112,47 @@ function DropdownWithButton(iur_data) {
     <>
       <div style={{ display: "flex", alignItems: "center", marginLeft: "20px" }}>
         <Loading loading={loading} />
-        <div style={{ display: "flex", overflowY: "auto" }}>
-          <Modal
-            isOpen={pop_filter}
-            onRequestClose={closeModal}
-            style={customStyles}
-            contentLabel="filter"
-          >
-            <p>Confirm deletion of the following machines?</p>
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={clearmodel}>
-              Delete
-            </Button>
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={closeModal}>
-              Close
-            </Button>
-          </Modal>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <Button onClick={openModal} className={classes.button_style}>
-            Delete machine
-          </Button>
-        </div>
+        <Dialog open={pop_filter} onClose={() => closeModal} fullWidth maxWidth="xs">
+          <Box sx={{ padding: "20px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <p>Confirm deletion of the following machines?</p>
+              <div claasName={classes.line_form_style}>
+                <Button style={{ margin: "10px", padding: "10px" }} onClick={clearmodel}>
+                  Delete
+                </Button>
+                <Button style={{ margin: "10px", padding: "10px" }} onClick={closeModal}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          </Box>
+        </Dialog>
       </div>
       <TableContainer>
         <Table row_style={classes.title_table_row_style} data={title_data}></Table>
         {machine_data.map((data) => data_row(data))}
       </TableContainer>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          marginTop: "20px",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "10px" }}>
+          <Button onClick={openModal} className={classes.button_style}>
+            Delete Machine
+          </Button>
+          <Button onClick={() => window.location.reload()}>Cancel</Button>
+        </div>
+      </div>
     </>
   );
 }

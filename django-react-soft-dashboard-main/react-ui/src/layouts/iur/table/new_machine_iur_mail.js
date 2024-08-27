@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Modal from "react-modal";
 import TableContainer from "@mui/material/TableContainer";
 import Button from "examples/Icons/Button";
 import Loading from "examples/tool_universal/loading";
@@ -10,7 +9,7 @@ import FilterButton from "examples/Icons/Filter_button";
 import useStyles from "layouts/iur/table/styles/iur";
 import IURAPI from "api/iur";
 import PropTypes from "prop-types";
-import { Tabs, Tab, Box, Typography } from "@mui/material";
+import { Tabs, Tab, Box, Typography, Dialog } from "@mui/material";
 function DropdownWithButton(iur_data) {
   useEffect(() => {
     console.log(iur_data["iur_data"]);
@@ -31,18 +30,18 @@ function DropdownWithButton(iur_data) {
   const [selectedFile, setSelectedFile] = useState(null);
   const classes = useStyles();
   const title_data = [
-    { style: classes.title_platform_style, children: "platform" },
-    { style: classes.title_phase_style, children: "phase" },
-    { style: classes.title_target_style, children: "target" },
-    { style: classes.title_group_style, children: "group" },
-    { style: classes.title_cycle_style, children: "cycle" },
-    { style: classes.title_sku_style, children: "sku" },
-    { style: classes.title_sn_style, children: "serial_number" },
-    { style: classes.title_borrower_style, children: "borrower" },
-    { style: classes.title_status_style, children: "status" },
-    { style: classes.title_position_style, children: "position" },
-    { style: classes.title_remark_style, children: "remark" },
-    { style: classes.title_update_time_style, children: "update_time" },
+    { style: classes.title_platform_style, children: "Platform" },
+    { style: classes.title_phase_style, children: "Phase" },
+    { style: classes.title_target_style, children: "Target" },
+    { style: classes.title_group_style, children: "Group" },
+    { style: classes.title_cycle_style, children: "Cycle" },
+    { style: classes.title_sku_style, children: "Sku" },
+    { style: classes.title_sn_style, children: "Serial Number" },
+    { style: classes.title_borrower_style, children: "Borrower" },
+    { style: classes.title_status_style, children: "Status" },
+    { style: classes.title_position_style, children: "Position" },
+    { style: classes.title_remark_style, children: "Remark" },
+    { style: classes.title_update_time_style, children: "Update Time" },
   ];
   function data_row(data) {
     if (!data) {
@@ -96,41 +95,6 @@ function DropdownWithButton(iur_data) {
     return `${month} ${day}, ${year}, ${formattedTime}`;
   }
   useEffect(() => {}, [machine_data]);
-  const customStyles = {
-    content: {
-      maxWidth: "900px",
-      maxHeight: "800px",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-450px",
-      transform: "translate(-50%, -50%)",
-      overflowY: "auto",
-    },
-    overlay: {
-      zIndex: 1200,
-    },
-  };
-  const choose_file_style = {
-    content: {
-      maxWidth: "1000px",
-      maxHeight: "800px",
-      minWidth: "1000px",
-      minHeight: "800px",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-450px",
-      transform: "translate(-50%, -50%)",
-      overflowY: "auto",
-    },
-    overlay: {
-      zIndex: 1200,
-    },
-  };
-  Modal.setAppElement("#root");
 
   const TabPanel = (props) => {
     const { children, value, index, ...other } = props;
@@ -364,35 +328,39 @@ function DropdownWithButton(iur_data) {
     <>
       <div style={{ display: "flex", alignItems: "center", marginLeft: "20px" }}>
         <Loading loading={loading} />
-        <div style={{ display: "flex", overflowY: "auto" }}>
-          <Modal
-            isOpen={pop_filter[1]}
-            onRequestClose={() => closeModal(1)}
-            style={customStyles}
-            contentLabel="filter"
-          >
-            <p>Confirm the content of the new machine and send an email?</p>
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={new_machine_mail_model}>
-              Confirm
-            </Button>
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
-              Close
-            </Button>
-          </Modal>
-        </div>
-        <div style={{ display: "flex", overflowY: "auto" }}>
-          <Modal
-            isOpen={pop_filter[2]}
-            onRequestClose={() => closeModal(2)}
-            style={choose_file_style}
-            contentLabel="filter"
-          >
+        <Dialog open={pop_filter[1]} onClose={() => closeModal(1)} fullWidth maxWidth="md">
+          <Box sx={{ padding: "20px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "20px",
+              }}
+            >
+              <p>Confirm the content of the new machine and send an email?</p>
+              <div claasName={classes.line_form_style}>
+                <Button
+                  style={{ margin: "10px", padding: "10px" }}
+                  onClick={new_machine_mail_model}
+                >
+                  Confirm
+                </Button>
+                <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          </Box>
+        </Dialog>
+        <Dialog open={pop_filter[2]} onClose={() => closeModal(2)} fullWidth maxWidth="xl">
+          <Box sx={{ padding: "20px" }}>
             {choose_attach_file()}
             <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(2)}>
               Close
             </Button>
-          </Modal>
-        </div>
+          </Box>
+        </Dialog>
         <Button onClick={() => openModal(2)} className={classes.button_style}>
           Choose Attach File
         </Button>
@@ -401,10 +369,20 @@ function DropdownWithButton(iur_data) {
         <Table row_style={classes.title_table_row_style} data={title_data}></Table>
         {machine_data.map((data) => data_row(data))}
       </TableContainer>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <Button onClick={() => openModal(1)} className={classes.button_style}>
-          Send email
-        </Button>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          marginTop: "20px",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "10px" }}>
+          <Button onClick={() => openModal(1)} className={classes.button_style}>
+            Send email
+          </Button>
+          <Button onClick={() => window.location.reload()}>Cancel</Button>
+        </div>
       </div>
     </>
   );

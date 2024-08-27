@@ -40,7 +40,9 @@ export const hasAzureAccess = () => {
     (user.username === "bill.chang@hp.com" ||
       user.username === "catherine.jia@hp.com" ||
       user.username === "timothy.wang1@hp.com" ||
-      user.username === "seanl@hp.com")
+      user.username === "seanl@hp.com" ||
+      user.username === "yvonne.lai@hp.com" ||
+      user.username === "raizel.lee@hp.com")
   );
 };
 
@@ -52,9 +54,12 @@ export const TestPlanAccess = () => {
       user.username === "catherine.jia@hp.com" ||
       user.username === "timothy.wang1@hp.com" ||
       user.username === "seanl@hp.com" ||
+      user.username === "yvonne.lai@hp.com" ||
+      user.username === "raizel.lee@hp.com" ||
       user.username === "mike.cheng@hp.com" ||
       user.username === "cindy.chou@hp.com" ||
-      user.username === "emma.lu@hp.com")
+      user.username === "emma.lu@hp.com" ||
+      user.username === "mika.shih@hp.com")
   );
 };
 

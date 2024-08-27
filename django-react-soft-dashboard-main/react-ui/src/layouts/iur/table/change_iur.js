@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import Modal from "react-modal";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
@@ -9,6 +8,7 @@ import Loading_option_4to1 from "examples/tool_universal/loading_option_4to1";
 import Loading from "examples/tool_universal/loading";
 import Table from "examples/Table/table_row";
 import useStyles from "layouts/iur/table/styles/iur";
+import { Box, Dialog } from "@mui/material";
 import IURAPI from "api/iur";
 function DropdownWithButton(iur_data) {
   const [machine_data, set_machine_data] = useState([]);
@@ -48,18 +48,18 @@ function DropdownWithButton(iur_data) {
   });
   useEffect(() => {}, [formData, options]);
   const title_data = [
-    { style: classes.title_platform_style, children: "platform" },
-    { style: classes.title_phase_style, children: "phase" },
-    { style: classes.title_target_style, children: "target" },
-    { style: classes.title_group_style, children: "group" },
-    { style: classes.title_cycle_style, children: "cycle" },
-    { style: classes.title_sku_style, children: "sku" },
-    { style: classes.title_sn_style, children: "serial_number" },
-    { style: classes.title_borrower_style, children: "borrower" },
-    { style: classes.title_status_style, children: "status" },
-    { style: classes.title_position_style, children: "position" },
-    { style: classes.title_remark_style, children: "remark" },
-    { style: classes.title_update_time_style, children: "update_time" },
+    { style: classes.title_platform_style, children: "Platform" },
+    { style: classes.title_phase_style, children: "Phase" },
+    { style: classes.title_target_style, children: "Target" },
+    { style: classes.title_group_style, children: "Group" },
+    { style: classes.title_cycle_style, children: "Cycle" },
+    { style: classes.title_sku_style, children: "Sku" },
+    { style: classes.title_sn_style, children: "Serial Number" },
+    { style: classes.title_borrower_style, children: "Borrower" },
+    { style: classes.title_status_style, children: "Status" },
+    { style: classes.title_position_style, children: "Position" },
+    { style: classes.title_remark_style, children: "Remark" },
+    { style: classes.title_update_time_style, children: "Update Time" },
   ];
   useEffect(() => {
     console.log(platform_combine);
@@ -133,17 +133,13 @@ function DropdownWithButton(iur_data) {
           <TableCell key={index} className={classes.cycle_style}>
             {data.cycle}
           </TableCell>
-          <TableCell
-            key={index}
-            className={classes.sku_style}
-            onClick={() => handleDoubleClick(index, "sku")}
-          >
-            {isEditing[`${index}_sku`] ? (
+          <TableCell key={index} className={classes.sku_style}>
+            {
               <input
                 ref={inputRef}
                 type="text"
                 value={machine_data[index].sku}
-                style={{ width: "30px" }}
+                style={{ width: "30px", alignItems: "center" }}
                 onChange={(e) => {
                   set_machine_data((prevData) => {
                     const newData = [...prevData];
@@ -154,9 +150,7 @@ function DropdownWithButton(iur_data) {
                 onBlur={() => handleBlur(index, "sku")}
                 onKeyDown={(e) => handleKeyDown(e, index, "sku")}
               />
-            ) : (
-              machine_data[index].sku
-            )}
+            }
           </TableCell>
           <TableCell key={index} className={classes.sn_style}>
             {data.sn}
@@ -167,17 +161,13 @@ function DropdownWithButton(iur_data) {
           <TableCell key={index} className={classes.status_style}>
             {data.status}
           </TableCell>
-          <TableCell
-            key={index}
-            className={classes.position_style}
-            onClick={() => handleDoubleClick(index, "position")}
-          >
-            {isEditing[`${index}_position`] ? (
+          <TableCell key={index} className={classes.position_style}>
+            {
               <input
                 ref={inputRef}
                 type="text"
                 value={machine_data[index].position}
-                style={{ width: "50px" }}
+                style={{ width: "80px", alignItems: "center" }}
                 onChange={(e) => {
                   set_machine_data((prevData) => {
                     const newData = [...prevData];
@@ -188,21 +178,15 @@ function DropdownWithButton(iur_data) {
                 onBlur={() => handleBlur(index, "position")}
                 onKeyDown={(e) => handleKeyDown(e, index, "position")}
               />
-            ) : (
-              machine_data[index].position
-            )}
+            }
           </TableCell>
-          <TableCell
-            key={index}
-            className={classes.remark_style}
-            onClick={() => handleDoubleClick(index, "remark")}
-          >
-            {isEditing[`${index}_remark`] ? (
+          <TableCell key={index} className={classes.remark_style}>
+            {
               <input
                 ref={inputRef}
                 type="text"
                 value={machine_data[index].remark}
-                style={{ width: "80px" }}
+                style={{ width: "80px", alignItems: "center" }}
                 onChange={(e) => {
                   set_machine_data((prevData) => {
                     const newData = [...prevData];
@@ -213,9 +197,7 @@ function DropdownWithButton(iur_data) {
                 onBlur={() => handleBlur(index, "remark")}
                 onKeyDown={(e) => handleKeyDown(e, index, "remark")}
               />
-            ) : (
-              machine_data[index].remark
-            )}
+            }
           </TableCell>
           <TableCell key={index} className={classes.update_time_style}>
             {formatTimeForFrontend(data.update_time)}
@@ -359,19 +341,6 @@ function DropdownWithButton(iur_data) {
     });
     return `${month} ${day}, ${year}, ${formattedTime}`;
   }
-  const button_style = {
-    padding: "5px 10px",
-    transform: "rotate(0deg)",
-    whiteSpace: "nowrap",
-    backgroundColor: "#007bff",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "14px",
-    fontWeight: "bold",
-    outline: "none",
-  };
   useEffect(() => {}, [machine_data]);
   const openModal = (modalNumber) => {
     setPopFilters((prev) => ({ ...prev, [modalNumber]: true }));
@@ -379,39 +348,6 @@ function DropdownWithButton(iur_data) {
   const closeModal = (modalNumber) => {
     setPopFilters((prev) => ({ ...prev, [modalNumber]: false }));
   };
-  const customStyles = {
-    content: {
-      maxWidth: "900px",
-      maxHeight: "800px",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-450px",
-      transform: "translate(-50%, -50%)",
-      overflowY: "auto",
-    },
-    overlay: {
-      zIndex: 1000,
-    },
-  };
-  const check_Styles = {
-    content: {
-      maxWidth: "1500px",
-      maxHeight: "1000px",
-      top: "50%",
-      left: "60%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-750px",
-      transform: "translate(-50%, -50%)",
-      overflowY: "auto",
-    },
-    overlay: {
-      zIndex: 1000,
-    },
-  };
-  Modal.setAppElement("#root");
 
   const addplatformmodel = async () => {
     setLoading(true);
@@ -458,59 +394,73 @@ function DropdownWithButton(iur_data) {
     <>
       <div style={{ display: "flex", alignItems: "center", marginLeft: "20px" }}>
         <Loading loading={loading} />
-        <div style={{ display: "flex", overflowY: "auto" }}>
-          <Modal
-            isOpen={popFilters[1]}
-            onRequestClose={() => closeModal(1)}
-            style={check_Styles}
-            contentLabel="filter"
-          >
-            <p>Confirm modifying the following machines?</p>
-            {check_platform_change()}
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={clearmodel}>
-              Modify
-            </Button>
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
-              Close
-            </Button>
-          </Modal>
-        </div>
-        <div style={{ display: "flex", overflowY: "auto" }}>
-          <Modal
-            isOpen={popFilters[2]}
-            onRequestClose={() => closeModal(2)}
-            style={customStyles}
-            contentLabel="filter"
-          >
-            <h2>Add new platform</h2>
-            {pop_filter_content()}
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={addplatformmodel}>
-              Add machine
-            </Button>
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(2)}>
-              Close
-            </Button>
-          </Modal>
-        </div>
+        <Dialog open={popFilters[1]} onClose={() => closeModal(1)} fullWidth maxWidth={false}>
+          <Box sx={{ padding: "20px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "30px",
+              }}
+            >
+              <p>Confirm modifying the following machines?</p>
+              {check_platform_change()}
+              <div claasName={classes.line_form_style}>
+                <Button style={{ margin: "10px", padding: "10px" }} onClick={clearmodel}>
+                  Modify
+                </Button>
+                <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          </Box>
+        </Dialog>
+        <Dialog open={popFilters[2]} onClose={() => closeModal(2)} fullWidth maxWidth="xs">
+          <Box sx={{ padding: "20px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "30px",
+              }}
+            >
+              <h2>Add New Platform</h2>
+              {pop_filter_content()}
+              <div claasName={classes.line_form_style}>
+                <Button style={{ margin: "10px", padding: "10px" }} onClick={addplatformmodel}>
+                  Add machine
+                </Button>
+                <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(2)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          </Box>
+        </Dialog>
         <div style={{ display: "flex", flexDirection: "row" }}>
-          <Button
-            onClick={() => openModal(2)}
-            style={{ display: "flex", width: "180px", ...button_style }}
-          >
-            Add new platform
-          </Button>
-          <Button
-            onClick={() => openModal(1)}
-            style={{ marginTop: "20px", display: "flex", width: "100px", ...button_style }}
-          >
-            Change
-          </Button>
+          <Button onClick={() => openModal(2)}>Add new platform</Button>
         </div>
       </div>
       <TableContainer>
         <Table row_style={classes.title_table_row_style} data={title_data}></Table>
         {machine_data.map((data, index) => data_row(index, data))}
       </TableContainer>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          marginTop: "20px",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "10px" }}>
+          <Button onClick={() => openModal(1)}>Change</Button>
+          <Button onClick={() => window.location.reload()}>Cancel</Button>
+        </div>
+      </div>
     </>
   );
 }
