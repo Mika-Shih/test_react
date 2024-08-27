@@ -50,10 +50,8 @@ function Tables() {
               <SuiTypography variant="h3"></SuiTypography>
             </SuiBox>
             <SuiBox customClass={classes.tables_table}>
-              {!isStep && <Addsn serial_number_get={(sn) => sn_data_get(sn)} />}
-              {isStep && (
-                <Addplatform serial_number={sn} serial_number_get={(sn) => sn_data_get(sn)} />
-              )}
+              {!isStep && <Addsn serial_number={sn} serial_number_get={(sn) => sn_data_get(sn)} />}
+              {isStep && <Addplatform serial_number={sn} />}
             </SuiBox>
             <Button onClick={togglePage} style={{ marginLeft: "16px", width: "100px" }}>
               {isStep ? "previous step" : "next step"}

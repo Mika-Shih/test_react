@@ -136,7 +136,7 @@ function DropdownWithButton(iur_data) {
           <TableCell key={index} className={classes.sku_style}>
             {
               <input
-                ref={inputRef}
+                // ref={inputRef}
                 type="text"
                 value={machine_data[index].sku}
                 style={{ width: "30px", alignItems: "center" }}
@@ -147,8 +147,8 @@ function DropdownWithButton(iur_data) {
                     return newData;
                   });
                 }}
-                onBlur={() => handleBlur(index, "sku")}
-                onKeyDown={(e) => handleKeyDown(e, index, "sku")}
+                // onBlur={() => handleBlur(index, "sku")}
+                // onKeyDown={(e) => handleKeyDown(e, index, "sku")}
               />
             }
           </TableCell>
@@ -164,7 +164,7 @@ function DropdownWithButton(iur_data) {
           <TableCell key={index} className={classes.position_style}>
             {
               <input
-                ref={inputRef}
+                // ref={inputRef}
                 type="text"
                 value={machine_data[index].position}
                 style={{ width: "80px", alignItems: "center" }}
@@ -175,15 +175,15 @@ function DropdownWithButton(iur_data) {
                     return newData;
                   });
                 }}
-                onBlur={() => handleBlur(index, "position")}
-                onKeyDown={(e) => handleKeyDown(e, index, "position")}
+                // onBlur={() => handleBlur(index, "position")}
+                // onKeyDown={(e) => handleKeyDown(e, index, "position")}
               />
             }
           </TableCell>
           <TableCell key={index} className={classes.remark_style}>
             {
               <input
-                ref={inputRef}
+                // ref={inputRef}
                 type="text"
                 value={machine_data[index].remark}
                 style={{ width: "80px", alignItems: "center" }}
@@ -194,8 +194,8 @@ function DropdownWithButton(iur_data) {
                     return newData;
                   });
                 }}
-                onBlur={() => handleBlur(index, "remark")}
-                onKeyDown={(e) => handleKeyDown(e, index, "remark")}
+                // onBlur={() => handleBlur(index, "remark")}
+                // onKeyDown={(e) => handleKeyDown(e, index, "remark")}
               />
             }
           </TableCell>
@@ -233,11 +233,11 @@ function DropdownWithButton(iur_data) {
     }));
     console.log(isEditing);
   };
-  const handleKeyDown = (e, index, data) => {
-    if (e.key === "Enter") {
-      handleBlur(index, data);
-    }
-  };
+  // const handleKeyDown = (e, index, data) => {
+  //   if (e.key === "Enter") {
+  //     handleBlur(index, data);
+  //   }
+  // };
 
   const containerStyle = {
     display: "flex",

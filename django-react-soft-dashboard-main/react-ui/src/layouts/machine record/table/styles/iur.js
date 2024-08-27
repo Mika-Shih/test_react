@@ -252,14 +252,14 @@ export default makeStyles(({ functions }) => {
     acquirer_style: {
       width: pxToRem(200),
       textAlign: "center",
-      fontSize: pxToRem(17),
+      fontSize: pxToRem(14),
       wordWrap: "break-word",
       borderBottom: "none !important",
     },
     purpose_remark_style: {
       width: pxToRem(180),
       textAlign: "center",
-      fontSize: pxToRem(17),
+      fontSize: pxToRem(14),
       wordWrap: "break-word",
       borderBottom: "none !important",
     },

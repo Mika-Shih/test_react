@@ -3,7 +3,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Loading_option_4to1 from "examples/tool_universal/loading_option_4to1";
-import Modal from "react-modal";
 import Button from "examples/Icons/Button";
 import PropTypes from "prop-types";
 import Loading from "examples/tool_universal/loading";
@@ -11,6 +10,7 @@ import Loading_option from "examples/tool_universal/loading_option";
 import Table from "examples/Table/table_row";
 import useStyles from "./styles/new_machine_style";
 import IURAPI from "api/iur";
+import { Box, Dialog } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
@@ -69,20 +69,19 @@ function InputWithAddAndClearButton(props) {
     set_platform_combine(transformed_data);
   }, []);
   const [user_experience, set_user_experience] = useState(0);
-  const [selectedFile, setSelectedFile] = useState(null);
   function title_row(request = false) {
     const title_data = [
-      ...(!request ? [{ style: classes.checkbox_style, children: "/" }] : []),
-      { style: classes.platform_style, children: "platform" },
-      { style: classes.phase_style, children: "phase" },
-      { style: classes.target_style, children: "target" },
-      { style: classes.group_style, children: "group" },
-      { style: classes.cycle_style, children: "cycle" },
-      { style: classes.sku_style, children: "sku" },
-      { style: classes.sn_style, children: "serial_number" },
-      { style: classes.acquire_style, children: "acquirer" },
-      { style: classes.position_style, children: "position" },
-      { style: classes.remark_style, children: "remark" },
+      ...(!request ? [{ style: classes.title_checkbox_style, children: "/" }] : []),
+      { style: classes.title_platform_style, children: "platform" },
+      { style: classes.title_phase_style, children: "phase" },
+      { style: classes.title_target_style, children: "target" },
+      { style: classes.title_group_style, children: "group" },
+      { style: classes.title_cycle_style, children: "cycle" },
+      { style: classes.title_sku_style, children: "sku" },
+      { style: classes.title_sn_style, children: "serial_number" },
+      { style: classes.title_acquirer_style, children: "acquirer" },
+      { style: classes.title_position_style, children: "position" },
+      { style: classes.title_remark_style, children: "remark" },
     ];
     return (
       <>
@@ -198,39 +197,31 @@ function InputWithAddAndClearButton(props) {
           <TableCell key={index} className={classes.cycle_style}>
             {data.cycle}
           </TableCell>
-          <TableCell
-            key={index}
-            className={classes.sku_style}
-            onClick={() => handleDoubleClick(index, "sku")}
-          >
-            {isEditing[`${index}_sku`] ? (
-              <input
-                ref={inputRef}
-                type="text"
-                value={machine_data[index].sku}
-                style={{ width: "30px" }}
-                onChange={(e) => {
-                  set_machine_data((prevData) => {
-                    const newData = [...prevData];
-                    newData[index] = { ...newData[index], sku: e.target.value };
-                    return newData;
-                  });
-                }}
-                onBlur={() => handleBlur(index, "sku")}
-                onKeyDown={(e) => handleKeyDown(e, index, "sku")}
-              />
-            ) : (
-              machine_data[index].sku
-            )}
+          <TableCell key={index} className={classes.sku_style}>
+            <input
+              // ref={inputRef}
+              type="text"
+              value={machine_data[index].sku}
+              style={{ width: "30px" }}
+              onChange={(e) => {
+                set_machine_data((prevData) => {
+                  const newData = [...prevData];
+                  newData[index] = { ...newData[index], sku: e.target.value };
+                  return newData;
+                });
+              }}
+              // onBlur={() => handleBlur(index, "sku")}
+              // onKeyDown={(e) => handleKeyDown(e, index, "sku")}
+            />
           </TableCell>
           <TableCell key={index} className={classes.sn_style}>
             {machine_data[index].sn}
           </TableCell>
-          <TableCell key={index} className={classes.acquire_style}>
+          <TableCell key={index} className={classes.acquirer_style}>
             <Autocomplete
               id="combo-box-demo"
               options={acquire_data}
-              sx={{ width: 250, height: 20 }}
+              sx={{ width: 220, height: 20 }}
               MenuProps={{
                 MenuListProps: {
                   "aria-labelledby": "combo-box-demo",
@@ -247,55 +238,39 @@ function InputWithAddAndClearButton(props) {
               renderInput={(params) => <TextField {...params} />}
             />
           </TableCell>
-          <TableCell
-            key={index}
-            className={classes.position_style}
-            onClick={() => handleDoubleClick(index, "position")}
-          >
-            {isEditing[`${index}_position`] ? (
-              <input
-                ref={inputRef}
-                type="text"
-                value={machine_data[index].position}
-                style={{ width: "50px" }}
-                onChange={(e) => {
-                  set_machine_data((prevData) => {
-                    const newData = [...prevData];
-                    newData[index] = { ...newData[index], position: e.target.value };
-                    return newData;
-                  });
-                }}
-                onBlur={() => handleBlur(index, "position")}
-                onKeyDown={(e) => handleKeyDown(e, index, "position")}
-              />
-            ) : (
-              machine_data[index].position
-            )}
+          <TableCell key={index} className={classes.position_style}>
+            <input
+              // ref={inputRef}
+              type="text"
+              value={machine_data[index].position}
+              style={{ width: "80px", alignItems: "center" }}
+              onChange={(e) => {
+                set_machine_data((prevData) => {
+                  const newData = [...prevData];
+                  newData[index] = { ...newData[index], position: e.target.value };
+                  return newData;
+                });
+              }}
+              // onBlur={() => handleBlur(index, "position")}
+              // onKeyDown={(e) => handleKeyDown(e, index, "position")}
+            />
           </TableCell>
-          <TableCell
-            key={index}
-            className={classes.remark_style}
-            onClick={() => handleDoubleClick(index, "remark")}
-          >
-            {isEditing[`${index}_remark`] ? (
-              <input
-                ref={inputRef}
-                type="text"
-                value={machine_data[index].remark}
-                style={{ width: "50px" }}
-                onChange={(e) => {
-                  set_machine_data((prevData) => {
-                    const newData = [...prevData];
-                    newData[index] = { ...newData[index], remark: e.target.value };
-                    return newData;
-                  });
-                }}
-                onBlur={() => handleBlur(index, "remark")}
-                onKeyDown={(e) => handleKeyDown(e, index, "remark")}
-              />
-            ) : (
-              machine_data[index].remark
-            )}
+          <TableCell key={index} className={classes.remark_style}>
+            <input
+              // ref={inputRef}
+              type="text"
+              value={machine_data[index].remark}
+              style={{ width: "80px", alignItems: "center" }}
+              onChange={(e) => {
+                set_machine_data((prevData) => {
+                  const newData = [...prevData];
+                  newData[index] = { ...newData[index], remark: e.target.value };
+                  return newData;
+                });
+              }}
+              // onBlur={() => handleBlur(index, "remark")}
+              // onKeyDown={(e) => handleKeyDown(e, index, "remark")}
+            />
           </TableCell>
         </TableRow>
       </>
@@ -323,11 +298,11 @@ function InputWithAddAndClearButton(props) {
     }));
     console.log(isEditing);
   };
-  const handleKeyDown = (e, index, data) => {
-    if (e.key === "Enter") {
-      handleBlur(index, data);
-    }
-  };
+  // const handleKeyDown = (e, index, data) => {
+  //   if (e.key === "Enter") {
+  //     handleBlur(index, data);
+  //   }
+  // };
   const checkbox_function = () => {
     console.log(ischeckbox);
     const trueIndex = Object.keys(ischeckbox).find((index) => ischeckbox[index]);
@@ -340,40 +315,10 @@ function InputWithAddAndClearButton(props) {
     console.log(machine_data);
     set_user_experience((prevKey) => prevKey + 1);
   };
-  const customStyles = {
-    content: {
-      maxWidth: "900px",
-      maxHeight: "800px",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-450px",
-      transform: "translate(-50%, -50%)",
-      overflowY: "auto",
-    },
-    overlay: {
-      zIndex: 1000,
-    },
-  };
-  const check_Styles = {
-    content: {
-      maxWidth: "1500px",
-      maxHeight: "1000px",
-      top: "50%",
-      left: "60%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-750px",
-      transform: "translate(-50%, -50%)",
-      overflowY: "auto",
-    },
-    overlay: {
-      zIndex: 1000,
-    },
-  };
-  Modal.setAppElement("#root");
-
+  useEffect(() => {
+    console.log(user_experience);
+  }),
+    [user_experience];
   const addplatformmodel = async () => {
     setLoading(true);
     const request_data = {
@@ -412,7 +357,6 @@ function InputWithAddAndClearButton(props) {
       let request_data = new FormData();
       request_data.append("finaldata", JSON.stringify(machine_data));
       request_data.append("message", "add new platform");
-      request_data.append("file", selectedFile);
       console.log(request_data);
       const response = await IURAPI.addnewplatform(request_data);
       if (response.data.finaldata) {
@@ -489,7 +433,7 @@ function InputWithAddAndClearButton(props) {
       { style: classes.cycle_style, children: data.cycle },
       { style: classes.sku_style, children: data.sku },
       { style: classes.sn_style, children: data.sn },
-      { style: classes.acquire_style, children: data.acquirer },
+      { style: classes.acquirer_style, children: data.acquirer },
       { style: classes.position_style, children: data.position },
       { style: classes.remark_style, children: data.remark },
     ];
@@ -509,70 +453,61 @@ function InputWithAddAndClearButton(props) {
     <>
       <div style={{ marginLeft: "16px" }}>
         <Loading loading={loading} />
-        <div style={{ display: "flex", overflowY: "auto" }}>
-          <Modal
-            isOpen={popFilters[1]}
-            onRequestClose={() => closeModal(1)}
-            style={customStyles}
-            contentLabel="filter"
-          >
-            <h2>Add new platform</h2>
-            {pop_filter_content()}
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={addplatformmodel}>
-              Add machine
-            </Button>
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
-              Close
-            </Button>
-          </Modal>
-        </div>
-        <div style={{ display: "flex", overflowY: "auto" }}>
-          <Modal
-            isOpen={popFilters[2]}
-            onRequestClose={() => closeModal(2)}
-            style={check_Styles}
-            contentLabel="filter"
-          >
-            <p>Confirm adding the following machines?</p>
-            {check_platform_change()}
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={add_new_platform}>
-              Add machine
-            </Button>
-            <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(2)}>
-              Close
-            </Button>
-          </Modal>
-        </div>
-        <div style={{ marginRight: "16px", position: "absolute", right: "0" }}>
-          <input
-            key={user_experience}
-            type="file"
-            onChange={(event) => {
-              const file = event.target.files[0];
-              setSelectedFile(file);
-            }}
-          />
-          <button
-            style={deleteButtonStyle}
-            onClick={() => {
-              setSelectedFile(null);
-              set_user_experience((prevKey) => prevKey + 1);
-            }}
-          >
-            X
-          </button>
-        </div>
-        <div key={user_experience}>
-          <Button onClick={checkbox_function} style={{ marginLeft: "16px" }}>
-            Apply downwards from the checkbox
-          </Button>
-          <Button onClick={() => openModal(1)} style={{ marginLeft: "16px" }}>
-            Add new platform
-          </Button>
-          <Button onClick={() => openModal(2)} style={{ marginLeft: "16px" }}>
-            Add new machine
-          </Button>
-        </div>
+        <Dialog open={popFilters[1]} onClose={() => closeModal(1)} fullWidth maxWidth="xs">
+          <Box sx={{ padding: "20px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "30px",
+              }}
+            >
+              <h2>Add new platform</h2>
+              {pop_filter_content()}
+              <div claasName={classes.line_form_style}>
+                <Button style={{ margin: "10px", padding: "10px" }} onClick={addplatformmodel}>
+                  Add machine
+                </Button>
+                <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(1)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          </Box>
+        </Dialog>
+        <Dialog open={popFilters[2]} onClose={() => closeModal(2)} fullWidth maxWidth={false}>
+          <Box sx={{ padding: "20px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "30px",
+              }}
+            >
+              <p>Confirm adding the following machines?</p>
+              {check_platform_change()}
+              <div claasName={classes.line_form_style}>
+                <Button style={{ margin: "10px", padding: "10px" }} onClick={add_new_platform}>
+                  Add machine
+                </Button>
+                <Button style={{ margin: "10px", padding: "10px" }} onClick={() => closeModal(2)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          </Box>
+        </Dialog>
+        <Button onClick={checkbox_function} style={{ marginLeft: "16px" }}>
+          Apply downwards from the checkbox
+        </Button>
+        <Button onClick={() => openModal(1)} style={{ marginLeft: "16px" }}>
+          Add new platform
+        </Button>
+        <Button onClick={() => openModal(2)} style={{ marginLeft: "16px" }}>
+          Add new machine
+        </Button>
       </div>
       <TableContainer>
         {title_row()}
@@ -581,13 +516,6 @@ function InputWithAddAndClearButton(props) {
     </>
   );
 }
-const deleteButtonStyle = {
-  cursor: "pointer",
-  padding: "5px",
-  backgroundColor: "lightcoral",
-  border: "none",
-  color: "white",
-};
 InputWithAddAndClearButton.propTypes = {
   serial_number: PropTypes.array.isRequired,
 };
