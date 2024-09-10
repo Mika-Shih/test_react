@@ -4,9 +4,10 @@ import AddIcon from "@mui/icons-material/Add";
 import SuiBox from "components/SuiBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Table from "examples/Table";
+// import Table from "layouts/test_plan/table/test_plan_list_table";
+import Planlist from "layouts/test_plan/testPlanList/plan/table/plan_list";
 import styles from "layouts/tables/styles";
-import testPlansTableData from "./data/PlansData";
+// import testPlansTableData from "./data/PlansData";
 import CategoryApi from "api/test_plan/category";
 import { useHistory } from "react-router-dom";
 
@@ -48,12 +49,11 @@ function Tables() {
       return defaultCategory;
     }
   };
-
-  const user_id = 1;
-  const { columns, rows } = testPlansTableData(user_id, getCategoryFromTab(selectedTab));
-  const modifiedColumns = columns.filter(
-    (column) => column.name !== "plan_id" && column.name !== "editor_id"
-  );
+  // const user_id = 1;
+  // const { columns, rows } = testPlansTableData(user_id, getCategoryFromTab(selectedTab));
+  // const modifiedColumns = columns.filter(
+  //   (column) => column.name !== "plan_id" && column.name !== "editor_id"
+  // );
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
   };
@@ -90,7 +90,7 @@ function Tables() {
               </Button>
             </SuiBox>
             <SuiBox customClass={classes.tables_table}>
-              <Table columns={modifiedColumns} rows={rows} />
+              <Planlist category={getCategoryFromTab(selectedTab)} />
             </SuiBox>
           </Card>
         </SuiBox>

@@ -89,7 +89,7 @@ function AddTestPlanPage() {
       };
       const newPlanRecordResponse = await TestPlanRecordApi.create_plan_record(newPlanRecordData);
       console.log("New test plan record created:", newPlanRecordResponse.data);
-      history.push("/test_plans");
+      history.push("/test_plan_list");
     } catch (error) {
       console.error("Error creating new test plan:", error);
     }
@@ -420,7 +420,7 @@ function AddTestPlanPage() {
           >
             Modify Test Plan
           </Button>
-          <Button variant="contained" onClick={() => history.push("/test_plans")}>
+          <Button variant="contained" onClick={() => history.push("/test_plan_list")}>
             Cancel
           </Button>
         </div>

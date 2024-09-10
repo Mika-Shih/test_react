@@ -212,7 +212,7 @@ function AddTestPlanPage() {
           </DragDropContext>
         </Box>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button variant="contained" onClick={() => history.push("/test_plans")}>
+          <Button variant="contained" onClick={() => history.push("/test_plan_list")}>
             Back
           </Button>
         </div>

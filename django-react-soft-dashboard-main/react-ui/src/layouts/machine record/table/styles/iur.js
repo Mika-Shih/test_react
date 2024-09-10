@@ -121,7 +121,7 @@ export default makeStyles(({ functions }) => {
       color: "#333333",
     },
     title_position_style: {
-      width: pxToRem(100),
+      width: pxToRem(150),
       textAlign: "center",
       fontSize: pxToRem(17),
       wordWrap: "break-word",
@@ -130,7 +130,7 @@ export default makeStyles(({ functions }) => {
       color: "#333333",
     },
     title_remark_style: {
-      width: pxToRem(100),
+      width: pxToRem(200),
       textAlign: "center",
       fontSize: pxToRem(17),
       wordWrap: "break-word",
@@ -157,7 +157,7 @@ export default makeStyles(({ functions }) => {
       color: "#333333",
     },
     title_purpose_remark_style: {
-      width: pxToRem(180),
+      width: pxToRem(250),
       textAlign: "center",
       fontSize: pxToRem(17),
       wordWrap: "break-word",
@@ -229,14 +229,14 @@ export default makeStyles(({ functions }) => {
       borderBottom: "none !important",
     },
     position_style: {
-      width: pxToRem(100),
+      width: pxToRem(150),
       textAlign: "center",
       fontSize: pxToRem(14),
       wordWrap: "break-word",
       borderBottom: "none !important",
     },
     remark_style: {
-      width: pxToRem(100),
+      width: pxToRem(200),
       textAlign: "center",
       fontSize: pxToRem(14),
       wordWrap: "break-word",
@@ -257,7 +257,7 @@ export default makeStyles(({ functions }) => {
       borderBottom: "none !important",
     },
     purpose_remark_style: {
-      width: pxToRem(180),
+      width: pxToRem(250),
       textAlign: "center",
       fontSize: pxToRem(14),
       wordWrap: "break-word",

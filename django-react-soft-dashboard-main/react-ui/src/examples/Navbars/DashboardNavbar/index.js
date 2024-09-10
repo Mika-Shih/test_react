@@ -100,7 +100,6 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
   ];
   const titlesToFilter = ["Test", "Account Pages"];
   const rightFilter = ["Token", "Logout"];
-  console.log(routes);
   routes = routes.filter((route) => route !== undefined);
   routes = routes.filter((route) => !namesToFilter.includes(route.name));
   routes = routes.filter((route) => !titlesToFilter.includes(route.title));

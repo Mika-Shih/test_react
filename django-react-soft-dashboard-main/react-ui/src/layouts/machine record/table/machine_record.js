@@ -165,30 +165,17 @@ function MachineRecord() {
     );
   }
   function formatTimeForFrontend(inputTime) {
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
     const date = new Date(inputTime);
-    const month = months[date.getMonth()];
+    const month = date.getMonth() + 1;
     const day = date.getDate();
     const year = date.getFullYear();
+
     const formattedTime = date.toLocaleString("en-US", {
       hour: "numeric",
       minute: "numeric",
       hour12: true,
     });
-    return `${month} ${day}, ${year}, ${formattedTime}`;
+    return `${month}/${day}, ${year}, ${formattedTime}`;
   }
   return (
     <div

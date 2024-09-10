@@ -5,11 +5,12 @@ function MyTableCell({ row_style, data }) {
   return (
     <>
       <TableRow className={row_style}>
-        {data.map((item, index) => (
-          <TableCell key={index} className={item.style}>
-            {item.children}
-          </TableCell>
-        ))}
+        {data &&
+          data.map((item, index) => (
+            <TableCell key={index} className={item.style}>
+              {item.children}
+            </TableCell>
+          ))}
       </TableRow>
     </>
   );

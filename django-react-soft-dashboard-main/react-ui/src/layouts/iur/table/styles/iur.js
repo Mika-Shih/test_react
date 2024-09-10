@@ -81,7 +81,7 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       borderBottom: "none !important",
     },
     title_platform_style: {
-      width: pxToRem(150),
+      width: pxToRem(180),
       textAlign: "center",
       fontSize: pxToRem(17),
       wordWrap: "break-word",
@@ -144,7 +144,7 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       color: "#333333",
     },
     title_borrower_style: {
-      width: pxToRem(100),
+      width: pxToRem(150),
       textAlign: "center",
       fontSize: pxToRem(16),
       wordWrap: "break-word",
@@ -162,7 +162,7 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       color: "#333333",
     },
     title_position_style: {
-      width: pxToRem(100),
+      width: pxToRem(140),
       textAlign: "center",
       fontSize: pxToRem(17),
       wordWrap: "break-word",
@@ -171,7 +171,7 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       color: "#333333",
     },
     title_remark_style: {
-      width: pxToRem(100),
+      width: pxToRem(180),
       textAlign: "center",
       fontSize: pxToRem(17),
       wordWrap: "break-word",
@@ -196,7 +196,7 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       borderBottom: "none !important",
     },
     platform_style: {
-      width: pxToRem(150),
+      width: pxToRem(180),
       textAlign: "center",
       fontSize: pxToRem(14),
       wordWrap: "break-word",
@@ -245,7 +245,7 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       borderBottom: "none !important",
     },
     borrower_style: {
-      width: pxToRem(100),
+      width: pxToRem(150),
       textAlign: "center",
       fontSize: pxToRem(14),
       wordWrap: "break-word",
@@ -259,14 +259,14 @@ export default makeStyles(({ boxShadows, functions, borders, typography }) => {
       borderBottom: "none !important",
     },
     position_style: {
-      width: pxToRem(100),
+      width: pxToRem(140),
       textAlign: "center",
       fontSize: pxToRem(14),
       wordWrap: "break-word",
       borderBottom: "none !important",
     },
     remark_style: {
-      width: pxToRem(100),
+      width: pxToRem(180),
       textAlign: "center",
       fontSize: pxToRem(14),
       wordWrap: "break-word",

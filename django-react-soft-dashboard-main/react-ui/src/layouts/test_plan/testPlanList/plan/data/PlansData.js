@@ -14,7 +14,6 @@ import template from "assets/template.xlsx";
 function testPlansTableData(editorId, category) {
   const [testPlanRecords, setTestPlanRecords] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
-
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
@@ -171,7 +170,7 @@ function testPlansTableData(editorId, category) {
   };
 
   const columns = [
-    { name: "plan_name", align: "left", headerName: "Plan Name" },
+    { name: "plan_name", align: "center", headerName: "Plan Name" },
     { name: "plan_id", width: 0 },
     { name: "editor_id", width: 0 },
     { name: "action", align: "center", headerName: "Action" },

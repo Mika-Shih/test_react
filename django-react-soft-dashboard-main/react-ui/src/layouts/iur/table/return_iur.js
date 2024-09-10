@@ -80,7 +80,7 @@ function DropdownWithButton(iur_data) {
                 ref={inputRef}
                 type="text"
                 value={machine_data[index].position}
-                style={{ width: "80px", alignItems: "center" }}
+                style={{ width: "120px", height: "25px", alignItems: "center" }}
                 onChange={(e) => {
                   set_machine_data((prevData) => {
                     const newData = [...prevData];
@@ -99,7 +99,7 @@ function DropdownWithButton(iur_data) {
                 ref={inputRef}
                 type="text"
                 value={machine_data[index].remark}
-                style={{ width: "80px", alignItems: "center" }}
+                style={{ width: "120px", height: "25px", alignItems: "center" }}
                 onChange={(e) => {
                   set_machine_data((prevData) => {
                     const newData = [...prevData];
@@ -188,31 +188,17 @@ function DropdownWithButton(iur_data) {
   }
 
   function formatTimeForFrontend(inputTime) {
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
     const date = new Date(inputTime);
-    const month = months[date.getMonth()];
+    const month = date.getMonth() + 1;
     const day = date.getDate();
     const year = date.getFullYear();
+
     const formattedTime = date.toLocaleString("en-US", {
       hour: "numeric",
       minute: "numeric",
       hour12: true,
     });
-    return `${month} ${day}, ${year}, ${formattedTime}`;
+    return `${month}/${day}, ${year}, ${formattedTime}`;
   }
   useEffect(() => {}, [machine_data]);
   const openModal = (modalNumber) => {
@@ -290,12 +276,26 @@ function DropdownWithButton(iur_data) {
         <input
           id="Purpose"
           name="Purpose"
-          style={{ width: "300px", padding: "8px" }}
+          style={{ width: "480px", padding: "8px" }}
           value={lendData.purpose}
           onChange={(e) => {
             setlendData({
               ...lendData,
               purpose: e.target.value,
+            });
+          }}
+        />
+        <label htmlFor="message">Mail Message:</label>
+        <textarea
+          id="message"
+          name="message"
+          rows={8}
+          style={{ width: "480px", padding: "8px" }}
+          value={lendData.message}
+          onChange={(e) => {
+            setlendData({
+              ...lendData,
+              message: e.target.value,
             });
           }}
         />
@@ -305,20 +305,6 @@ function DropdownWithButton(iur_data) {
           name="user_mail"
           selectedOptions={lendData.cc_mail}
           setSelectedOptions={(newOptions) => setlendData({ ...lendData, cc_mail: newOptions })}
-        />
-        <label htmlFor="message">Mail Message:</label>
-        <textarea
-          id="message"
-          name="message"
-          rows={4}
-          style={{ width: "200px", padding: "8px" }}
-          value={lendData.message}
-          onChange={(e) => {
-            setlendData({
-              ...lendData,
-              message: e.target.value,
-            });
-          }}
         />
         <div
           style={{

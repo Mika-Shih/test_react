@@ -373,23 +373,23 @@ function DropdownWithButton(props) {
     }
   }
   function formatTimeForFrontend(inputTime) {
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
+    // const months = [
+    //   "January",
+    //   "February",
+    //   "March",
+    //   "April",
+    //   "May",
+    //   "June",
+    //   "July",
+    //   "August",
+    //   "September",
+    //   "October",
+    //   "November",
+    //   "December",
+    // ];
+    // const month = months[date.getMonth()];
     const date = new Date(inputTime);
-    const month = months[date.getMonth()];
+    const month = date.getMonth() + 1;
     const day = date.getDate();
     const year = date.getFullYear();
 
@@ -398,7 +398,7 @@ function DropdownWithButton(props) {
       minute: "numeric",
       hour12: true,
     });
-    return `${month} ${day}, ${year}, ${formattedTime}`;
+    return `${month}/${day}, ${year}, ${formattedTime}`;
   }
   const containerStyle = {
     display: "flex",
@@ -714,52 +714,40 @@ function DropdownWithButton(props) {
           </div>
           {title_row("1", false)}
           {select_iur_machine.map((data, index) => data_row(index, data, false))}
-          <div className={classes.line_form_style}>
-            <label htmlFor="Purpose">Purpose:</label>
-          </div>
-          <div className={classes.line_form_style}>
-            <input
-              id="Purpose"
-              name="Purpose"
-              style={{ width: "300px", padding: "8px" }}
-              value={lendData.purpose}
-              onChange={(e) => {
-                setlendData({
-                  ...lendData,
-                  purpose: e.target.value,
-                });
-              }}
-            />
-          </div>
-          <div className={classes.line_form_style}>
-            <label htmlFor="cc_mail">CC Mail:</label>
-          </div>
-          <div className={classes.line_form_style}>
-            <Loading_option_add_remove
-              api="polls/lendpersonnel"
-              name="user_mail"
-              selectedOptions={lendData.cc_mail}
-              setSelectedOptions={(newOptions) => setlendData({ ...lendData, cc_mail: newOptions })}
-            />
-          </div>
-          <div className={classes.line_form_style}>
-            <label htmlFor="message">Mail Message:</label>
-          </div>
-          <div className={classes.line_form_style}>
-            <textarea
-              id="message"
-              name="message"
-              rows={4}
-              style={{ width: "200px", padding: "8px" }}
-              value={lendData.message}
-              onChange={(e) => {
-                setlendData({
-                  ...lendData,
-                  message: e.target.value,
-                });
-              }}
-            />
-          </div>
+          <label htmlFor="Purpose">Purpose:</label>
+          <input
+            id="Purpose"
+            name="Purpose"
+            style={{ width: "480px", padding: "8px" }}
+            value={lendData.purpose}
+            onChange={(e) => {
+              setlendData({
+                ...lendData,
+                purpose: e.target.value,
+              });
+            }}
+          />
+          <label htmlFor="message">Mail Message:</label>
+          <textarea
+            id="message"
+            name="message"
+            rows={8}
+            style={{ width: "480px", padding: "8px" }}
+            value={lendData.message}
+            onChange={(e) => {
+              setlendData({
+                ...lendData,
+                message: e.target.value,
+              });
+            }}
+          />
+          <label htmlFor="cc_mail">CC Mail:</label>
+          <Loading_option_add_remove
+            api="polls/lendpersonnel"
+            name="user_mail"
+            selectedOptions={lendData.cc_mail}
+            setSelectedOptions={(newOptions) => setlendData({ ...lendData, cc_mail: newOptions })}
+          />
           <div className={classes.line_form_style}>
             <Button onClick={lend}>Borrow</Button>
             <Button onClick={() => closeModal(2)}>Close</Button>
