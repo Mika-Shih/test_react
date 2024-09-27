@@ -68,7 +68,7 @@ function DashboardNavbar({ routes, absolute, light, isMini }) {
     routes = [];
   }
   // view level
-  const level_view_2 = ["Test Plan List", "Test Case List"];
+  const level_view_2 = ["Test Plan List", "Test Case List", "Test Case"];
   const level_view = ["CAT", "Pulsar", "Member", "Token"];
   if (!TestPlanAccess()) {
     routes = routes.filter((route) => !level_view_2.includes(route.name));

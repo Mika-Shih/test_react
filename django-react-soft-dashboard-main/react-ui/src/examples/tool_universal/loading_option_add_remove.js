@@ -25,7 +25,7 @@ export default function Asynchronous({
 }) {
   const [options, setOptions] = React.useState([]);
   const loading = options.length === 0;
-  const [numberOfOptions, setNumberOfOptions] = React.useState(1);
+  const [numberOfOptions, setNumberOfOptions] = React.useState(selectedOptions.length || 1);
 
   const [openStates, setOpenStates] = React.useState(Array(numberOfOptions).fill(false));
 

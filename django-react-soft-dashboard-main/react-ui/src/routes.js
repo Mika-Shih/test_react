@@ -53,6 +53,7 @@ import RTL from "layouts/rtl";
 import Member from "layouts/member";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
+import TestCase from "layouts/test_plans/test_case";
 // import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
 
@@ -132,6 +133,16 @@ const routes = [
     route: "/cat",
     icon: <Shop size="12px" />,
     component: Cat,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Test Case",
+    key: "testcase",
+    route: "/test_case",
+    icon: <Shop size="16px" />,
+    component: TestCase,
     noCollapse: true,
     protected: true,
   },
