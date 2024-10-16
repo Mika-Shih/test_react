@@ -311,9 +311,7 @@ function DropdownWithButton() {
       platform: [],
     }));
   }, [formData.target, formData.group, formData.cycle]);
-  useEffect(() => {
-    console.log(popdata);
-  }, [popdata]);
+
   function account_change_content() {
     return (
       <>

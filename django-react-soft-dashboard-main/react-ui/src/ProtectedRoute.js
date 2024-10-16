@@ -8,6 +8,7 @@ export const ProtectedRoute = ({ ...rest }) => {
   const history = useHistory();
   let { user } = useAuth();
   if (!user || !user.token || user.token === "") {
+    localStorage.setItem("redirectAfterLogin", window.location.pathname);
     history.push("/authentication/sign-in");
     return null;
     // return (

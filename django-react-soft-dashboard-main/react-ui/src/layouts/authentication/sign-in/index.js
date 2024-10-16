@@ -56,7 +56,7 @@ function SignIn() {
       event.preventDefault();
     }
     if (user && user.token) {
-      return history.push("/iur");
+      return history.push(localStorage.getItem("redirectAfterLogin"));
     }
     if (email === "") {
       return setError("You must enter your email.");
@@ -101,7 +101,7 @@ function SignIn() {
       event.preventDefault();
     }
     if (user && user.token) {
-      return history.push("/iur");
+      return history.push(localStorage.getItem("redirectAfterLogin"));
     }
     setButtonText("Signing in");
     try {
@@ -132,7 +132,8 @@ function SignIn() {
     setUser(user);
     localStorage.setItem("user", user);
     Cookies.set("token", response.data.token, { expires: new Date(Date.now() + 12 * 60 * 60000) });
-    return history.push("/iur");
+    console.log("redirectAfterLogin", localStorage.getItem("redirectAfterLogin"));
+    history.push(localStorage.getItem("redirectAfterLogin"));
   };
 
   return (

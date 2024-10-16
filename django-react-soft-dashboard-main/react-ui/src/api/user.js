@@ -12,6 +12,10 @@ class USERAPI {
   static add_member = (data) => {
     return axios.post("/account/add_member/", data);
   };
+
+  static edit_member = (data) => {
+    return axios.post("/account/edit_member/", data);
+  };
 }
 
 export default USERAPI;

@@ -132,7 +132,7 @@ export default function App() {
       </Icon>
     </SuiBox>
   );
-
+  // not rtl
   return direction === "rtl" ? (
     <CacheProvider value={rtlCache}>
       <StylesProvider jss={jss}>
@@ -141,7 +141,7 @@ export default function App() {
           {layout === "dashboard" && (
             <>
               {/* <Sidenav routes={routes} /> */}
-              <DashboardNavbar routes={routes} />
+              {/* <DashboardNavbar routes={routes} />s */}
               <Configurator />
               {configsButton}
             </>
@@ -166,10 +166,10 @@ export default function App() {
             {/* {configsButton} */}
           </>
         )}
-        {layout === "vr" && <Configurator />}
+        {/* {layout === "vr" && <Configurator />} */}
         <Switch>
           {getRoutes(routes)}
-          <Redirect from="*" to="/iur" />
+          <Redirect from="*" to={localStorage.getItem("redirectAfterLogin")} />
         </Switch>
       </ThemeProvider>
     </StyledEngineProvider>
