@@ -37,7 +37,7 @@ import SuiBox from "components/SuiBox";
 
 // Soft UI Dashboard PRO React example components
 // import Sidenav from "examples/Sidenav";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+// import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Configurator from "examples/Configurator";
 
 // Soft UI Dashboard PRO React themes
@@ -161,7 +161,7 @@ export default function App() {
         {layout === "dashboard" && (
           <>
             {/* <Sidenav routes={routes} /> */}
-            <DashboardNavbar routes={routes} />
+            {/* <DashboardNavbar routes={routes} /> */}
             {/* <Configurator /> */}
             {/* {configsButton} */}
           </>

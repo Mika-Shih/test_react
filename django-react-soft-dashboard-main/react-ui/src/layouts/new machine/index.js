@@ -19,7 +19,7 @@ import React, { useState } from "react";
 // Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
-
+import { Link } from "react-router-dom";
 // Soft UI Dashboard React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 // import DashboardNavbar from "examples/Navbars/DashboardNavbar";
@@ -41,14 +41,26 @@ function Tables() {
   const sn_data_get = (sn) => {
     set_sn(sn);
   };
+
   return (
     <DashboardLayout>
       <SuiBox py={1}>
         <SuiBox mb={3}>
           <Card>
-            <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SuiTypography variant="h3"></SuiTypography>
+            <SuiBox display="flex" justifyContent="center" alignItems="center" p={3}>
+              <Link to="/your-target-route" style={{ textDecoration: "none" }}>
+                <SuiTypography
+                  variant="h2"
+                  textColor="info"
+                  fontWeight="bold"
+                  textGradient
+                  style={{ letterSpacing: "2px" }}
+                >
+                  IUR System
+                </SuiTypography>
+              </Link>
             </SuiBox>
+            <SuiBox display="flex" justifyContent="center" alignItems="center" p={2}></SuiBox>
             <SuiBox customClass={classes.tables_table}>
               {!isStep && <Addsn serial_number={sn} serial_number_get={(sn) => sn_data_get(sn)} />}
               {isStep && <Addplatform serial_number={sn} />}

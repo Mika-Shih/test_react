@@ -21,6 +21,8 @@ import SuiBox from "components/SuiBox";
 import { useState } from "react";
 // Soft UI Dashboard React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import routes from "routes";
 import Footer from "examples/Footer";
 import Test_plan from "layouts/test_plans/test_plan/table/test_plan";
 
@@ -44,6 +46,7 @@ function Tables() {
   const [selectedTab, setSelectedTab] = useState(categoryList[0].category_name);
   return (
     <DashboardLayout>
+      <DashboardNavbar routes={routes} />
       <SuiBox py={1}>
         <SuiBox mb={3}>
           <Card>

@@ -17,26 +17,33 @@ Coded by www.creative-tim.com
 import Card from "@mui/material/Card";
 // Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
-import SuiTypography from "components/SuiTypography";
+// import SuiTypography from "components/SuiTypography";
 
 // Soft UI Dashboard React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import Setting_mark from "examples/Icons/Setting_mark";
 import Footer from "examples/Footer";
 // import Grid from "@mui/material/Grid";
-
+import { hasAzureAccess } from "auth-context/auth.context";
 import Token_manage from "layouts/token/table/token_table";
 // Custom styles for the Tables
 import styles from "layouts/tables/styles";
 
 function Tables() {
   const classes = styles();
+  const routes = hasAzureAccess()
+    ? [
+        { name: "IUR", path: "/iur" },
+        { name: "Test Plan", path: "/test_plan" },
+      ]
+    : [];
   return (
     <DashboardLayout>
       <SuiBox py={1}>
         <SuiBox mb={3}>
           <Card>
-            <SuiBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SuiTypography variant="h4">Token modify</SuiTypography>
+            <SuiBox display="flex" justifyContent="right" alignItems="right">
+              <Setting_mark options={routes} />
             </SuiBox>
             <SuiBox customClass={classes.tables_table}>
               <Token_manage />

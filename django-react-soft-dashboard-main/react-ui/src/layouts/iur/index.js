@@ -18,10 +18,11 @@ import Card from "@mui/material/Card";
 // Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
 import SuiTypography from "components/SuiTypography";
-
+import { Link } from "react-router-dom";
 // Soft UI Dashboard React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 // import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import Setting_mark from "examples/Icons/Setting_mark";
 import Footer from "examples/Footer";
 // import Grid from "@mui/material/Grid";
 
@@ -35,7 +36,8 @@ import Transfer_machine from "layouts/iur/table/transfer_new_owner";
 // Custom styles for the Tables
 import styles from "layouts/tables/styles";
 import { useEffect, useState } from "react";
-
+//permission
+import { hasAzureAccess } from "auth-context/auth.context";
 function Tables() {
   const classes = styles();
   const [result, setResult] = useState(0);
@@ -48,24 +50,39 @@ function Tables() {
   const iur_data_get = (iur_machine) => {
     set_select_iur_machine(iur_machine);
   };
+  const routes = hasAzureAccess()
+    ? [
+        { name: "Member", path: "/member" },
+        { name: "Token", path: "/token" },
+      ]
+    : [];
+
   return (
     <DashboardLayout>
       <SuiBox py={1}>
-        {result == 0 && (
-          <>
-            <SuiBox mb={3}>
+        <SuiBox mb={3}>
+          <Card>
+            <SuiBox display="flex" justifyContent="right" alignItems="right">
+              <Setting_mark options={routes} />
+            </SuiBox>
+            <SuiBox display="flex" justifyContent="center" alignItems="center" p={3}>
+              <Link to="/your-target-route" style={{ textDecoration: "none" }}>
+                <SuiTypography
+                  variant="h2"
+                  textColor="info"
+                  fontWeight="bold"
+                  textGradient
+                  style={{ letterSpacing: "2px" }}
+                >
+                  IUR System
+                </SuiTypography>
+              </Link>
+            </SuiBox>
+            <SuiBox display="flex" justifyContent="center" alignItems="center" p={2}></SuiBox>
+          </Card>
+          {result == 0 && (
+            <>
               <Card>
-                <SuiBox display="flex" justifyContent="center" alignItems="center" p={3}>
-                  <SuiTypography
-                    variant="h2"
-                    textColor="info"
-                    fontWeight="bold"
-                    textGradient
-                    style={{ letterSpacing: "2px" }}
-                  >
-                    IUR System
-                  </SuiTypography>
-                </SuiBox>
                 <SuiBox customClass={classes.tables_table}>
                   <Iur_machine
                     iur={(select_iur_machine) => iur_data_get(select_iur_machine)}
@@ -73,111 +90,63 @@ function Tables() {
                   />
                 </SuiBox>
               </Card>
-            </SuiBox>
-          </>
-        )}
-        {result == 2 && (
-          <>
-            <SuiBox mb={3}>
+            </>
+          )}
+          {result == 2 && (
+            <>
               <Card>
-                <SuiBox
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  p={3}
-                ></SuiBox>
                 <SuiBox customClass={classes.tables_table}>
                   <Return_machine iur_data={select_iur_machine} />
                 </SuiBox>
               </Card>
-            </SuiBox>
-          </>
-        )}
-        {result == 3 && (
-          <>
-            <SuiBox mb={3}>
+            </>
+          )}
+          {result == 3 && (
+            <>
               <Card>
-                <SuiBox
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  p={3}
-                ></SuiBox>
                 <SuiBox customClass={classes.tables_table}>
                   <New_machine_mail iur_data={select_iur_machine} />
                 </SuiBox>
               </Card>
-            </SuiBox>
-          </>
-        )}
-        {result == 4 && (
-          <>
-            <SuiBox mb={3}>
+            </>
+          )}
+          {result == 4 && (
+            <>
               <Card>
-                <SuiBox
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  p={3}
-                ></SuiBox>
                 <SuiBox customClass={classes.tables_table}>
                   <Change_machine iur_data={select_iur_machine} />
                 </SuiBox>
               </Card>
-            </SuiBox>
-          </>
-        )}
-        {result == 5 && (
-          <>
-            <SuiBox mb={3}>
+            </>
+          )}
+          {result == 5 && (
+            <>
               <Card>
-                <SuiBox
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  p={3}
-                ></SuiBox>
                 <SuiBox customClass={classes.tables_table}>
                   <Delete_machine iur_data={select_iur_machine} />
                 </SuiBox>
               </Card>
-            </SuiBox>
-          </>
-        )}
-        {result == 6 && (
-          <>
-            <SuiBox mb={3}>
+            </>
+          )}
+          {result == 6 && (
+            <>
               <Card>
-                <SuiBox
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  p={3}
-                ></SuiBox>
                 <SuiBox customClass={classes.tables_table}>
                   <Scrapped_machine iur_data={select_iur_machine} />
                 </SuiBox>
               </Card>
-            </SuiBox>
-          </>
-        )}
-        {result == 7 && (
-          <>
-            <SuiBox mb={3}>
+            </>
+          )}
+          {result == 7 && (
+            <>
               <Card>
-                <SuiBox
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  p={3}
-                ></SuiBox>
                 <SuiBox customClass={classes.tables_table}>
                   <Transfer_machine iur_data={select_iur_machine} />
                 </SuiBox>
               </Card>
-            </SuiBox>
-          </>
-        )}
+            </>
+          )}
+        </SuiBox>
       </SuiBox>
       <Footer />
     </DashboardLayout>

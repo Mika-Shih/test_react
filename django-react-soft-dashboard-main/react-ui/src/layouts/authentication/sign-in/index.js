@@ -33,8 +33,8 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 // Images
 import logo_hp from "assets/images/logo-HP.png";
 
-import { useAuth } from "../../../auth-context/auth.context";
-import AuthApi from "../../../api/auth";
+import { useAuth } from "auth-context/auth.context";
+import AuthApi from "api/auth";
 
 import { useHistory } from "react-router-dom";
 import Cookies from "js-cookie";
