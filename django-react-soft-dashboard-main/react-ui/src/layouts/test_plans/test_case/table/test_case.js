@@ -174,6 +174,19 @@ function Test_case({ category }) {
                 </MenuItem>
               ))}
             </Select>
+            {(permission.admin_permission || permission.editor_permission) &&
+              selectedIndex[data.id] != data.select && (
+                <SuiButton
+                  variant="text"
+                  buttonColor="dark"
+                  onClick={() => {
+                    openModal(6);
+                    set_current_data(data);
+                  }}
+                >
+                  <Icon>update</Icon>
+                </SuiButton>
+              )}
           </TableCell>
           <TableCell key={index} className={classes.action}>
             <SuiBox>
@@ -250,6 +263,28 @@ function Test_case({ category }) {
       if (response.data.finaldata) {
         alert(response.data.finaldata);
         closeModal(3);
+        window.location.reload();
+      } else if (response.data.error) {
+        alert(response.data.error);
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Please contact the administrator.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const edit_main_case_api = async () => {
+    setLoading(true);
+    try {
+      const response = await TESTCASE.edit_main_case({
+        id: current_data.id,
+        select: current_data.data[selectedIndex[current_data.id]].case_id,
+        category: category,
+      });
+      if (response.data.finaldata) {
+        alert(response.data.finaldata);
+        closeModal(6);
         window.location.reload();
       } else if (response.data.error) {
         alert(response.data.error);
@@ -483,6 +518,41 @@ function Test_case({ category }) {
       );
     }
   };
+  const edit_main_case = (data) => {
+    if (data) {
+      return (
+        <>
+          <div className={classes.columns_center}>
+            <div className={classes.line_form_style} style={{ marginBottom: "20px" }}>
+              <label htmlFor="category">Category&nbsp;:&nbsp;&nbsp; {data.category}</label>
+            </div>
+            <div className={classes.line_form_style}>
+              <div className={classes.columns_center}>
+                <label htmlFor="test_case">Test Case Name&nbsp;:&nbsp;&nbsp;</label>
+                <div>{data.data[selectedIndex[data.id]].case_name}</div>
+              </div>
+            </div>
+            <div className={classes.line_form_style}>
+              <div className={classes.columns_center}>
+                <label htmlFor="description">Description&nbsp;:&nbsp;&nbsp;</label>
+                <div>{data.data[selectedIndex[data.id]].description}</div>
+              </div>
+            </div>
+            <div className={classes.line_form_style}>
+              <div className={classes.columns_center}>
+                <label htmlFor="comment">Comment&nbsp;:&nbsp;&nbsp;</label>
+                <div>{data.data[selectedIndex[data.id]].comment}</div>
+              </div>
+            </div>
+            <div className={classes.line_form_style}>
+              <Button onClick={edit_main_case_api}>Setting Main Case</Button>
+              <Button onClick={() => closeModal(6)}>Close</Button>
+            </div>
+          </div>
+        </>
+      );
+    }
+  };
   const view_case = (data) => {
     console.log("data", data);
     const title_data = [
@@ -565,47 +635,74 @@ function Test_case({ category }) {
     return (
       <>
         <div className={classes.columns_center}>
-          <label htmlFor="reviewer">Admin&nbsp;:&nbsp;&nbsp;</label>
-          <div className={`${permission.admin_checkbox ? "" : classes.disabled}`}>
-            <Loading_option_add_remove
-              api="polls/lendpersonnel"
-              name="user_mail"
-              selectedOptions={permission.admin}
-              setSelectedOptions={(newOptions) =>
-                set_permission({ ...permission, admin: newOptions })
-              }
-              disabled={permission.admin_checkbox}
-            />
-          </div>
-          <div style={{ marginBottom: "30px" }}></div>
+          <label htmlFor="reviewer" style={{ fontWeight: "bold" }}>
+            Admin&nbsp;:&nbsp;&nbsp;
+          </label>
+          {permission.admin_permission ? (
+            <>
+              <div className={`${permission.admin_checkbox ? "" : classes.disabled}`}>
+                <Loading_option_add_remove
+                  api="polls/lendpersonnel"
+                  name="user_mail"
+                  selectedOptions={permission.admin}
+                  setSelectedOptions={(newOptions) =>
+                    set_permission({ ...permission, admin: newOptions })
+                  }
+                  disabled={permission.admin_checkbox}
+                />
+              </div>
+              <div style={{ marginBottom: "30px" }}></div>
+              <div className={classes.line_form_style}>
+                <input
+                  type="checkbox"
+                  checked={permission.admin_checkbox}
+                  style={{ marginRight: "10px" }}
+                  onChange={() => {
+                    set_permission((prevState) => ({
+                      ...prevState,
+                      admin_checkbox: !prevState.admin_checkbox,
+                    }));
+                  }}
+                />
+                <h15 className={classes.hint_word}>
+                  Modifying personnel with admin privileges will grant them the ability to edit the
+                  editors.
+                </h15>
+              </div>
+            </>
+          ) : (
+            <>
+              {permission.admin &&
+                permission.admin.map((item, index) => <div key={index}>{item.value}</div>)}
+              <div style={{ marginBottom: "30px" }}></div>
+            </>
+          )}
+          <label htmlFor="editor" style={{ fontWeight: "bold" }}>
+            Editor:
+          </label>
+          {permission.admin_permission ? (
+            <>
+              <Loading_option_add_remove
+                api="polls/lendpersonnel"
+                name="user_mail"
+                selectedOptions={permission.editor}
+                setSelectedOptions={(newOptions) =>
+                  set_permission({ ...permission, editor: newOptions })
+                }
+              />
+              <div style={{ marginBottom: "30px" }}></div>
+            </>
+          ) : (
+            <>
+              {permission.editor &&
+                permission.editor.map((item, index) => <div key={index}>{item.value}</div>)}
+              <div style={{ marginBottom: "30px" }}></div>
+            </>
+          )}
           <div className={classes.line_form_style}>
-            <input
-              type="checkbox"
-              checked={permission.admin_checkbox}
-              style={{ marginRight: "10px" }}
-              onChange={() => {
-                set_permission((prevState) => ({
-                  ...prevState,
-                  admin_checkbox: !prevState.admin_checkbox,
-                }));
-              }}
-            />
-            <h15 className={classes.hint_word}>
-              Modifying personnel with admin privileges will grant them the ability to edit the
-              editors.
-            </h15>
-          </div>
-          <label htmlFor="editor">Editor:</label>
-          <Loading_option_add_remove
-            api="polls/lendpersonnel"
-            name="user_mail"
-            selectedOptions={permission.editor}
-            setSelectedOptions={(newOptions) =>
-              set_permission({ ...permission, editor: newOptions })
-            }
-          />
-          <div className={classes.line_form_style}>
-            <Button onClick={edit_permission_api}>Edit Permission</Button>
+            {permission.admin_permission && (
+              <Button onClick={edit_permission_api}>Edit Permission</Button>
+            )}
             <Button onClick={() => closeModal(5)}>Close</Button>
           </div>
         </div>
@@ -771,6 +868,9 @@ function Test_case({ category }) {
         <Dialog open={pop_filter[5]} onClose={() => closeModal(5)} fullWidth maxWidth="md">
           <Box sx={{ padding: "20px" }}>{edit_permission()}</Box>
         </Dialog>
+        <Dialog open={pop_filter[6]} onClose={() => closeModal(6)} fullWidth maxWidth="md">
+          <Box sx={{ padding: "20px" }}>{edit_main_case(current_data)}</Box>
+        </Dialog>
         {(permission.admin_permission || permission.editor_permission) && (
           <Button onClick={() => openModal(1)} className={classes.button_style}>
             Create Case
@@ -779,11 +879,9 @@ function Test_case({ category }) {
         <Button onClick={() => openModal(4)} className={classes.button_style}>
           Add Category
         </Button>
-        {permission.admin_permission && (
-          <Button onClick={() => openModal(5)} className={classes.button_style}>
-            Edit Permission
-          </Button>
-        )}
+        <Button onClick={() => openModal(5)} className={classes.button_style}>
+          {permission.admin_permission ? "Edit Permission" : "View Permission"}
+        </Button>
         <TextField
           variant="outlined"
           value={search_text}

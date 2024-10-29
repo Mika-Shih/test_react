@@ -18,7 +18,7 @@ import { Card, Tabs, Tab } from "@mui/material";
 // Soft UI Dashboard React components
 import SuiBox from "components/SuiBox";
 // import SuiTypography from "components/SuiTypography";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // Soft UI Dashboard React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
@@ -30,39 +30,54 @@ import Test_case from "layouts/test_plans/test_case/table/test_case";
 import styles from "layouts/tables/styles";
 
 // Data
+import TESTCASE from "api/test_plans/test_case";
 
 function Tables() {
   const classes = styles();
-  const categoryList = [
-    { category_name: "DOCK" },
-    { category_name: "WLAN" },
-    { category_name: "NFC" },
-    { category_name: "NIC" },
-    { category_name: "WWAN" },
-    { category_name: "CATM/IOT" },
-    { category_name: "BT" },
-    { category_name: "GPS" },
-  ];
-  const [selectedTab, setSelectedTab] = useState(categoryList[0].category_name);
+  const [selectedTab, setSelectedTab] = useState();
+  const [categoryList, setCategoryList] = useState();
+  const get_category = async () => {
+    try {
+      const response = await TESTCASE.view_category();
+      const updatecategoryList = response.data.finaldata.map((category_name) => ({
+        category_name: category_name,
+      }));
+      console.log(updatecategoryList);
+      setSelectedTab(updatecategoryList[0].category_name);
+      setCategoryList(updatecategoryList);
+    } catch (error) {
+      console.log(error);
+      alert("Please contact the administrator.");
+    }
+  };
+  useEffect(() => {
+    get_category();
+  }, []);
+  // const [selectedTab, setSelectedTab] = useState(categoryList && categoryList[0].category_name);
   return (
     <DashboardLayout>
       <DashboardNavbar routes={routes} />
       <SuiBox py={1}>
         <SuiBox mb={3}>
           <Card>
-            <Tabs value={selectedTab} onChange={(event, newValue) => setSelectedTab(newValue)}>
-              {Array.isArray(categoryList) &&
-                categoryList.map((category) => (
-                  <Tab
-                    key={category.category_name}
-                    label={category.category_name}
-                    value={category.category_name}
-                  />
-                ))}
-            </Tabs>
-            <SuiBox customClass={classes.tables_table}>
-              <Test_case category={selectedTab} />
-            </SuiBox>
+            {selectedTab && categoryList ? (
+              <>
+                <Tabs value={selectedTab} onChange={(event, newValue) => setSelectedTab(newValue)}>
+                  {categoryList.map((category) => (
+                    <Tab
+                      key={category.category_name}
+                      label={category.category_name}
+                      value={category.category_name}
+                    />
+                  ))}
+                </Tabs>
+                <SuiBox customClass={classes.tables_table}>
+                  <Test_case category={selectedTab} />
+                </SuiBox>
+              </>
+            ) : (
+              <p>Loading categories...</p>
+            )}
           </Card>
         </SuiBox>
       </SuiBox>

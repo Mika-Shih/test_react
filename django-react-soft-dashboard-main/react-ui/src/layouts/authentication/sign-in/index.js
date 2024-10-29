@@ -56,7 +56,13 @@ function SignIn() {
       event.preventDefault();
     }
     if (user && user.token) {
-      return history.push(localStorage.getItem("redirectAfterLogin"));
+      const redirectUrl = localStorage.getItem("redirectAfterLogin");
+      if (redirectUrl) {
+        return history.push(redirectUrl);
+      } else {
+        alert("Please choose distance");
+        return history.push("/authentication/sign-in");
+      }
     }
     if (email === "") {
       return setError("You must enter your email.");
@@ -70,10 +76,11 @@ function SignIn() {
         email,
         password,
       });
-      if (response.data && response.data.success === false) {
-        return setError(response.data.msg);
+      if (response.data.error) {
+        console.log(response.data.error);
+        return setError(response.data.error);
       }
-      // const response = {
+      // const response = {0
       //   data: {
       //     success: true,
       //     token:
@@ -132,8 +139,13 @@ function SignIn() {
     setUser(user);
     localStorage.setItem("user", user);
     Cookies.set("token", response.data.token, { expires: new Date(Date.now() + 12 * 60 * 60000) });
-    console.log("redirectAfterLogin", localStorage.getItem("redirectAfterLogin"));
-    history.push(localStorage.getItem("redirectAfterLogin"));
+    const redirectUrl = localStorage.getItem("redirectAfterLogin");
+    console.log("redirectAfterLogin", redirectUrl);
+    if (redirectUrl) {
+      history.push(redirectUrl);
+    } else {
+      alert("Please choose distance");
+    }
   };
 
   return (

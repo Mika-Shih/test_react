@@ -13,8 +13,14 @@ class TESTCASE {
   static add_category = (data) => {
     return axios.post(`${base}/add_category/`, data);
   };
+  static view_category = () => {
+    return axios.get(`${base}/view_category/`);
+  };
   static edit_permission = (data) => {
     return axios.post(`${base}/edit_permission/`, data);
+  };
+  static edit_main_case = (data) => {
+    return axios.post(`${base}/select_case/`, data);
   };
   static create_plan = (data) => {
     return axios.post("test_plans/test_plan/create_plan/", data);

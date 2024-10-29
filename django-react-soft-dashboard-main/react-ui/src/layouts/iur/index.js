@@ -66,7 +66,16 @@ function Tables() {
               <Setting_mark options={routes} />
             </SuiBox>
             <SuiBox display="flex" justifyContent="center" alignItems="center" p={3}>
-              <Link to="/your-target-route" style={{ textDecoration: "none" }}>
+              <Link
+                to="/iur"
+                style={{ textDecoration: "none" }}
+                onClick={(e) => {
+                  if (window.location.pathname === "/iur") {
+                    e.preventDefault();
+                    window.location.reload();
+                  }
+                }}
+              >
                 <SuiTypography
                   variant="h2"
                   textColor="info"
