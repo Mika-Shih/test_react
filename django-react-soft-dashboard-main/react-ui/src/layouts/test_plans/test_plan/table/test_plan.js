@@ -8,6 +8,7 @@ import Button from "examples/Icons/Button";
 // import SuiButton from "components/SuiButton";
 // import SuiBox from "components/SuiBox";
 // import Icon from "@mui/material/Icon";
+import Test_option from "layouts/test_plans/test_plan/table/function/list_case_option";
 import TestCase from "api/test_plans/test_case";
 import PropTypes from "prop-types";
 function Test_case({ category }) {
@@ -18,6 +19,9 @@ function Test_case({ category }) {
     4: false,
     5: false,
     6: false,
+  });
+  const [permission, set_permission] = useState({
+    admin: [],
   });
   const [list_case, set_list_case] = useState([]);
   useEffect(() => {
@@ -49,6 +53,12 @@ function Test_case({ category }) {
         <Box>
           <Button onClick={() => openModal(2)}>Confirm</Button>
         </Box>
+        <Test_option
+          api="polls/lendpersonnel"
+          name="user_mail"
+          selectedOptions={permission.admin}
+          setSelectedOptions={(newOptions) => set_permission({ ...permission, admin: newOptions })}
+        />
       </>
     );
   };
@@ -66,6 +76,14 @@ function Test_case({ category }) {
       </div>
       {/* <TableContainer>
       </TableContainer> */}
+      <div style={{ marginLeft: "15px" }}>
+        <Test_option
+          api="polls/lendpersonnel"
+          name="user_mail"
+          selectedOptions={permission.admin}
+          setSelectedOptions={(newOptions) => set_permission({ ...permission, admin: newOptions })}
+        />
+      </div>
     </>
   );
 }

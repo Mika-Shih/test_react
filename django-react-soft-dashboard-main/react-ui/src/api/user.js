@@ -4,7 +4,9 @@ class USERAPI {
   static view_token = () => {
     return axios.get("/user/view_token/");
   };
-
+  static edit_token = (data) => {
+    return axios.post("/user/edit_token/", data);
+  };
   static member = () => {
     return axios.get("/user/member/");
   };

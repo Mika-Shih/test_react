@@ -8,6 +8,10 @@ class TOOLAPI {
   static filter_get = (api) => {
     return axios.get(`/${api}/`);
   };
+
+  static time_backend = () => {
+    return axios.get("/tool/time_transmit/");
+  };
 }
 
 export default TOOLAPI;

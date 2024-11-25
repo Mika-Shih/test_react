@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Modal from "react-modal";
+import { Dialog, Box } from "@mui/material";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
@@ -14,8 +14,13 @@ function DropdownWithButton() {
   const classes = useStyles();
   const history = useHistory();
   const [token, setToken] = useState([]);
-  const [popdata, setPopdata] = useState([]);
-  const [machine_data, set_machine_data] = useState([]);
+  const [edit, set_edit] = useState({
+    email: "",
+    appid: "",
+    secret: "",
+    approve: "",
+    signin_url: "",
+  });
   const [loading, setLoading] = useState(false);
   const [popFilters, setPopFilters] = useState({
     1: false,
@@ -26,14 +31,6 @@ function DropdownWithButton() {
   useEffect(() => {
     get_machine_status_report();
   }, []);
-  const [formData, setFormData] = useState({
-    target: [],
-    group: [],
-    cycle: [],
-    platform: [],
-    phase: [],
-    status: [],
-  });
   function title_row(index) {
     return (
       <>
@@ -63,7 +60,7 @@ function DropdownWithButton() {
       let response = await USERAPI.view_token();
       if (response.data) {
         console.log(response.data);
-        set_machine_data(response.data.finaldata);
+        setToken(response.data.finaldata);
       } else if (response.data.error) {
         alert(response.data.error);
       }
@@ -73,12 +70,28 @@ function DropdownWithButton() {
     } finally {
       setLoading(false);
     }
-    let response = await USERAPI.view_token();
-    if (response.data) {
-      console.log(response.data);
-      setToken(response.data.finaldata);
-    } else if (response.data.error) {
-      alert(response.data.error);
+  };
+  const edit_token = async () => {
+    setLoading(true);
+    try {
+      let response = await USERAPI.edit_token({
+        email: edit.email,
+        appid: edit.appid,
+        secret: edit.secret,
+        approve: edit.approve,
+        signin_url: edit.signin_url,
+      });
+      if (response.data.finaldata) {
+        alert(response.data.finaldata);
+        window.location.reload();
+      } else if (response.data.error) {
+        alert(response.data.error);
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Please contact the administrator.");
+    } finally {
+      setLoading(false);
     }
   };
   function data_row(index, data) {
@@ -87,124 +100,156 @@ function DropdownWithButton() {
     }
     return (
       <>
-        <TableRow className={classes.table_row_style}>
+        <TableRow
+          className={classes.table_row_style}
+          onClick={() => openModal(1, data)}
+          style={{ cursor: "pointer" }}
+        >
           <TableCell key={index} className={classes.email}>
-            <p style={{ cursor: "pointer" }} onClick={() => openModal(2, data.email)}>
-              {data.email}
-            </p>
+            <p>{data.email}</p>
           </TableCell>
           <TableCell key={index} className={classes.appid}>
-            <p style={{ cursor: "pointer" }} onClick={() => openModal(2, data.appid)}>
-              {data.appid}
-            </p>
+            <p>{data.appid}</p>
           </TableCell>
           <TableCell key={index} className={classes.secret}>
-            <p style={{ cursor: "pointer" }} onClick={() => openModal(2, data.secret)}>
-              {data.secret}
-            </p>
+            <p>{data.secret}</p>
           </TableCell>
           <TableCell key={index} className={classes.approve}>
-            <p style={{ cursor: "pointer" }} onClick={() => openModal(2, data.approve)}>
-              {data.approve}
-            </p>
+            <p>{data.approve}</p>
           </TableCell>
           <TableCell key={index} className={classes.signin}>
-            <p style={{ cursor: "pointer" }} onClick={() => openModal(2, data.signin_url)}>
-              {data.signin_url}
-            </p>
+            <p>{data.signin_url}</p>
           </TableCell>
         </TableRow>
       </>
     );
   }
-  const line_form_style = {
-    display: "flex",
-    alignItems: "center",
-    marginBottom: "14px",
-    color: "#000000",
-    fontSize: "18px",
-  };
-  useEffect(() => {}, [machine_data]);
-
   //load module option
   const openModal = (modalNumber, data = null) => {
-    setPopdata(data);
+    set_edit({
+      email: data.email,
+      appid: data.appid,
+      secret: data.secret,
+      approve: data.approve,
+      signin_url: data.signin_url,
+    });
     setPopFilters((prev) => ({ ...prev, [modalNumber]: true }));
   };
   const closeModal = (modalNumber) => {
     setPopFilters((prev) => ({ ...prev, [modalNumber]: false }));
   };
 
-  const customStyles = {
-    content: {
-      maxWidth: "1000px",
-      minWidth: "1000px",
-      maxHeight: "800px",
-      minHeight: "800px",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-500px",
-      transform: "translate(-50%, -50%)",
-      overflowY: "auto",
-    },
-    overlay: {
-      zIndex: 1000,
-    },
-  };
-  Modal.setAppElement("#root");
-  useEffect(() => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      cycle: [],
-    }));
-  }, [formData.target, formData.group]);
-  useEffect(() => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      platform: [],
-    }));
-  }, [formData.target, formData.group, formData.cycle]);
-
-  function token_content(data) {
+  function token_content() {
     return (
       <>
-        <div style={{ flexDirection: "column" }}>
-          <div style={line_form_style}>
-            <p>{data}</p>
+        <div className={classes.columns_center}>
+          <div className={classes.line_form_style}>
+            <div className={classes.columns_center}>
+              <label htmlFor="email">Email&nbsp;:&nbsp;&nbsp;</label>
+              <label htmlFor="edit_eamil">{edit.email}&nbsp;&nbsp;&nbsp;</label>
+            </div>
+          </div>
+          <div className={classes.line_form_style}>
+            <div className={classes.columns_center}>
+              <label htmlFor="appid">Appid&nbsp;:&nbsp;&nbsp;</label>
+              <input
+                id="appid"
+                name="appid"
+                style={{
+                  width: "480px",
+                  padding: "8px",
+                  border: "1px solid #ccc",
+                  borderRadius: "8px",
+                }}
+                value={edit.appid}
+                onChange={(e) => {
+                  set_edit({
+                    ...edit,
+                    appid: e.target.value,
+                  });
+                }}
+              />
+            </div>
+          </div>
+          <div className={classes.line_form_style}>
+            <div className={classes.columns_center}>
+              <label htmlFor="secret">Secret&nbsp;:&nbsp;&nbsp;</label>
+              <input
+                id="secret"
+                name="secret"
+                style={{
+                  width: "480px",
+                  padding: "8px",
+                  border: "1px solid #ccc",
+                  borderRadius: "8px",
+                }}
+                value={edit.secret}
+                onChange={(e) => {
+                  set_edit({
+                    ...edit,
+                    secret: e.target.value,
+                  });
+                }}
+              />
+            </div>
+          </div>
+          <div className={classes.line_form_style}>
+            <div className={classes.columns_center}>
+              <label htmlFor="approve">Approve&nbsp;:&nbsp;&nbsp;</label>
+              <textarea
+                id="approve"
+                name="approve"
+                rows={8}
+                style={{
+                  width: "480px",
+                  padding: "8px",
+                  border: "1px solid #ccc",
+                  borderRadius: "8px",
+                }}
+                value={edit.approve}
+                onChange={(e) => {
+                  set_edit({
+                    ...edit,
+                    approve: e.target.value,
+                  });
+                }}
+              />
+            </div>
+          </div>
+          <div className={classes.line_form_style}>
+            <div className={classes.columns_center}>
+              <label htmlFor="signin_url">Signin Url&nbsp;:&nbsp;&nbsp;</label>
+              <input
+                id="signin_url"
+                name="signin_url"
+                style={{
+                  width: "480px",
+                  padding: "8px",
+                  border: "1px solid #ccc",
+                  borderRadius: "8px",
+                }}
+                value={edit.signin_url}
+                onChange={(e) => {
+                  set_edit({
+                    ...edit,
+                    signin_url: e.target.value,
+                  });
+                }}
+              />
+            </div>
+          </div>
+          <div style={{ marginBottom: "30px" }}></div>
+          <div className={classes.line_form_style}>
+            <Button onClick={edit_token}>Edit Token</Button>
+            <Button onClick={() => closeModal(1)}>Close</Button>
           </div>
         </div>
       </>
     );
   }
 
-  // const filtersearch = () => {
-  //   const request_data = {
-  //     target: formData.target,
-  //     group: formData.group,
-  //     cycle: formData.cycle,
-  //     platform: formData.platform,
-  //     SN: inputList,
-  //     phase: formData.phase,
-  //     status: formData.status,
-  //   };
-  //   axios
-  //     .post(`${backendServer}polls/api/filtersearch/`, request_data, { timeout: 10000 })
-  //     .then((response) => {
-  //       if (response.data.finaldata) {
-  //         console.log(response.data);
-  //         //window.location.replace(`${frontendServer}pulsar/`);
-  //         set_machine_data(response.data.finaldata);
-  //       } else if (response.data.error) {
-  //         alert(response.data.error);
-  //       }
-  //     });
-  //   select_setToken([]);
-  //   closeModal(1);
-  // };
   const Row = ({ index, style }) => (
-    <TableRow style={style}>{data_row(index, machine_data[index])}</TableRow>
+    <TableRow style={style}>{data_row(index, token[index])}</TableRow>
   );
   Row.propTypes = {
     index: PropTypes.number.isRequired,
@@ -213,18 +258,9 @@ function DropdownWithButton() {
   return (
     <div style={{ display: "flex", alignItems: "center", marginLeft: "20px" }}>
       <Loading loading={loading} />
-      <div style={{ display: "flex", overflowY: "auto" }}>
-        <Modal
-          isOpen={popFilters[2]}
-          onRequestClose={() => closeModal(2)}
-          style={customStyles}
-          contentLabel="token"
-        >
-          <h2>Token</h2>
-          {token_content(popdata)}
-          <Button onClick={() => closeModal(2)}>關閉</Button>
-        </Modal>
-      </div>
+      <Dialog open={popFilters[1]} onClose={() => closeModal(1)} fullWidth maxWidth="md">
+        <Box sx={{ padding: "20px" }}>{token_content()}</Box>
+      </Dialog>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ display: "flex", flexDirection: "row", marginBottom: "20px" }}>
           <Button

@@ -55,6 +55,7 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import TestPlan from "layouts/test_plans/test_plan";
 import TestCase from "layouts/test_plans/test_case";
+import TestDriverValidation from "layouts/test_driver_validation";
 // import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
 
@@ -154,6 +155,16 @@ const routes = [
     route: "/test_case",
     icon: <Shop size="16px" />,
     component: TestCase,
+    noCollapse: true,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Test Driver Validation",
+    key: "testdrivervalidation",
+    route: "/test_driver_validation",
+    icon: <Shop size="16px" />,
+    component: TestDriverValidation,
     noCollapse: true,
     protected: true,
   },

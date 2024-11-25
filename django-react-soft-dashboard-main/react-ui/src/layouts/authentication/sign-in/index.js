@@ -60,7 +60,9 @@ function SignIn() {
       if (redirectUrl) {
         return history.push(redirectUrl);
       } else {
-        alert("Please choose distance");
+        alert(
+          "The correct IP routes to use are /iur, /cat, and similar paths, instead of /authentication/sign-in."
+        );
         return history.push("/authentication/sign-in");
       }
     }
@@ -144,7 +146,9 @@ function SignIn() {
     if (redirectUrl) {
       history.push(redirectUrl);
     } else {
-      alert("Please choose distance");
+      alert(
+        "The correct IP routes to use are /iur, /cat, and similar paths, instead of /authentication/sign-in."
+      );
     }
   };
 

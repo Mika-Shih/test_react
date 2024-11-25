@@ -9,8 +9,8 @@ class IURAPI {
     return axios.post("/polls/filter_option/", data);
   };
 
-  static filtersearch = (data) => {
-    return axios.post("/polls/api/filtersearch/", data);
+  static filtersearch = () => {
+    return axios.get("/polls/api/filtersearch/");
   };
 
   static widthsearch = (data) => {

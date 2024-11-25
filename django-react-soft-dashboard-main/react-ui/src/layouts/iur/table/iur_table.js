@@ -16,11 +16,13 @@ import { useHistory } from "react-router-dom";
 import { useAuth, hasAzureAccess } from "../../../auth-context/auth.context";
 import useStyles from "layouts/iur/table/styles/iur";
 import IURAPI from "api/iur";
+import TOOLAPI from "api/tool";
 import AddIcon from "@mui/icons-material/Add";
 import DownloadIcon from "@mui/icons-material/Download";
 import { Dialog, Box } from "@mui/material";
-// import SuiBox from "components/SuiBox";
+
 function DropdownWithButton(props) {
+  const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const { user } = useAuth();
   const history = useHistory();
@@ -29,30 +31,14 @@ function DropdownWithButton(props) {
   const [button_name, set_button_name] = useState("");
   const [select_iur_machine, set_select_iur_machine] = useState([]);
   const [shiftKeyPressed, setShiftKeyPressed] = useState(false);
-  useEffect(() => {
-    const handleKey = (event) => {
-      if (event.key === "Shift") {
-        setShiftKeyPressed(event.type === "keydown");
-      }
-    };
-    window.addEventListener("keydown", handleKey);
-    window.addEventListener("keyup", handleKey);
-    return () => {
-      window.removeEventListener("keydown", handleKey);
-      window.removeEventListener("keyup", handleKey);
-    };
-  }, []);
-  useEffect(() => {
-    props.iur(select_iur_machine);
-  }, [select_iur_machine]);
-  useEffect(() => {
-    console.log(user);
-    get_machine_status_report();
-  }, []);
   const [startDate, setStartDate] = useState(new Date(Date.now() - 10 * 365 * 24 * 60 * 60 * 1000));
   const [endDate, setEndDate] = useState(new Date());
+  const [current_time, set_current_time] = useState(new Date());
+  const [machine, set_machine] = useState([]);
   const [machine_data, set_machine_data] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [title_filter, set_title_filter] = useState({
+    update_time: false,
+  });
   const [popFilters, setPopFilters] = useState({
     1: false,
     2: false,
@@ -83,60 +69,229 @@ function DropdownWithButton(props) {
   });
   const [inputList, setInputList] = useState([""]);
   const [widthsearch, setWidthsearch] = useState([""]);
-  function MyTableCell({ index, style, className, children }) {
-    return (
-      <TableCell key={index} style={style} className={className}>
-        {children}
-      </TableCell>
-    );
-  }
-  MyTableCell.propTypes = {
-    index: PropTypes.number.isRequired,
-    style: PropTypes.object,
-    className: PropTypes.string,
-    children: PropTypes.node.isRequired,
-  };
-  const data = [
-    ...(hasAzureAccess()
-      ? [
-          {
-            index: "1",
-            className: classes.title_checkbox_style,
-            children: (
-              <input
-                type="checkbox"
-                checked={select_iur_machine.length === machine_data.length}
-                onChange={() => select_all_checkbox()}
-              />
-            ),
-          },
-        ]
-      : []),
-    { index: "1", className: classes.title_platform_style, children: "Platform" },
-    { index: "1", className: classes.title_phase_style, children: "Phase" },
-    { index: "1", className: classes.title_target_style, children: "Target" },
-    { index: "1", className: classes.title_group_style, children: "Group" },
-    { index: "1", className: classes.title_cycle_style, children: "Cycle" },
-    { index: "1", className: classes.title_sku_style, children: "Sku" },
-    { index: "1", className: classes.title_sn_style, children: "Serial Number" },
-    { index: "1", className: classes.title_borrower_style, children: "Borrower" },
-    { index: "1", className: classes.title_status_style, children: "Status" },
-    { index: "1", className: classes.title_position_style, children: "Position" },
-    { index: "1", className: classes.title_remark_style, children: "Remark" },
-    { index: "1", className: classes.title_update_time_style, children: "Update Time" },
-  ];
+  useEffect(() => {
+    const handleKey = (event) => {
+      if (event.key === "Shift") {
+        setShiftKeyPressed(event.type === "keydown");
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    window.addEventListener("keyup", handleKey);
+    return () => {
+      window.removeEventListener("keydown", handleKey);
+      window.removeEventListener("keyup", handleKey);
+    };
+  }, []);
+  useEffect(() => {
+    props.iur(select_iur_machine);
+  }, [select_iur_machine]);
+  useEffect(() => {
+    console.log(user);
+    get_machine_status_report();
+  }, []);
+  useEffect(() => {
+    const get_new_time = async () => {
+      let response = await TOOLAPI.time_backend();
+      if (response.data.time) {
+        console.log(response.data.time);
+        console.log(formatTimeForFrontend(response.data.time - 10 * 365 * 24 * 60 * 60 * 1000));
+        console.log(
+          formatTimeForFrontend(new Date(response.data.time) - 10 * 365 * 24 * 60 * 60 * 1000)
+        );
+        console.log(TransitionTime(response.data.time));
+        set_current_time(response.data.time);
+      }
+    };
+    get_new_time();
+    console.log(current_time);
+    const interval = setInterval(get_new_time, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    console.log(lendData.cc_mail);
+  }, [lendData.cc_mail]);
+  // function MyTableCell({ index, style, className, children }) {
+  //   return (
+  //     <TableCell key={index} style={style} className={className}>
+  //       {children}
+  //     </TableCell>
+  //   );
+  // }
+  // MyTableCell.propTypes = {
+  //   index: PropTypes.number.isRequired,
+  //   style: PropTypes.object,
+  //   className: PropTypes.string,
+  //   children: PropTypes.node.isRequired,
+  // };
+  // const data = [
+  //   ...(hasAzureAccess()
+  //     ? [
+  //         {
+  //           index: "1",
+  //           className: classes.title_checkbox_style,
+  //           children: (
+  //             <input
+  //               type="checkbox"
+  //               checked={select_iur_machine.length === machine_data.length}
+  //               onChange={() => select_all_checkbox()}
+  //             />
+  //           ),
+  //         },
+  //       ]
+  //     : []),
+  //   { index: "1", className: classes.title_platform_style, children: "Platform" },
+  //   { index: "1", className: classes.title_phase_style, children: "Phase" },
+  //   { index: "1", className: classes.title_target_style, children: "Target" },
+  //   { index: "1", className: classes.title_group_style, children: "Group" },
+  //   { index: "1", className: classes.title_cycle_style, children: "Cycle" },
+  //   { index: "1", className: classes.title_sku_style, children: "Sku" },
+  //   { index: "1", className: classes.title_sn_style, children: "Serial Number" },
+  //   { index: "1", className: classes.title_borrower_style, children: "Borrower" },
+  //   { index: "1", className: classes.title_status_style, children: "Status" },
+  //   { index: "1", className: classes.title_position_style, children: "Position" },
+  //   { index: "1", className: classes.title_remark_style, children: "Remark" },
+  //   { index: "1", className: classes.title_update_time_style, children: "Update Time" },
+  // ];
   function title_row(index, request = true) {
+    const toggle = () => {
+      console.log(title_filter.update_time);
+      if (title_filter.update_time) {
+        set_machine_data(
+          machine_data.sort((a, b) => {
+            const keepOnTimeA = new Date(a.update_time);
+            const keepOnTimeB = new Date(b.update_time);
+            if (keepOnTimeB - keepOnTimeA !== 0) {
+              return keepOnTimeB - keepOnTimeA;
+            } else {
+              return new Date(b.update_time) - new Date(a.update_time);
+            }
+          })
+        );
+      } else {
+        set_machine_data(
+          machine_data.sort((a, b) => {
+            const keepOnTimeA = new Date(a.keep_on_time);
+            const keepOnTimeB = new Date(b.keep_on_time);
+
+            if (keepOnTimeB - keepOnTimeA !== 0) {
+              return keepOnTimeB - keepOnTimeA;
+            } else {
+              return new Date(b.update_time) - new Date(a.update_time);
+            }
+          })
+        );
+      }
+      set_title_filter((prevFilter) => ({
+        ...prevFilter,
+        update_time: !prevFilter.update_time,
+      }));
+    };
     if (request) {
       return (
-        <>
-          <TableRow className={classes.title_table_row_style}>
-            {data.map((item, index) => (
-              <MyTableCell key={index} className={item.className}>
-                {item.children}
-              </MyTableCell>
-            ))}
-          </TableRow>
-        </>
+        // <>
+        //   <TableRow className={classes.title_table_row_style}>
+        //     {data.map((item, index) => (
+        //       <MyTableCell key={index} className={item.className}>
+        //         {item.children}
+        //       </MyTableCell>
+        //     ))}
+        //   </TableRow>
+        // </>
+        hasAzureAccess() ? (
+          <>
+            <TableRow className={classes.title_table_row_style}>
+              <TableCell key={index} className={classes.title_checkbox_style}>
+                <input
+                  type="checkbox"
+                  checked={select_iur_machine.length === machine_data.length}
+                  onChange={select_all_checkbox}
+                />
+              </TableCell>
+              <TableCell key={index} className={classes.title_platform_style}>
+                {"Platform"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_phase_style}>
+                {"Phase"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_target_style}>
+                {"Target"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_group_style}>
+                {"Group"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_cycle_style}>
+                {"Cycle"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_sku_style}>
+                {"Sku"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_sn_style}>
+                {"Serial Number"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_borrower_style}>
+                {"Borrower"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_status_style}>
+                {"Status"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_position_style}>
+                {"Position"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_remark_style}>
+                {"Remark"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_update_time_style}>
+                <span onClick={toggle} style={{ cursor: "pointer" }}>
+                  {title_filter.update_time ? "Keep On Time   ▲" : "Update Time   ▼"}
+                </span>
+              </TableCell>
+            </TableRow>
+          </>
+        ) : (
+          <>
+            <TableRow className={classes.title_table_row_style}>
+              <TableCell key={index} className={classes.title_platform_style}>
+                {"Platform"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_phase_style}>
+                {"Phase"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_target_style}>
+                {"Target"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_group_style}>
+                {"Group"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_cycle_style}>
+                {"Cycle"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_sku_style}>
+                {"Sku"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_sn_style}>
+                {"Serial Number"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_borrower_style}>
+                {"Borrower"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_status_style}>
+                {"Status"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_position_style}>
+                {"Position"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_remark_style}>
+                {"Remark"}
+              </TableCell>
+              <TableCell key={index} className={classes.title_update_time_style}>
+                <span onClick={toggle} style={{ cursor: "pointer" }}>
+                  {title_filter.update_time ? "Keep On Time   ▲" : "Update Time   ▼"}
+                </span>
+              </TableCell>
+            </TableRow>
+          </>
+        )
       );
     } else {
       return (
@@ -208,8 +363,7 @@ function DropdownWithButton(props) {
   };
   useEffect(() => {
     console.log(select_iur_machine);
-    [select_iur_machine];
-  });
+  }, [select_iur_machine]);
   const select_all_checkbox = () => {
     if (select_iur_machine.length === machine_data.length) {
       set_select_iur_machine([]);
@@ -400,6 +554,20 @@ function DropdownWithButton(props) {
     });
     return `${month}/${day}, ${year}, ${formattedTime}`;
   }
+  function TransitionTime(inputTime) {
+    const date = new Date(inputTime);
+    const formattedDate = date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+    const formattedTime = date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+    return `${formattedDate} ${formattedTime}`;
+  }
   const containerStyle = {
     display: "flex",
   };
@@ -407,20 +575,10 @@ function DropdownWithButton(props) {
   const get_machine_status_report = async () => {
     setLoading(true);
     set_select_iur_machine([]);
-    let response = await IURAPI.filtersearch({
-      start_time: new Date(Date.now() - 3650 * 24 * 60 * 60 * 1000),
-      end_time: new Date(),
-      target: "",
-      group: "",
-      cycle: "",
-      platform: "",
-      SN: "",
-      phase: "",
-      status: "",
-      machine_arrive_mail: "",
-    });
-    if (response.data) {
+    let response = await IURAPI.filtersearch();
+    if (response.data.finaldata) {
       console.log(response.data);
+      set_machine(response.data.finaldata);
       set_machine_data(response.data.finaldata);
     } else if (response.data.error) {
       alert(response.data.error);
@@ -436,33 +594,135 @@ function DropdownWithButton(props) {
     setPopFilters((prev) => ({ ...prev, [modalNumber]: false }));
   };
 
+  // useEffect(() => {
+  //   const option_data = async () => {
+  //     const requestData = {
+  //       target: selectoption.target.map((option) => option.title),
+  //       group: selectoption.group.map((option) => option.title),
+  //       cycle: selectoption.cycle.map((option) => option.title),
+  //       platform: selectoption.platform.map((option) => option.title),
+  //       phase: selectoption.phase.map((option) => option.title),
+  //       status: selectoption.status.map((option) => option.title),
+  //     };
+  //     if (button_name) {
+  //       requestData[button_name] = [];
+  //     }
+  //     console.log(requestData);
+  //     let response = await IURAPI.filter_option(requestData);
+  //     if (response.data.finaldata) {
+  //       for (let key in response.data.finaldata) {
+  //         setoption_list((prevOptionList) => ({
+  //           ...prevOptionList,
+  //           [key]: response.data.finaldata[key],
+  //         }));
+  //       }
+  //       console.log(response.data.finaldata);
+  //     }
+  //   };
+  //   option_data();
+  // }, [selectoption, machine_data, button_name]);
   useEffect(() => {
     const option_data = async () => {
-      const requestData = {
-        target: selectoption.target.map((option) => option.title),
-        group: selectoption.group.map((option) => option.title),
-        cycle: selectoption.cycle.map((option) => option.title),
+      // const requestData = {
+      // const target = selectoption.target.map((option) => option.title)
+      // const group = selectoption.group.map((option) => option.title)
+      // const cycle = selectoption.cycle.map((option) => option.title)
+      // const platform = selectoption.platform.map((option) => option.title);
+      // const phase = selectoption.phase.map((option) => option.title);
+      // const cycle = selectoption.cycle.map((option) => option.title);
+      // const target = selectoption.target.map((option) => option.title);
+      // const group = selectoption.group.map((option) => option.title);
+      // console.log(platform, phase, cycle, target, group);
+      const mailKey = "Machine Arrive Mail";
+      const filters = {
         platform: selectoption.platform.map((option) => option.title),
         phase: selectoption.phase.map((option) => option.title),
-        status: selectoption.status.map((option) => option.title),
+        cycle: selectoption.cycle.map((option) => option.title),
+        target: selectoption.target.map((option) => option.title),
+        group: selectoption.group.map((option) => option.title),
+        status: selectoption.status
+          .map((option) => option.title)
+          .filter((item) => item !== mailKey),
       };
-      if (button_name) {
-        requestData[button_name] = [];
-      }
-      console.log(requestData);
-      let response = await IURAPI.filter_option(requestData);
-      if (response.data.finaldata) {
-        for (let key in response.data.finaldata) {
-          setoption_list((prevOptionList) => ({
-            ...prevOptionList,
-            [key]: response.data.finaldata[key],
-          }));
+      console.log(filters);
+      const mail = selectoption.status.some((option) => option.title === mailKey);
+      // const status = selectoption.status.map((option) => option.title)
+      // };
+      // if (button_name) {
+      //   requestData[button_name] = [];
+      // }
+      // const target= machine.target.map((option) => option.title)
+      // const group = selectoption.group.map((option) => option.title)
+      // const cycle = selectoption.cycle.map((option) => option.title)
+      // const platform = machine.map((item) => item.platform);
+      // const phase = selectoption.phase.map((option) => option.title)
+      // const status = machine.map((item) => item.platform)
+      const keys = Object.keys(filters);
+      keys.forEach((key) => {
+        if (key === button_name) {
+          console.log("++++");
+          if (key !== "status") {
+            setoption_list((prevOptionList) => ({
+              ...prevOptionList,
+              [key]: [
+                ...new Set(
+                  machine
+                    .filter((item) =>
+                      keys
+                        .filter((filterKey) => filterKey !== button_name && filterKey !== "status")
+                        .every((filterKey) =>
+                          filters[filterKey].length > 0
+                            ? filters[filterKey].includes(item[filterKey])
+                            : true
+                        )
+                    )
+                    .filter((item) => {
+                      if (mail && filters.status.length > 0) {
+                        return (
+                          filters.status.includes(item.status) || item.machine_arrive_mail === true
+                        );
+                      } else if (mail) {
+                        return item.machine_arrive_mail === true;
+                      } else {
+                        return filters.status.length > 0
+                          ? filters.status.includes(item.status)
+                          : true;
+                      }
+                    })
+                    .filter((item) => item[key])
+                    .map((item) => item[key])
+                ),
+              ],
+            }));
+          } else {
+            setoption_list((prevOptionList) => ({
+              ...prevOptionList,
+              [key]: [
+                ...new Set(
+                  machine
+                    .filter((item) =>
+                      keys
+                        .filter((filterKey) => filterKey !== button_name)
+                        .every((filterKey) =>
+                          filters[filterKey].length > 0
+                            ? filters[filterKey].includes(item[filterKey])
+                            : true
+                        )
+                    )
+                    .filter((item) => item[key])
+                    .map((item) => item[key])
+                ),
+                mailKey,
+              ],
+            }));
+          }
+          console.log(option_list, key);
         }
-        console.log(response.data.finaldata);
-      }
+      });
     };
     option_data();
-  }, [selectoption, machine_data, button_name]);
+    console.log(button_name);
+  }, [selectoption, machine, button_name]);
 
   function pop_filter_content() {
     return (
@@ -649,9 +909,7 @@ function DropdownWithButton(props) {
       </>
     );
   }
-  useEffect(() => {
-    console.log(lendData.cc_mail);
-  }, [lendData.cc_mail]);
+
   useEffect(() => {
     function machine_length(status) {
       if (select_iur_machine.length > 0) {
@@ -766,55 +1024,119 @@ function DropdownWithButton(props) {
       status: [],
     });
     setInputList([""]);
+    setStartDate(new Date(Date.now() - 10 * 365 * 24 * 60 * 60 * 1000));
+    setEndDate(new Date(TransitionTime(current_time)));
   };
   const widthsearth_function = async () => {
-    setLoading(true);
-    try {
-      let response = await IURAPI.widthsearch({
-        keyword: [widthsearch],
-      });
-      if (response.data.finaldata) {
-        console.log(response.data);
-        set_machine_data(response.data.finaldata);
-      } else if (response.data.error) {
-        alert(response.data.error);
-      }
-      set_select_iur_machine([]);
-    } catch (error) {
-      console.log(error);
-      alert("Please contact the administrator.");
-    } finally {
-      setLoading(false);
-    }
+    // setLoading(true);
+    // try {
+    //   let response = await IURAPI.widthsearch({
+    //     keyword: [widthsearch],
+    //   });
+    //   if (response.data.finaldata) {
+    //     console.log(response.data);
+    //     set_machine_data(response.data.finaldata);
+    //   } else if (response.data.error) {
+    //     alert(response.data.error);
+    //   }
+    //   set_select_iur_machine([]);
+    // } catch (error) {
+    //   console.log(error);
+    //   alert("Please contact the administrator.");
+    // } finally {
+    //   setLoading(false);
+    // }
+    set_select_iur_machine([]);
+    set_machine_data(
+      machine.filter(
+        (item) =>
+          (item.sn?.trim() || "")
+            .toLowerCase()
+            .includes((widthsearch?.trim() || "").toLowerCase()) ||
+          (item.platform?.trim() || "")
+            .toLowerCase()
+            .includes((widthsearch?.trim() || "").toLowerCase()) ||
+          (item.borrower?.trim() || "")
+            .toLowerCase()
+            .includes((widthsearch?.trim() || "").toLowerCase())
+      )
+    );
   };
   const filtersearch = async () => {
-    setLoading(true);
-    try {
-      let response = await IURAPI.filtersearch({
-        start_time: startDate,
-        end_time: endDate,
-        target: Object.values(selectoption.target).map((option) => option.title),
-        group: Object.values(selectoption.group).map((option) => option.title),
-        cycle: Object.values(selectoption.cycle).map((option) => option.title),
-        platform: Object.values(selectoption.platform).map((option) => option.title),
-        SN: inputList,
-        phase: Object.values(selectoption.phase).map((option) => option.title),
-        status: Object.values(selectoption.status).map((option) => option.title),
-      });
-      if (response.data.finaldata) {
-        console.log(response.data);
-        set_machine_data(response.data.finaldata);
-        set_select_iur_machine([]);
-        closeModal(1);
-      } else if (response.data.error) {
-        alert(response.data.error);
-      }
-    } catch (error) {
-      console.log(error);
-      alert("Please contact the administrator.");
-    } finally {
-      setLoading(false);
-    }
+    // setLoading(true);
+    // try {
+    //   let response = await IURAPI.filtersearch({
+    //     start_time: startDate,
+    //     end_time: endDate,
+    //     target: Object.values(selectoption.target).map((option) => option.title),
+    //     group: Object.values(selectoption.group).map((option) => option.title),
+    //     cycle: Object.values(selectoption.cycle).map((option) => option.title),
+    //     platform: Object.values(selectoption.platform).map((option) => option.title),
+    //     SN: inputList,
+    //     phase: Object.values(selectoption.phase).map((option) => option.title),
+    //     status: Object.values(selectoption.status).map((option) => option.title),
+    //   });
+    //   if (response.data.finaldata) {
+    //     console.log(response.data);
+    //     set_machine_data(response.data.finaldata);
+    //     set_select_iur_machine([]);
+    //     closeModal(1);
+    //   } else if (response.data.error) {
+    //     alert(response.data.error);
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    //   alert("Please contact the administrator.");
+    // } finally {
+    //   setLoading(false);
+    // }
+    console.log(new Date(TransitionTime(machine[0].update_time)), startDate, endDate);
+    console.log(startDate > endDate);
+    console.log(new Date(machine[0].update_time) > new Date(startDate));
+    console.log(new Date(machine[0].update_time) < new Date(endDate));
+    set_select_iur_machine([]);
+    const mailKey = "Machine Arrive Mail";
+    const platform = selectoption.platform.map((option) => option.title);
+    const phase = selectoption.phase.map((option) => option.title);
+    const cycle = selectoption.cycle.map((option) => option.title);
+    const target = selectoption.target.map((option) => option.title);
+    const group = selectoption.group.map((option) => option.title);
+    const status = selectoption.status
+      .map((option) => option.title)
+      .filter((item) => item !== mailKey);
+    const mail = selectoption.status.some((option) => option.title === mailKey);
+    set_machine_data(
+      machine
+        .filter((item) => (platform.length > 0 ? platform.includes(item.platform) : true))
+        .filter((item) => (phase.length > 0 ? phase.includes(item.phase) : true))
+        .filter((item) => (cycle.length > 0 ? cycle.includes(item.cycle) : true))
+        .filter((item) => (target.length > 0 ? target.includes(item.target) : true))
+        .filter((item) => (group.length > 0 ? group.includes(item.group) : true))
+        .filter((item) => {
+          if (mail && status.length > 0) {
+            return status.includes(item.status) || item.machine_arrive_mail === true;
+          } else if (mail) {
+            return item.machine_arrive_mail === true;
+          } else {
+            return status.length > 0 ? status.includes(item.status) : true;
+          }
+        })
+        .filter((item) => {
+          return (
+            new Date(item.update_time) >= new Date(startDate) &&
+            new Date(item.update_time) <= new Date(endDate)
+          );
+        })
+        .filter(
+          (item) =>
+            inputList
+              .filter((input) => input?.trim())
+              .some((input) =>
+                (item.sn?.toLowerCase() || "").includes(input.trim().toLowerCase())
+              ) || !inputList.some((input) => input?.trim())
+        )
+    );
+    closeModal(1);
   };
   const lend = async () => {
     setLoading(true);
@@ -896,7 +1218,14 @@ function DropdownWithButton(props) {
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div className={classes.title_bottom}>
-            <Button onClick={() => openModal(1)}>Filter</Button>
+            <Button
+              onClick={() => {
+                openModal(1);
+                setEndDate(TransitionTime(current_time));
+              }}
+            >
+              Filter
+            </Button>
             <input
               type="text"
               value={widthsearch}
