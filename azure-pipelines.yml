@@ -11,15 +11,18 @@ pool:
 
 steps:
 - script: |
-    cd django-react-soft-dashboard-main/react-ui
-    npm install
-    npm run build
-  displayName: 'Build React'
+    wsl bash -c "
+      cd /home/mika/test_react/django-react-soft-dashboard-main/react-ui
+      npm install
+      npm run build
+    "
+  displayName: 'Build React in WSL'
 
 - script: |
-    sudo rm -rf /var/www/html/*
-    sudo cp -r django-react-soft-dashboard-main/react-ui/build/* /var/www/html/
-    sudo systemctl restart nginx
-  displayName: 'Deploy to nginx'
+    wsl sudo rm -rf /var/www/html/*
+    wsl sudo cp -r /home/mika/test_react/django-react-soft-dashboard-main/react-ui/build/* /var/www/html/
+    wsl sudo systemctl restart nginx
+  displayName: 'Deploy to nginx in WSL'
+
 
 
