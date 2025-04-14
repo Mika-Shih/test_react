@@ -7,22 +7,19 @@ trigger:
 - main
 
 pool:
-  name: Default   # 本地 Agent Pool 名稱
+  name: Default   # 你的 self-hosted agent pool 名稱
 
 steps:
 - script: |
     wsl bash -c "
-      cd /home/mika/test_react/django-react-soft-dashboard-main/react-ui
-      npm install
-      npm run build
+      cd /home/mika/test_django
+      source venv/bin/activate
+      pip install -r requirements.txt
+      cd mysite
+      python manage.py migrate
+      nohup python manage.py runserver 0.0.0.0:8000 &
     "
-  displayName: 'Build React in WSL'
-
-- script: |
-    wsl sudo rm -rf /var/www/html/*
-    wsl sudo cp -r /home/mika/test_react/django-react-soft-dashboard-main/react-ui/build/* /var/www/html/
-    wsl sudo systemctl restart nginx
-  displayName: 'Deploy to nginx in WSL'
+  displayName: 'Deploy Django backend in WSL'
 
 
 
