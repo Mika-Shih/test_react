@@ -11,14 +11,12 @@ pool:
 
 steps:
 - script: |
-    wsl bash -c "
-      cd /home/mika/test_django
-      source venv/bin/activate
-      pip install -r requirements.txt
-      cd mysite
-      python manage.py migrate
-      nohup python manage.py runserver 0.0.0.0:8000 &
-    "
+    wsl bash -c "cd /home/mika/test_django && \
+    source venv/bin/activate && \
+    pip install -r requirements.txt && \
+    cd mysite && \
+    python manage.py migrate && \
+    nohup python manage.py runserver 0.0.0.0:8000 &"
   displayName: 'Deploy Django backend in WSL'
 
 
