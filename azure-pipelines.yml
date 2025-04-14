@@ -12,19 +12,20 @@ pool:
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: '20.x'
+    versionSpec: '20.x'     # Node 20 還是會有這問題
   displayName: 'Install Node.js'
 
 - script: |
+    export NODE_OPTIONS=--openssl-legacy-provider
     npm install
     npm run build
   displayName: 'Build React'
-  workingDirectory: 'django-react-soft-dashboard-main/react-ui'   # ✅ 這是重點！
+  workingDirectory: 'django-react-soft-dashboard-main/react-ui'
 
 - task: CopyFilesOverSSH@0
   inputs:
     sshEndpoint: 'WSL-Ubuntu'
-    sourceFolder: 'django-react-soft-dashboard-main/react-ui/build'  # ✅ 這也要改對
+    sourceFolder: 'django-react-soft-dashboard-main/react-ui/build'
     contents: '**'
     targetFolder: '/var/www/html'
   displayName: 'Copy build to nginx path'
@@ -36,3 +37,4 @@ steps:
     inline: |
       sudo systemctl restart nginx
   displayName: 'Restart nginx in WSL'
+
