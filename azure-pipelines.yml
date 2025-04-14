@@ -7,34 +7,19 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  name: Default   # 本地 Agent Pool 名稱
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '20.x'
-  displayName: 'Install Node.js'
-
 - script: |
-    export NODE_OPTIONS=--openssl-legacy-provider
+    cd django-react-soft-dashboard-main/react-ui
     npm install
     npm run build
-  workingDirectory: 'django-react-soft-dashboard-main/react-ui'
   displayName: 'Build React'
 
-- task: CopyFilesOverSSH@0
-  inputs:
-    sshEndpoint: 'WSL-Ubuntu'
-    sourceFolder: 'django-react-soft-dashboard-main/react-ui/build'
-    contents: '**'
-    targetFolder: '/var/www/html'
-  displayName: 'Copy build to nginx path'
+- script: |
+    sudo rm -rf /var/www/html/*
+    sudo cp -r django-react-soft-dashboard-main/react-ui/build/* /var/www/html/
+    sudo systemctl restart nginx
+  displayName: 'Deploy to nginx'
 
-- task: SSH@0
-  inputs:
-    sshEndpoint: 'WSL-Ubuntu'
-    runOptions: 'inline'
-    inline: |
-      sudo systemctl restart nginx
-  displayName: 'Restart nginx in WSL'
 
