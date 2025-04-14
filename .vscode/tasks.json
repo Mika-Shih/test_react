@@ -1,0 +1,55 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Django Server",
+            "type": "process",
+            "command": "C:\\Users\\Mika Shih\\Desktop\\test_django\\mysite\\venv\\Scripts\\python.exe",
+            "args": ["manage.py", "runserver", "8000"],
+            "options": {
+                "cwd": "C:\\Users\\Mika Shih\\Desktop\\test_django\\mysite"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Run React UI",
+            "type": "process",
+            "command": "yarn.cmd",
+            "args": ["start"],
+            "options": {
+                "cwd": "C:\\Users\\Mika Shih\\Desktop\\test_react\\django-react-soft-dashboard-main\\react-ui"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Run Both",
+            "type": "process",
+            "dependsOn": [
+                "Run Django Server",
+                "Run React UI"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}

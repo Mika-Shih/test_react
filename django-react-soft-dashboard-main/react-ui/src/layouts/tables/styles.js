@@ -20,6 +20,18 @@ export default makeStyles(({ borders }) => {
   const { borderWidth, borderColor } = borders;
 
   return {
+    line_form_style: {
+      display: "flex",
+      alignItems: "center",
+      marginBottom: "14px",
+      color: "#000000",
+      fontSize: "18px",
+    },
+    columns_center: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    },
     tables_table: {
       "& .MuiTableRow-root:not(:last-child)": {
         "& td": {

@@ -22,6 +22,12 @@ class TESTCASE {
   static edit_main_case = (data) => {
     return axios.post(`${base}/select_case/`, data);
   };
+  static delete_case = (data) => {
+    return axios.post(`${base}/delete_case/`, data);
+  };
+  static restore_case = (data) => {
+    return axios.post(`${base}/restore_case/`, data);
+  };
   static create_plan = (data) => {
     return axios.post("test_plans/test_plan/create_plan/", data);
   };

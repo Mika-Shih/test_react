@@ -55,15 +55,16 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import TestPlan from "layouts/test_plans/test_plan";
 import TestCase from "layouts/test_plans/test_case";
-import TestDriverValidation from "layouts/test_driver_validation";
+import Documentation from "layouts/documentation";
+// import TestDriverValidation from "layouts/test_driver_validation";
 // import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
 
 //
 import TestPlanDashboard from "layouts/test_plan/TestPlanDashboard";
 import PersonalItem from "layouts/test_plan/testPlanList/case";
-import TestPlanList from "layouts/test_plan/testPlanList/plan";
-import TestItemList from "layouts/test_plan/testCaseList";
+//import TestPlanList from "layouts/test_plan/testPlanList/plan";
+//import TestItemList from "layouts/test_plan/testCaseList";
 import NewPlan from "layouts/test_plan/newPlan";
 import NewCase from "layouts/test_plan/newCase";
 import EditCase from "layouts/test_plan/editCase";
@@ -160,14 +161,24 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Test Driver Validation",
-    key: "testdrivervalidation",
-    route: "/test_driver_validation",
-    icon: <Shop size="16px" />,
-    component: TestDriverValidation,
+    name: "Documentation",
+    key: "documentation",
+    route: "/documentation",
+    icon: <Document size="12px" />,
+    component: Documentation,
     noCollapse: true,
     protected: true,
   },
+  // {
+  //   type: "collapse",
+  //   name: "Test Driver Validation",
+  //   key: "testdrivervalidation",
+  //   route: "/test_driver_validation",
+  //   icon: <Shop size="16px" />,
+  //   component: TestDriverValidation,
+  //   noCollapse: true,
+  //   protected: true,
+  // },
   {
     type: "collapse",
     name: "Dashboard",
@@ -315,26 +326,26 @@ const routes = [
     noCollapse: true,
     protected: true,
   },
-  {
-    type: "collapse",
-    name: "Test Plan List",
-    key: "test_plan_list",
-    route: "/test_plan_list",
-    icon: <Office size="12px" />,
-    component: TestPlanList,
-    noCollapse: true,
-    protected: true,
-  },
-  {
-    type: "collapse",
-    name: "Test Case List",
-    key: "test_case_list",
-    route: "/test_case_list",
-    icon: <Office size="12px" />,
-    component: TestItemList,
-    noCollapse: true,
-    protected: true,
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Test Plan List",
+  //   key: "test_plan_list",
+  //   route: "/test_plan_list",
+  //   icon: <Office size="12px" />,
+  //   component: TestPlanList,
+  //   noCollapse: true,
+  //   protected: true,
+  // },
+  // {
+  //   type: "collapse",
+  //   name: "Test Case List",
+  //   key: "test_case_list",
+  //   route: "/test_case_list",
+  //   icon: <Office size="12px" />,
+  //   component: TestItemList,
+  //   noCollapse: true,
+  //   protected: true,
+  // },
   {
     type: "collapse",
     name: "Test Plan Dashboard",

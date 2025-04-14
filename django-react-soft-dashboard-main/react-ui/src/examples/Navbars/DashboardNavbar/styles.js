@@ -17,11 +17,11 @@ Coded by www.creative-tim.com
 import { makeStyles } from "@mui/styles";
 
 export default makeStyles(
-  ({ palette, boxShadows, functions, transitions, breakpoints, borders, typography }) => {
+  ({ palette, boxShadows, functions, transitions, breakpoints, typography }) => {
     const { dark, white, text, transparent } = palette;
     const { navbarBoxShadow } = boxShadows;
     const { rgba, pxToRem } = functions;
-    const { borderRadius } = borders;
+    //const { borderRadius } = borders;
     const { size } = typography;
 
     return {
@@ -46,15 +46,15 @@ export default makeStyles(
 
           return color;
         },
-        top: ({ absolute }) => (absolute ? 0 : pxToRem(12)),
+        top: ({ absolute }) => (absolute ? 0 : pxToRem(0)),
         minHeight: pxToRem(75),
         display: "grid",
         alignItems: "center",
-        borderRadius: borderRadius.xl,
+        //borderRadius: borderRadius.xl,
         paddingTop: pxToRem(8),
         paddingBottom: pxToRem(8),
-        paddingRight: ({ absolute }) => (absolute ? pxToRem(8) : 0),
-        paddingLeft: ({ absolute }) => (absolute ? pxToRem(16) : 0),
+        paddingRight: ({ absolute }) => (absolute ? pxToRem(0) : 0),
+        paddingLeft: ({ absolute }) => (absolute ? pxToRem(0) : 0),
 
         "& > *": {
           transition: transitions.create("all", {

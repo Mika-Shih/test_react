@@ -70,10 +70,23 @@ function Footer({ company, links }) {
             &nbsp;{name}&nbsp;
           </SuiTypography>
         </Link>
-        Coded By Bill.
+        Coded By Bill & Mika.
       </SuiBox>
       <SuiBox component="ul" customClass={classes.footer_list}>
         {renderLinks()}
+      </SuiBox>
+      <SuiBox component="ul" customClass={classes.footer_list}>
+        {renderLinks()}
+      </SuiBox>
+      <SuiBox mt={2} textAlign="center">
+        <SuiTypography variant="button" fontWeight="medium">
+          <Link
+            href="https://hp-my.sharepoint.com/:x:/p/mika_shih/EV8Ka0qHjzJBkG4amemgfwwBb7NfYHP5XDA7uwauYS9Y0A"
+            target="_blank"
+          >
+            Provide Your Feedback Here
+          </Link>
+        </SuiTypography>
       </SuiBox>
     </SuiBox>
   );
@@ -84,8 +97,8 @@ Footer.defaultProps = {
   company: {
     // href: "http://lab-management-env.eba-8nvxpmcv.ap-southeast-1.elasticbeanstalk.com/iur",
     // name: "Uut Lab ",
-    href: "mailto:bill.chang@hp.com",
-    name: "bill.chang@hp.com ",
+    href: "mailto:bill.chang@hp.com,mika.shih@hp.com",
+    name: "bill.chang@hp.com & mika.shih@hp.com",
   },
   links: [
     // {
