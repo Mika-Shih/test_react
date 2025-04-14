@@ -19,11 +19,12 @@ steps:
     npm install
     npm run build
   displayName: 'Build React'
+  workingDirectory: 'django-react-soft-dashboard-main/react-ui'   # ✅ 這是重點！
 
 - task: CopyFilesOverSSH@0
   inputs:
-    sshEndpoint: 'WSL-Ubuntu'         # 👈 這裡要跟上面 Service Connection 名稱一致
-    sourceFolder: 'build'
+    sshEndpoint: 'WSL-Ubuntu'
+    sourceFolder: 'django-react-soft-dashboard-main/react-ui/build'  # ✅ 這也要改對
     contents: '**'
     targetFolder: '/var/www/html'
   displayName: 'Copy build to nginx path'
